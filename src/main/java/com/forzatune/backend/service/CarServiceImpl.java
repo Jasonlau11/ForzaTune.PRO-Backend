@@ -1,0 +1,56 @@
+package com.forzatune.backend.service;
+
+import com.forzatune.backend.dto.CarDto;
+import com.forzatune.backend.dto.PageDto;
+import com.forzatune.backend.dto.TuneDto;
+import com.forzatune.backend.entity.Car;
+import com.forzatune.backend.entity.Tune;
+import com.forzatune.backend.mapper.CarMapper;
+import com.forzatune.backend.mapper.TuneMapper;
+import com.forzatune.backend.vo.CarsSearchVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class CarServiceImpl implements CarService {
+
+    @Autowired
+    private CarMapper carMapper;
+    @Autowired
+    private TuneMapper tuneMapper;
+
+    @Override
+    public PageDto<CarDto> getCars(CarsSearchVo searchVo) {
+        // 1. 执行 COUNT 查询，获取符合条件的总记录数
+        long total = carMapper.countCars(searchVo);
+
+        // 如果总数为0，直接返回空的分页对象，避免无效查询
+        if (total == 0) {
+            return new PageDto<>(new ArrayList<>(), searchVo.getPage(), searchVo.getLimit(), 0);
+        }
+
+        // 2. 执行分页数据查询，获取当前页的列表
+        List<Car> cars = carMapper.searchCars(searchVo);
+
+        List<CarDto> carDtoList = cars.stream()
+                .map(CarDto::fromEntity)
+                .collect(Collectors.toList());
+
+        // 4. 创建并返回 PageDto 对象
+        return new PageDto<>(carDtoList, searchVo.getPage(), searchVo.getLimit(), total);
+    }
+
+    @Override
+//    @Cacheable(value = "carDetails", key = "'car-detail-' + #id")
+    public CarDto getCarById(String id) {
+        CarDto carDto = CarDto.fromEntity(carMapper.selectById(id));
+        List<Tune> tunes = tuneMapper.selectByCarId(id);
+        carDto.setTunes(tunes.stream().map(tune -> TuneDto.fromEntity(tune)).collect(Collectors.toList()));
+        carDto.setTuneCount(tunes.size());
+        return carDto;
+    }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forzatune.backend.mapper.UserFavoritesMapper">
+
+    <!-- 结果映射：将数据库列名映射到实体字段 -->
+    <resultMap id="UserFavoriteResultMap" type="com.forzatune.backend.entity.UserFavorite">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="tuneId" column="tune_id"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- 基础列名 -->
+    <sql id="Base_Column_List">
+        id, user_id, tune_id, created_at
+    </sql>
+
+    <!-- 插入一条收藏记录 -->
+    <insert id="insert" parameterType="com.forzatune.backend.entity.UserFavorite">
+        INSERT INTO user_favorites (id, user_id, tune_id, created_at)
+        VALUES (#{id}, #{userId}, #{tuneId}, NOW())
+    </insert>
+
+    <!-- 删除一条收藏记录 -->
+    <delete id="delete">
+        DELETE FROM user_favorites
+        WHERE user_id = #{userId} AND tune_id = #{tuneId}
+    </delete>
+
+    <!-- 查找一条收藏记录 -->
+    <select id="findByUserAndTune" resultMap="UserFavoriteResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_favorites
+        WHERE user_id = #{userId} AND tune_id = #{tuneId}
+    </select>
+
+    <!-- 根据用户ID查找所有收藏记录 -->
+    <select id="findByUserId" resultMap="UserFavoriteResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_favorites
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

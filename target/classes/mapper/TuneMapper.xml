@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forzatune.backend.mapper.TuneMapper">
+    
+    <!-- 结果映射 -->
+    <resultMap id="TuneResultMap" type="com.forzatune.backend.entity.Tune">
+        <id property="id" column="id"/>
+        <result property="carId" column="car_id"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorGamertag" column="author_gamertag"/>
+        <result property="shareCode" column="share_code"/>
+        <result property="preference" column="preference"/>
+        <result property="piClass" column="pi_class"/>
+        <result property="finalPI" column="final_pi"/>
+        <result property="drivetrain" column="drivetrain"/>
+        <result property="tireCompound" column="tire_compound"/>
+        <result property="raceType" column="race_type"/>
+        <result property="surfaceConditions" column="surface_conditions" typeHandler="com.forzatune.backend.handler.JsonTypeHandler"/>
+        <result property="description" column="description"/>
+        <result property="isProTune" column="is_pro_tune"/>
+        <result property="isParametersPublic" column="is_parameters_public"/>
+        <result property="hasDetailedParameters" column="has_detailed_parameters"/>
+        <result property="screenshotUrl" column="screenshot_url"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        
+        <!-- 关联调校参数 -->
+        <association property="tuneParameters" javaType="com.forzatune.backend.entity.TuneParameters">
+            <id property="id" column="param_id"/>
+            <result property="tuneId" column="tune_id"/>
+            <result property="frontTirePressure" column="front_tire_pressure"/>
+            <result property="rearTirePressure" column="rear_tire_pressure"/>
+            <result property="transmissionSpeeds" column="transmission_speeds"/>
+            <result property="finalDrive" column="final_drive"/>
+            <result property="gear1Ratio" column="gear_1_ratio"/>
+            <result property="gear2Ratio" column="gear_2_ratio"/>
+            <result property="gear3Ratio" column="gear_3_ratio"/>
+            <result property="gear4Ratio" column="gear_4_ratio"/>
+            <result property="gear5Ratio" column="gear_5_ratio"/>
+            <result property="gear6Ratio" column="gear_6_ratio"/>
+            <result property="gear7Ratio" column="gear_7_ratio"/>
+            <result property="gear8Ratio" column="gear_8_ratio"/>
+            <result property="gear9Ratio" column="gear_9_ratio"/>
+            <result property="frontCamber" column="front_camber"/>
+            <result property="rearCamber" column="rear_camber"/>
+            <result property="frontToe" column="front_toe"/>
+            <result property="rearToe" column="rear_toe"/>
+            <result property="frontCaster" column="front_caster"/>
+            <result property="frontAntiRollBar" column="front_anti_roll_bar"/>
+            <result property="rearAntiRollBar" column="rear_anti_roll_bar"/>
+            <result property="frontSprings" column="front_springs"/>
+            <result property="rearSprings" column="rear_springs"/>
+            <result property="frontRideHeight" column="front_ride_height"/>
+            <result property="rearRideHeight" column="rear_ride_height"/>
+            <result property="frontRebound" column="front_rebound"/>
+            <result property="rearRebound" column="rear_rebound"/>
+            <result property="frontBump" column="front_bump"/>
+            <result property="rearBump" column="rear_bump"/>
+            <result property="differentialType" column="differential_type"/>
+            <result property="frontAcceleration" column="front_acceleration"/>
+            <result property="frontDeceleration" column="front_deceleration"/>
+            <result property="rearAcceleration" column="rear_acceleration"/>
+            <result property="rearDeceleration" column="rear_deceleration"/>
+            <result property="centerBalance" column="center_balance"/>
+            <result property="brakePressure" column="brake_pressure"/>
+            <result property="frontBrakeBalance" column="front_brake_balance"/>
+            <result property="frontDownforce" column="front_downforce"/>
+            <result property="rearDownforce" column="rear_downforce"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="TuneDtoResultMap" type="com.forzatune.backend.dto.TuneDto">
+        <id property="id" column="id"/>
+        <result property="shareCode" column="share_code"/>
+        <result property="authorGamertag" column="author_gamertag"/>
+        <result property="isProTune" column="is_pro_tune"/>
+        <result property="preference" column="preference"/>
+        <result property="piClass" column="pi_class"/>
+        <result property="finalPI" column="final_pi"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="createdAt" column="created_at"/>
+<!--        <result property="bestLapTime" column="bestLapTime"/>-->
+    </resultMap>
+
+    <!-- 基础查询字段 -->
+    <sql id="Base_Column_List">
+        t.id, t.car_id, t.author_id, t.author_gamertag, t.share_code, t.preference,
+        t.pi_class, t.final_pi, t.drivetrain, t.tire_compound, t.race_type, t.surface_conditions,
+        t.description, t.is_pro_tune, t.is_parameters_public, t.has_detailed_parameters,
+        t.screenshot_url, t.like_count, t.created_at, t.updated_at
+    </sql>
+
+    <!-- 调校参数字段 -->
+    <sql id="Parameters_Column_List">
+        tp.id as param_id, tp.tune_id, tp.front_tire_pressure, tp.rear_tire_pressure,
+        tp.transmission_speeds, tp.final_drive, tp.gear_1_ratio, tp.gear_2_ratio, tp.gear_3_ratio,
+        tp.gear_4_ratio, tp.gear_5_ratio, tp.gear_6_ratio, tp.gear_7_ratio, tp.gear_8_ratio, tp.gear_9_ratio,
+        tp.front_camber, tp.rear_camber, tp.front_toe, tp.rear_toe, tp.front_caster,
+        tp.front_anti_roll_bar, tp.rear_anti_roll_bar, tp.front_springs, tp.rear_springs,
+        tp.front_ride_height, tp.rear_ride_height, tp.front_rebound, tp.rear_rebound,
+        tp.front_bump, tp.rear_bump, tp.differential_type, tp.front_acceleration,
+        tp.front_deceleration, tp.rear_acceleration, tp.rear_deceleration, tp.center_balance,
+        tp.brake_pressure, tp.front_brake_balance, tp.front_downforce, tp.rear_downforce
+    </sql>
+
+    <select id="selectRecentTunesWithDetails" resultMap="TuneDtoResultMap">
+        SELECT
+        t.id, t.share_code, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+        t.final_pi, t.like_count, t.created_at,
+        c.name AS carName,
+<!--        (SELECT lt.time FROM lap_times lt WHERE lt.tune_id = t.id ORDER BY lt.time ASC LIMIT 1) AS bestLapTime-->
+        FROM
+        tunes t
+        LEFT JOIN
+        cars c ON t.car_id = c.id
+        ORDER BY
+        t.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectProTunesWithDetails" resultMap="TuneDtoResultMap">
+        SELECT
+        t.id, t.share_code, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+        t.final_pi, t.like_count, t.created_at,
+        c.name AS carName,
+<!--        (SELECT lt.time FROM lap_times lt WHERE lt.tune_id = t.id ORDER BY lt.time ASC LIMIT 1) AS bestLapTime-->
+        FROM
+        tunes t
+        LEFT JOIN
+        cars c ON t.car_id = c.id
+        WHERE
+        t.is_pro_tune = 1
+        ORDER BY
+        t.like_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="countTotal" resultType="long">
+        SELECT COUNT(*) FROM tunes
+    </select>
+
+    <!-- 根据ID获取调校 -->
+    <select id="selectById" resultMap="TuneResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>,
+<!--        <include refid="Parameters_Column_List"/>-->
+        FROM tunes t
+<!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
+        WHERE t.id = #{id}
+    </select>
+
+    <!-- 根据ID获取调校及详情信息 -->
+    <select id="selectByIdWithDetail" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            <include refid="Parameters_Column_List"/>
+        FROM tunes t
+        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id
+        WHERE t.id = #{id}
+    </select>
+    
+    <!-- 根据车辆ID获取调校 -->
+    <select id="selectByCarId" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+<!--            <include refid="Parameters_Column_List"/>-->
+        FROM tunes t
+<!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
+<!--        WHERE t.car_id = #{carId}-->
+        ORDER BY t.is_pro_tune DESC, t.like_count DESC, t.created_at DESC
+    </select>
+    
+    <!-- 根据作者ID获取调校 -->
+    <select id="selectByAuthorId" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            <include refid="Parameters_Column_List"/>
+        FROM tunes t
+        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id
+        WHERE t.author_id = #{authorId}
+        ORDER BY t.created_at DESC
+    </select>
+    
+    <!-- 获取PRO调校 -->
+    <select id="selectProTunes" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+<!--            <include refid="Parameters_Column_List"/>-->
+        FROM tunes t
+<!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
+<!--        WHERE t.is_pro_tune = 1-->
+        ORDER BY t.like_count DESC, t.created_at DESC
+    </select>
+    
+    <!-- 获取最新调校 -->
+    <select id="selectRecentTunes" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            <include refid="Parameters_Column_List"/>
+        FROM tunes t
+        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id
+        ORDER BY t.created_at DESC
+    </select>
+    
+    <!-- 根据车辆ID统计调校数量 -->
+    <select id="countByCarId" resultType="int">
+        SELECT COUNT(*) FROM tunes WHERE car_id = #{carId}
+    </select>
+    
+    <!-- 插入调校 -->
+    <insert id="insert" parameterType="com.forzatune.backend.entity.Tune">
+        INSERT INTO tunes (
+            id, car_id, author_id, author_gamertag, share_code, preference, pi_class, final_pi,
+            drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune,
+            is_parameters_public, has_detailed_parameters, screenshot_url, like_count, created_at, updated_at
+        ) VALUES (
+            #{id}, #{carId}, #{authorId}, #{authorGamertag}, #{shareCode}, #{preference}, #{piClass}, #{finalPI},
+            #{drivetrain}, #{tireCompound}, #{raceType}, #{surfaceConditions,typeHandler=com.forzatune.backend.handler.JsonTypeHandler}, #{description}, #{isProTune},
+            #{isParametersPublic}, #{hasDetailedParameters}, #{screenshotUrl}, #{likeCount}, NOW(), NOW()
+        )
+    </insert>
+    
+    <!-- 更新调校 -->
+    <update id="update" parameterType="com.forzatune.backend.entity.Tune">
+        UPDATE tunes SET
+            car_id = #{carId},
+            author_id = #{authorId},
+            author_gamertag = #{authorGamertag},
+            share_code = #{shareCode},
+            preference = #{preference},
+            pi_class = #{piClass},
+            final_pi = #{finalPI},
+            drivetrain = #{drivetrain},
+            tire_compound = #{tireCompound},
+            race_type = #{raceType},
+            surface_conditions = #{surfaceConditions,typeHandler=com.forzatune.backend.handler.JsonTypeHandler},
+            description = #{description},
+            is_pro_tune = #{isProTune},
+            is_parameters_public = #{isParametersPublic},
+            has_detailed_parameters = #{hasDetailedParameters},
+            screenshot_url = #{screenshotUrl},
+            like_count = #{likeCount},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 删除调校 -->
+    <delete id="deleteById">
+        DELETE FROM tunes WHERE id = #{id}
+    </delete>
+    
+    <!-- 增加点赞数 -->
+    <update id="incrementLikeCount">
+        UPDATE tunes SET like_count = like_count + 1 WHERE id = #{id}
+    </update>
+    
+    <!-- 减少点赞数 -->
+    <update id="decrementLikeCount">
+        UPDATE tunes SET like_count = GREATEST(like_count - 1, 0) WHERE id = #{id}
+    </update>
+</mapper> 

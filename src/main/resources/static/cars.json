@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-01",
+  "gameVersion": "Forza Horizon 5",
+  "cars": [
+    {
+      "id": "car1",
+      "name": "RS6 Avant",
+      "manufacturer": "Audi",
+      "year": 2020,
+      "category": "SPORTS_CARS",
+      "pi": 860,
+      "drivetrain": "AWD",
+      "imageUrl": "/images/audi-rs6.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car2",
+      "name": "M4 Competition",
+      "manufacturer": "BMW",
+      "year": 2021,
+      "category": "SPORTS_CARS",
+      "pi": 890,
+      "drivetrain": "RWD",
+      "imageUrl": "/images/bmw-m4.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car3",
+      "name": "Chiron",
+      "manufacturer": "Bugatti",
+      "year": 2019,
+      "category": "HYPERCARS",
+      "pi": 999,
+      "drivetrain": "AWD",
+      "imageUrl": "/images/bugatti-chiron.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car4",
+      "name": "Corvette C8",
+      "manufacturer": "Chevrolet",
+      "year": 2020,
+      "category": "SUPERCARS",
+      "pi": 880,
+      "drivetrain": "RWD",
+      "imageUrl": "/images/chevrolet-corvette.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car5",
+      "name": "Mustang GT",
+      "manufacturer": "Ford",
+      "year": 2021,
+      "category": "MUSCLE_CARS",
+      "pi": 820,
+      "drivetrain": "RWD",
+      "imageUrl": "/images/ford-mustang.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car6",
+      "name": "GT-R",
+      "manufacturer": "Nissan",
+      "year": 2020,
+      "category": "SUPERCARS",
+      "pi": 900,
+      "drivetrain": "AWD",
+      "imageUrl": "/images/nissan-gtr.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car7",
+      "name": "911 GT3 RS",
+      "manufacturer": "Porsche",
+      "year": 2021,
+      "category": "TRACK_TOYS",
+      "pi": 920,
+      "drivetrain": "RWD",
+      "imageUrl": "/images/porsche-911.jpg",
+      "gameId": "fh5"
+    },
+    {
+      "id": "car8",
+      "name": "Huracán",
+      "manufacturer": "Lamborghini",
+      "year": 2020,
+      "category": "SUPERCARS",
+      "pi": 910,
+      "drivetrain": "AWD",
+      "imageUrl": "/images/lamborghini-huracan.jpg",
+      "gameId": "fh5"
+    }
+  ]
+} 

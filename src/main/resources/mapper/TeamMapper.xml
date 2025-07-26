@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forzatune.backend.mapper.TeamMapper">
+    
+    <!-- 车队结果映射 -->
+    <resultMap id="TeamResultMap" type="com.forzatune.backend.entity.Team">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="logoUrl" column="logo_url"/>
+        <result property="bannerUrl" column="banner_url"/>
+        <result property="founderId" column="founder_id"/>
+        <result property="founderGamertag" column="founder_gamertag"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="memberCount" column="member_count"/>
+        <result property="maxMembers" column="max_members"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="requiresApproval" column="requires_approval"/>
+        <result property="tags" column="tags" typeHandler="com.forzatune.backend.handler.JsonTypeHandler"/>
+        <association property="stats" javaType="com.forzatune.backend.entity.Team$TeamStats">
+            <result property="totalTunes" column="total_tunes"/>
+            <result property="totalDownloads" column="total_downloads"/>
+            <result property="totalLikes" column="total_likes"/>
+            <result property="averageRating" column="average_rating"/>
+            <result property="activeMembersCount" column="active_members_count"/>
+        </association>
+    </resultMap>
+    
+    <!-- 车队成员结果映射 -->
+    <resultMap id="TeamMemberResultMap" type="com.forzatune.backend.entity.TeamMember">
+        <id property="id" column="id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="gamertag" column="gamertag"/>
+        <result property="role" column="role"/>
+        <result property="joinedAt" column="joined_at"/>
+        <result property="permissions" column="permissions" typeHandler="com.forzatune.backend.handler.JsonTypeHandler"/>
+        <association property="stats" javaType="com.forzatune.backend.entity.TeamMember$MemberStats">
+            <result property="tunesShared" column="tunes_shared"/>
+            <result property="downloadsReceived" column="downloads_received"/>
+            <result property="likesReceived" column="likes_received"/>
+            <result property="contributionScore" column="contribution_score"/>
+        </association>
+    </resultMap>
+    
+    <!-- 获取所有车队 -->
+    <select id="selectAll" resultMap="TeamResultMap">
+        SELECT * FROM teams ORDER BY created_at DESC
+    </select>
+    
+    <!-- 根据ID获取车队 -->
+    <select id="selectById" resultMap="TeamResultMap">
+        SELECT * FROM teams WHERE id = #{id}
+    </select>
+    
+    <!-- 根据名称获取车队 -->
+    <select id="selectByName" resultMap="TeamResultMap">
+        SELECT * FROM teams WHERE name = #{name}
+    </select>
+    
+    <!-- 根据创始人ID获取车队 -->
+    <select id="selectByFounderId" resultMap="TeamResultMap">
+        SELECT * FROM teams WHERE founder_id = #{founderId}
+    </select>
+    
+    <!-- 搜索车队 -->
+    <select id="searchTeams" resultMap="TeamResultMap">
+        SELECT * FROM teams 
+        WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            AND (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="isPublic != null">
+            AND is_public = #{isPublic}
+        </if>
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 插入车队 -->
+    <insert id="insert" parameterType="com.forzatune.backend.entity.Team" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO teams (
+            name, description, logo_url, banner_url, founder_id, founder_gamertag,
+            created_at, updated_at, member_count, max_members, is_public, requires_approval,
+            tags, total_tunes, total_downloads, total_likes, average_rating, active_members_count
+        ) VALUES (
+            #{name}, #{description}, #{logoUrl}, #{bannerUrl}, #{founderId}, #{founderGamertag},
+            NOW(), NOW(), #{memberCount}, #{maxMembers}, #{isPublic}, #{requiresApproval},
+            #{tags, typeHandler=com.forzatune.backend.handler.JsonTypeHandler},
+            #{stats.totalTunes}, #{stats.totalDownloads}, #{stats.totalLikes},
+            #{stats.averageRating}, #{stats.activeMembersCount}
+        )
+    </insert>
+    
+    <!-- 更新车队 -->
+    <update id="update" parameterType="com.forzatune.backend.entity.Team">
+        UPDATE teams SET
+            name = #{name},
+            description = #{description},
+            logo_url = #{logoUrl},
+            banner_url = #{bannerUrl},
+            is_public = #{isPublic},
+            requires_approval = #{requiresApproval},
+            tags = #{tags, typeHandler=com.forzatune.backend.handler.JsonTypeHandler},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 删除车队 -->
+    <delete id="deleteById">
+        DELETE FROM teams WHERE id = #{id}
+    </delete>
+    
+    <!-- 更新成员数量 -->
+    <update id="updateMemberCount">
+        UPDATE teams SET member_count = #{memberCount}, updated_at = NOW() WHERE id = #{id}
+    </update>
+    
+    <!-- 更新车队统计 -->
+    <update id="updateStats">
+        UPDATE teams SET
+            total_tunes = #{totalTunes},
+            total_downloads = #{totalDownloads},
+            total_likes = #{totalLikes},
+            average_rating = #{averageRating},
+            active_members_count = #{activeMembersCount},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 获取车队成员 -->
+    <select id="selectMembersByTeamId" resultMap="TeamMemberResultMap">
+        SELECT * FROM team_members WHERE team_id = #{teamId} ORDER BY joined_at ASC
+    </select>
+    
+    <!-- 根据ID获取成员 -->
+    <select id="selectMemberById" resultMap="TeamMemberResultMap">
+        SELECT * FROM team_members WHERE id = #{id}
+    </select>
+    
+    <!-- 根据车队和用户ID获取成员 -->
+    <select id="selectMemberByTeamAndUser" resultMap="TeamMemberResultMap">
+        SELECT * FROM team_members WHERE team_id = #{teamId} AND user_id = #{userId}
+    </select>
+    
+    <!-- 根据用户ID获取成员 -->
+    <select id="selectMembersByUserId" resultMap="TeamMemberResultMap">
+        SELECT * FROM team_members WHERE user_id = #{userId}
+    </select>
+    
+    <!-- 插入成员 -->
+    <insert id="insertMember" parameterType="com.forzatune.backend.entity.TeamMember" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO team_members (
+            team_id, user_id, gamertag, role, joined_at, permissions,
+            tunes_shared, downloads_received, likes_received, contribution_score
+        ) VALUES (
+            #{teamId}, #{userId}, #{gamertag}, #{role}, NOW(),
+            #{permissions, typeHandler=com.forzatune.backend.handler.JsonTypeHandler},
+            #{stats.tunesShared}, #{stats.downloadsReceived}, #{stats.likesReceived}, #{stats.contributionScore}
+        )
+    </insert>
+    
+    <!-- 更新成员 -->
+    <update id="updateMember" parameterType="com.forzatune.backend.entity.TeamMember">
+        UPDATE team_members SET
+            role = #{role},
+            permissions = #{permissions, typeHandler=com.forzatune.backend.handler.JsonTypeHandler}
+        WHERE team_id = #{teamId} AND user_id = #{userId}
+    </update>
+    
+    <!-- 删除成员 -->
+    <delete id="deleteMemberById">
+        DELETE FROM team_members WHERE id = #{id}
+    </delete>
+    
+    <!-- 根据车队和用户删除成员 -->
+    <delete id="deleteMemberByTeamAndUser">
+        DELETE FROM team_members WHERE team_id = #{teamId} AND user_id = #{userId}
+    </delete>
+    
+    <!-- 更新成员统计 -->
+    <update id="updateMemberStats">
+        UPDATE team_members SET
+            tunes_shared = #{tunesShared},
+            downloads_received = #{downloadsReceived},
+            likes_received = #{likesReceived},
+            contribution_score = #{contributionScore}
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 获取车队申请 -->
+    <select id="selectApplicationsByTeamId" resultType="map">
+        SELECT * FROM team_applications WHERE team_id = #{teamId} ORDER BY applied_at DESC
+    </select>
+    
+    <!-- 获取用户申请 -->
+    <select id="selectApplicationsByUserId" resultType="map">
+        SELECT * FROM team_applications WHERE user_id = #{userId} ORDER BY applied_at DESC
+    </select>
+    
+    <!-- 插入申请 -->
+    <insert id="insertApplication">
+        INSERT INTO team_applications (
+            team_id, user_id, gamertag, message, status, applied_at
+        ) VALUES (
+            #{teamId}, #{userId}, #{gamertag}, #{message}, 'PENDING', NOW()
+        )
+    </insert>
+    
+    <!-- 更新申请状态 -->
+    <update id="updateApplicationStatus">
+        UPDATE team_applications SET
+            status = #{status},
+            reviewed_at = NOW(),
+            reviewed_by = #{reviewedBy},
+            notes = #{notes}
+        WHERE team_id = #{teamId} AND user_id = #{userId}
+    </update>
+    
+    <!-- 获取车队邀请 -->
+    <select id="selectInvitationsByTeamId" resultType="map">
+        SELECT * FROM team_invitations WHERE team_id = #{teamId} ORDER BY invited_at DESC
+    </select>
+    
+    <!-- 获取用户邀请 -->
+    <select id="selectInvitationsByUserId" resultType="map">
+        SELECT * FROM team_invitations WHERE user_id = #{userId} ORDER BY invited_at DESC
+    </select>
+    
+    <!-- 插入邀请 -->
+    <insert id="insertInvitation">
+        INSERT INTO team_invitations (
+            team_id, user_id, invited_by, message, status, invited_at, expires_at
+        ) VALUES (
+            #{teamId}, #{userId}, #{invitedBy}, #{message}, 'PENDING', NOW(), #{expiresAt}
+        )
+    </insert>
+    
+    <!-- 更新邀请状态 -->
+    <update id="updateInvitationStatus">
+        UPDATE team_invitations SET
+            status = #{status},
+            responded_at = NOW()
+        WHERE team_id = #{teamId} AND user_id = #{userId}
+    </update>
+    
+</mapper> 
