@@ -26,6 +26,7 @@ public class CarDto {
     private Integer pi;
     private String drivetrain; // 将Enums转换为String
     private String imageUrl;
+    private String gameCategory; // 游戏分类字段
     private Integer tuneCount;
     private List<TuneDto> tunes;
 
@@ -49,10 +50,11 @@ public class CarDto {
         dto.setYear(car.getYear());
         dto.setPi(car.getPi());
         dto.setImageUrl(car.getImageUrl());
+        dto.setGameCategory(car.getGameCategory()); // 设置游戏分类
 
         // 处理 Enum 到 String 的转换
         if (car.getCategory() != null) {
-            dto.setCategory(car.getCategory().name());
+            dto.setCategory(car.getCategory().getValue()); // 使用getValue()方法获取数据库值
         }
         if (car.getDrivetrain() != null) {
             dto.setDrivetrain(car.getDrivetrain().name());
@@ -75,9 +77,10 @@ public class CarDto {
         car.setYear(this.getYear());
         car.setPi(this.getPi());
         car.setImageUrl(this.getImageUrl());
+        car.setGameCategory(this.getGameCategory()); // 设置游戏分类
 
         if (this.getCategory() != null) {
-            car.setCategory(Car.CarCategory.valueOf(this.getCategory()));
+            car.setCategory(Car.CarCategory.fromValue(this.getCategory())); // 使用fromValue()方法解析数据库值
         }
         if (this.getDrivetrain() != null) {
             car.setDrivetrain(Car.Drivetrain.valueOf(this.getDrivetrain()));

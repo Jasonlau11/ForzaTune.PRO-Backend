@@ -6,6 +6,8 @@ import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.service.CarService;
 import com.forzatune.backend.vo.CarsSearchVo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class CarController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CarController.class);
 
     @Autowired
     private CarService carService;

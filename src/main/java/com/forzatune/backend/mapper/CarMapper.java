@@ -1,5 +1,6 @@
 package com.forzatune.backend.mapper;
 
+import com.forzatune.backend.dto.CarDto;
 import com.forzatune.backend.entity.Car;
 import com.forzatune.backend.vo.CarsSearchVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,7 +42,22 @@ public interface CarMapper {
     Car selectById(String id);
 
     long countTotal();
+    
+    /**
+     * 按游戏分类统计车辆总数
+     * @param gameCategory 游戏分类
+     * @return 总数
+     */
+    long countTotalByGameCategory(@Param("gameCategory") String gameCategory);
 
     List<Car> selectPopularCars(@Param("limit") Integer limit);
+    
+    /**
+     * 按游戏分类查询热门车辆
+     * @param limit 限制数量
+     * @param gameCategory 游戏分类
+     * @return 热门车辆列表
+     */
+    List<Car> selectPopularCarsByGameCategory(@Param("limit") Integer limit, @Param("gameCategory") String gameCategory);
 
 }

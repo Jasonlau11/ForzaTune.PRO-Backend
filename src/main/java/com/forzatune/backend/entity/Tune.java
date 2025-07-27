@@ -16,7 +16,7 @@ public class Tune {
     private String id;
     private String carId;
     private String authorId;
-    private String authorGamertag;
+    private String authorXboxId; // 作者的Xbox ID
     private String shareCode;
     private TunePreference preference;
     private PIClass piClass;
@@ -33,6 +33,7 @@ public class Tune {
     private Date createdAt;
     private Date updatedAt;
     private Integer likeCount = 0;
+    private String gameCategory; // 游戏分类字段
 //    private List<LapTime> lapTimes;
     private TuneParameters tuneParameters;
     

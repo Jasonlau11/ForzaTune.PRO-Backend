@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/forzatune_pro?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
-    password: password
+    password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
     
   security:
@@ -31,12 +31,27 @@ jwt:
   secret: forzatune-pro-secret-key-2024-very-long-and-secure
   expiration: 86400000 # 24 hours in milliseconds
 
-# Logging
+# Auth Configuration
+auth:
+  dev-mode: false # 开发模式：true=跳过认证，false=正常认证
+
+# Logging Configuration
 logging:
   level:
+    root: INFO
     com.forzatune.backend: DEBUG
-    org.springframework.security: DEBUG
+    com.forzatune.backend.controller: INFO
+    com.forzatune.backend.service: DEBUG
     com.forzatune.backend.mapper: DEBUG
+    com.forzatune.backend.exception: ERROR
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+    org.apache.ibatis: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  file:
+    name: logs/forzatune-backend.log
 
 # CORS Configuration
 cors:

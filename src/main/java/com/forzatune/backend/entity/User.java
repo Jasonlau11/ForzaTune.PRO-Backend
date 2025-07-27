@@ -18,10 +18,9 @@ import java.util.List;
 public class User implements UserDetails {
     
     private String id;
-    private String gamertag;
+    private String xboxId; // Xbox Live ID，用于显示和社交
     private String email;
     private String passwordHash;
-    private String xboxId;
     private Boolean isProPlayer = false;
     private LocalDateTime proPlayerSince;
     private Integer totalTunes = 0;

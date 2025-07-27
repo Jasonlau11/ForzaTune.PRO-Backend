@@ -11,18 +11,25 @@ public class CarsSearchVo {
     private String manufacturer;
     private String category;
     private String drivetrain;
+    private String gameCategory; // 游戏分类过滤参数
 
     // 分页参数
     private int page;
     private int limit;
 
-    public CarsSearchVo(String search, String manufacturer, String category, String drivetrain, int page, int limit) {
+    public CarsSearchVo(String search, String manufacturer, String category, String drivetrain, String gameCategory, int page, int limit) {
         this.search = search;
         this.manufacturer = manufacturer;
         this.category = category;
         this.drivetrain = drivetrain;
+        this.gameCategory = gameCategory;
         this.page = page;
         this.limit = limit;
+    }
+
+    // 兼容旧版本的构造函数
+    public CarsSearchVo(String search, String manufacturer, String category, String drivetrain, int page, int limit) {
+        this(search, manufacturer, category, drivetrain, null, page, limit);
     }
 
     /**
@@ -38,6 +45,7 @@ public class CarsSearchVo {
     public String getManufacturer() { return manufacturer; }
     public String getCategory() { return category; }
     public String getDrivetrain() { return drivetrain; }
+    public String getGameCategory() { return gameCategory; }
     public int getPage() { return page; }
     public int getLimit() { return limit; }
 }

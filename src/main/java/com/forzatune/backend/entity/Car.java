@@ -19,12 +19,37 @@ public class Car {
     private Integer pi;
     private Drivetrain drivetrain;
     private String imageUrl;
-    private String gameId;
+    private String gameCategory;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
     public enum CarCategory {
-        SportsCars, MuscleCars, Supercars, ClassicCars, Hypercars, TrackToys
+        SPORTS_CARS("Sports Cars"),
+        MUSCLE_CARS("Muscle Cars"), 
+        SUPERCARS("Supercars"),
+        CLASSIC_CARS("Classic Cars"),
+        HYPERCARS("Hypercars"),
+        TRACK_TOYS("Track Toys");
+        
+        private final String value;
+        
+        CarCategory(String value) {
+            this.value = value;
+        }
+        
+        public String getValue() {
+            return value;
+        }
+        
+        // 根据数据库值查找枚举
+        public static CarCategory fromValue(String value) {
+            for (CarCategory category : CarCategory.values()) {
+                if (category.getValue().equals(value)) {
+                    return category;
+                }
+            }
+            throw new IllegalArgumentException("Invalid CarCategory value: " + value);
+        }
     }
     
     public enum Drivetrain {

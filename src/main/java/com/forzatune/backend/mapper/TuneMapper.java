@@ -22,47 +22,43 @@ public interface TuneMapper {
     
     List<Tune> selectProTunes();
     
-    List<Tune> selectByPreference(@Param("preference") String preference);
-    
-    List<Tune> selectByPiClass(@Param("piClass") String piClass);
-    
-    List<Tune> selectByRaceType(@Param("raceType") String raceType);
-    
-    List<Tune> selectProTunesByCarId(@Param("carId") String carId);
-    
-    List<Tune> selectByCarIdAndPreference(@Param("carId") String carId, @Param("preference") String preference);
-    
-    // 新增方法：获取热门调校（按点赞数排序）
-    List<Tune> selectPopularTunes();
-    
     // 新增方法：获取最新调校
     List<Tune> selectRecentTunes();
-    
-    // 新增方法：搜索调校（支持多种条件）
-    List<Tune> searchTunes(@Param("keyword") String keyword,
-                          @Param("carId") String carId,
-                          @Param("isProTune") Boolean isProTune,
-                          @Param("preference") String preference,
-                          @Param("piClass") String piClass,
-                          @Param("raceType") String raceType,
-                          @Param("sortBy") String sortBy,
-                          @Param("limit") Integer limit);
     
     int insert(Tune tune);
     
     int update(Tune tune);
     
     int deleteById(@Param("id") String id);
-    
-    int updateLikeCount(@Param("id") String id, @Param("likeCount") Integer likeCount);
-    
+
     int countByCarId(@Param("carId") String carId);
-    
-    int countByAuthorId(@Param("authorId") String authorId);
 
     List<TuneDto> selectRecentTunesWithDetails(int i);
 
     List<TuneDto> selectProTunesWithDetails(int i);
+    
+    /**
+     * 按游戏分类查询最新调校
+     * @param limit 限制数量
+     * @param gameCategory 游戏分类
+     * @return 最新调校列表
+     */
+    List<TuneDto> selectRecentTunesWithDetailsByGameCategory(@Param("limit") int limit, @Param("gameCategory") String gameCategory);
+    
+    /**
+     * 按游戏分类查询PRO调校
+     * @param limit 限制数量
+     * @param gameCategory 游戏分类
+     * @return PRO调校列表
+     */
+    List<TuneDto> selectProTunesWithDetailsByGameCategory(@Param("limit") int limit, @Param("gameCategory") String gameCategory);
 
     long countTotal();
+    
+    /**
+     * 按游戏分类统计调校总数
+     * @param gameCategory 游戏分类
+     * @return 总数
+     */
+    long countTotalByGameCategory(@Param("gameCategory") String gameCategory);
 }

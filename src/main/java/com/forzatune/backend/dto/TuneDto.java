@@ -13,8 +13,8 @@ public class TuneDto {
     private String id;
     private String shareCode;
     private String carId;
-//    private String carName;
-    private String authorGamertag;
+    private String authorId;
+    private String authorXboxId; // 作者的Xbox ID
     private Boolean isProTune;
     private Tune.TunePreference preference;
     private Tune.PIClass piClass;
@@ -26,6 +26,7 @@ public class TuneDto {
     private Integer likeCount;
     private Integer favoriteCount;
     private String createdAt;
+    private String gameCategory; // 游戏分类字段
     private TuneParametersDto parameters;
 
     /**
@@ -42,10 +43,13 @@ public class TuneDto {
 
         TuneDto dto = new TuneDto();
         dto.setId(tune.getId());
+        dto.setAuthorId(tune.getAuthorId());
+        dto.setAuthorXboxId(tune.getAuthorXboxId());
         dto.setShareCode(tune.getShareCode());
-        dto.setAuthorGamertag(tune.getAuthorGamertag());
+        dto.setCarId(tune.getCarId());
         dto.setIsProTune(tune.getIsProTune());
         dto.setLikeCount(tune.getLikeCount() != null ? tune.getLikeCount() : 0);
+        dto.setGameCategory(tune.getGameCategory()); // 设置游戏分类
 
         // 外部传入的车辆名称
 //        dto.setCarName(carName);

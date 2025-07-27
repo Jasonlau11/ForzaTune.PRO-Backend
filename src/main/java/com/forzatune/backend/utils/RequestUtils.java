@@ -63,7 +63,7 @@ public final class RequestUtils {
      * 在开发模式 (auth.dev-mode=true) 下，会尝试从 "X-User-ID" 请求头直接获取ID。
      * 在生产模式下，会从 Spring Security 上下文中安全地获取ID。
      * </p>
-     * @return 当前用户的ID，如果找不到则返回 Optional.empty()。
+     * @return 当前用户的ID，如果找不到则返回空字符串。
      */
     public static String getCurrentUserId() {
         // 如果是开发模式，优先从请求头获取，用于快速调试
@@ -72,9 +72,11 @@ public final class RequestUtils {
             if (devUserId != null && !devUserId.isEmpty()) {
                 return devUserId;
             }
+            // 开发模式下如果没有提供X-User-ID头，返回默认用户ID
+            return "dev_user";
         }
 
-        // 生产模式或开发模式下未提供 X-User-ID 头，则走标准安全流程
+        // 生产模式：从 Spring Security 上下文中获取用户ID
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
@@ -83,14 +85,19 @@ public final class RequestUtils {
 
         Object principal = authentication.getPrincipal();
 
-//        if (principal instanceof UserPrincipal) {
-//            return Optional.ofNullable(((UserPrincipal) principal).getId());
-//        }
-
+        // JWT认证后，principal就是userId字符串
         if (principal instanceof String) {
             return principal.toString();
         }
 
         return "";
+    }
+
+    /**
+     * 检查当前用户是否已登录
+     */
+    public static boolean isUserLoggedIn() {
+        String userId = getCurrentUserId();
+        return userId != null && !userId.isEmpty();
     }
 }

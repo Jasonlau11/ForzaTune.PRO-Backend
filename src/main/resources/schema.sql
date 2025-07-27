@@ -3,13 +3,12 @@ CREATE DATABASE IF NOT EXISTS forzatune_pro CHARACTER SET utf8mb4 COLLATE utf8mb
 
 USE forzatune_pro;
 
--- 用户表 - 增强唯一性约束
+-- 用户表
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) PRIMARY KEY,
-    gamertag VARCHAR(50) UNIQUE NOT NULL,
+    xbox_id VARCHAR(50) UNIQUE NOT NULL, -- Xbox Live ID，作为用户显示名称
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    xbox_id VARCHAR(100) UNIQUE,
     is_pro_player BOOLEAN DEFAULT FALSE,
     pro_player_since TIMESTAMP NULL,
     total_tunes INT DEFAULT 0,
@@ -20,41 +19,32 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     user_tier ENUM('STANDARD', 'VERIFIED', 'PRO') DEFAULT 'STANDARD',
     last_login DATETIME,
-    is_active BOOLEAN DEFAULT TRUE,
-    -- 添加复合唯一索引，确保软删除后不会影响唯一性
-    UNIQUE KEY uk_email_active (email, is_active),
-    UNIQUE KEY uk_gamertag_active (gamertag, is_active),
-    UNIQUE KEY uk_xbox_id_active (xbox_id, is_active),
-    INDEX idx_gamertag (gamertag),
-    INDEX idx_email (email),
-    INDEX idx_pro_player (is_pro_player)
+    is_active BOOLEAN DEFAULT TRUE
 );
 
 -- 车辆表
 CREATE TABLE IF NOT EXISTS cars (
-    id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(50) NOT NULL, -- 简化的ID，如 'porsche-911-gt2-rs'
     name VARCHAR(200) NOT NULL,
     manufacturer VARCHAR(100) NOT NULL,
     year INT NOT NULL,
     category ENUM('Sports Cars', 'Muscle Cars', 'Supercars', 'Classic Cars', 'Hypercars', 'Track Toys') NOT NULL,
     pi INT NOT NULL,
     drivetrain ENUM('RWD', 'FWD', 'AWD') NOT NULL,
-    game_id VARCHAR(20) NOT NULL,
+    game_category ENUM('fh4', 'fh5') NOT NULL, -- 游戏分类字段
     image_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_manufacturer (manufacturer),
-    INDEX idx_category (category),
-    INDEX idx_pi (pi),
-    INDEX idx_drivetrain (drivetrain),
-    INDEX idx_game (game_id)
+    -- 复合主键：同一车辆在不同游戏中是独立记录
+    PRIMARY KEY (id, game_category)
 );
 
 -- 调校表
 CREATE TABLE IF NOT EXISTS tunes (
-    id VARCHAR(36) PRIMARY KEY,
-    car_id VARCHAR(36) NOT NULL,
+    id VARCHAR(50) PRIMARY KEY, -- 简化的ID，如 'tune-001'
+    car_id VARCHAR(50) NOT NULL,
     author_id VARCHAR(36) NOT NULL,
+    author_xbox_id VARCHAR(50) NOT NULL, -- 作者Xbox ID，冗余存储便于查询
     share_code VARCHAR(20) UNIQUE NOT NULL,
     preference ENUM('Power', 'Handling', 'Balance') NOT NULL,
     pi_class ENUM('X', 'S2', 'S1', 'A', 'B', 'C', 'D') NOT NULL,
@@ -69,22 +59,15 @@ CREATE TABLE IF NOT EXISTS tunes (
     has_detailed_parameters BOOLEAN DEFAULT FALSE,
     screenshot_url VARCHAR(255),
     like_count INT DEFAULT 0,
+    game_category ENUM('fh4', 'fh5') NOT NULL, -- 游戏分类字段
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (car_id) REFERENCES cars(id),
-    FOREIGN KEY (author_id) REFERENCES users(id),
-    INDEX idx_car_author (car_id, author_id),
-    INDEX idx_pi_class (pi_class),
-    INDEX idx_preference (preference),
-    INDEX idx_created_at (created_at),
-    INDEX idx_like_count (like_count),
-    INDEX idx_surface_conditions ((CAST(surface_conditions AS CHAR(100))))
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 调校参数表
 CREATE TABLE IF NOT EXISTS tune_parameters (
     id VARCHAR(36) PRIMARY KEY,
-    tune_id VARCHAR(36) NOT NULL,
+    tune_id VARCHAR(50) NOT NULL, -- 修正数据类型，与tunes表保持一致
     
     -- 轮胎
     front_tire_pressure DECIMAL(4,1),
@@ -143,55 +126,22 @@ CREATE TABLE IF NOT EXISTS tune_parameters (
     rear_downforce DECIMAL(4,1),
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (tune_id) REFERENCES tunes(id) ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 赛道表
-CREATE TABLE IF NOT EXISTS tracks (
-    id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    game_id VARCHAR(20) NOT NULL,
-    category ENUM('Circuit', 'Sprint', 'Drift', 'Drag', 'Rally') NOT NULL,
-    length DECIMAL(5,2), -- 赛道长度（公里）
-    location VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_game_category (game_id, category)
-);
-
--- 圈速记录表
-CREATE TABLE IF NOT EXISTS lap_times (
-    id VARCHAR(36) PRIMARY KEY,
-    tune_id VARCHAR(36) NOT NULL,
-    track_id VARCHAR(36) NOT NULL,
-    time VARCHAR(20) NOT NULL, -- 格式: "1:55.234"
-    pro_player_id VARCHAR(36),
-    video_url VARCHAR(500),
-    is_verified BOOLEAN DEFAULT FALSE,
-    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (tune_id) REFERENCES tunes(id) ON DELETE CASCADE,
-    FOREIGN KEY (track_id) REFERENCES tracks(id),
-    FOREIGN KEY (pro_player_id) REFERENCES users(id),
-    INDEX idx_tune_track (tune_id, track_id),
-    INDEX idx_pro_player (pro_player_id),
-    INDEX idx_verified (is_verified)
-);
+-- 赛道表和圈速记录表已移除：地平线系列不使用传统赛道概念
 
 -- 调校评论表
 CREATE TABLE IF NOT EXISTS tune_comments (
     id VARCHAR(36) PRIMARY KEY,
     tune_id VARCHAR(36) NOT NULL,
     user_id VARCHAR(36) NOT NULL,
-    user_gamertag VARCHAR(100) NOT NULL,
+    user_xbox_id VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     rating INT CHECK (rating >= 1 AND rating <= 5),
     like_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (tune_id) REFERENCES tunes(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    INDEX idx_tune_created (tune_id, created_at),
-    INDEX idx_user (user_id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 评论回复表
@@ -199,15 +149,11 @@ CREATE TABLE IF NOT EXISTS comment_replies (
     id VARCHAR(36) PRIMARY KEY,
     comment_id VARCHAR(36) NOT NULL,
     user_id VARCHAR(36) NOT NULL,
-    user_gamertag VARCHAR(100) NOT NULL,
+    user_xbox_id VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     like_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (comment_id) REFERENCES tune_comments(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    INDEX idx_comment_created (comment_id, created_at),
-    INDEX idx_user (user_id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 车队表
@@ -216,15 +162,14 @@ CREATE TABLE IF NOT EXISTS teams (
     name VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
     founder_id VARCHAR(36) NOT NULL,
-    founder_gamertag VARCHAR(100) NOT NULL,
+    founder_xbox_id VARCHAR(100) NOT NULL,
     is_public BOOLEAN DEFAULT TRUE,
     tags JSON,
     total_members INT DEFAULT 1,
     total_tunes INT DEFAULT 0,
     total_downloads INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (founder_id) REFERENCES users(id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 车队成员表
@@ -232,17 +177,13 @@ CREATE TABLE IF NOT EXISTS team_members (
     id VARCHAR(36) PRIMARY KEY,
     team_id VARCHAR(36) NOT NULL,
     user_id VARCHAR(36) NOT NULL,
-    user_gamertag VARCHAR(100) NOT NULL,
+    user_xbox_id VARCHAR(100) NOT NULL,
     role ENUM('OWNER', 'ADMIN', 'MODERATOR', 'MEMBER') DEFAULT 'MEMBER',
     permissions JSON,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_contributions INT DEFAULT 0,
     total_tunes INT DEFAULT 0,
-    UNIQUE KEY uk_team_user (team_id, user_id),
-    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    INDEX idx_team_members_team_id (team_id),
-    INDEX idx_team_members_user_id (user_id)
+    UNIQUE KEY uk_team_user (team_id, user_id)
 );
 
 -- 车队申请表
@@ -250,16 +191,13 @@ CREATE TABLE IF NOT EXISTS team_applications (
     id VARCHAR(36) PRIMARY KEY,
     team_id VARCHAR(36) NOT NULL,
     user_id VARCHAR(36) NOT NULL,
-    user_gamertag VARCHAR(100) NOT NULL,
+    user_xbox_id VARCHAR(100) NOT NULL,
     message TEXT,
     status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
     reviewed_by VARCHAR(36),
     reviewed_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_team_user_application (team_id, user_id),
-    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (reviewed_by) REFERENCES users(id)
+    UNIQUE KEY uk_team_user_application (team_id, user_id)
 );
 
 -- 车队邀请表
@@ -272,10 +210,7 @@ CREATE TABLE IF NOT EXISTS team_invitations (
     status ENUM('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED') DEFAULT 'PENDING',
     expires_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_team_user_invitation (team_id, user_id),
-    FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (invited_by) REFERENCES users(id)
+    UNIQUE KEY uk_team_user_invitation (team_id, user_id)
 );
 
 -- PRO认证表
@@ -287,16 +222,14 @@ CREATE TABLE IF NOT EXISTS pro_certifications (
     description TEXT,
     verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     verified_by VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_type (user_id, type)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- PRO申请表
 CREATE TABLE IF NOT EXISTS pro_applications (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
-    gamertag VARCHAR(100) NOT NULL,
+    xbox_id VARCHAR(100) NOT NULL,
     experience TEXT NOT NULL,
     achievements JSON,
     sample_tunes JSON,
@@ -304,24 +237,19 @@ CREATE TABLE IF NOT EXISTS pro_applications (
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     reviewed_at DATETIME,
     reviewed_by VARCHAR(36),
-    notes TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (reviewed_by) REFERENCES users(id)
+    notes TEXT
 );
 
 -- 用户活动表
 CREATE TABLE IF NOT EXISTS user_activities (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
-    user_gamertag VARCHAR(100) NOT NULL,
+    user_xbox_id VARCHAR(100) NOT NULL,
     type ENUM('LIKE', 'FAVORITE', 'COMMENT', 'UPLOAD', 'JOIN_TEAM', 'PRO_APPLICATION') NOT NULL,
     target_id VARCHAR(36),
     target_name VARCHAR(255),
     description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_created (user_id, created_at),
-    INDEX idx_activity_type (type)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 用户点赞表
@@ -330,11 +258,7 @@ CREATE TABLE IF NOT EXISTS user_likes (
     user_id VARCHAR(36) NOT NULL,
     tune_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_tune_like (user_id, tune_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (tune_id) REFERENCES tunes(id) ON DELETE CASCADE,
-    INDEX idx_user (user_id),
-    INDEX idx_tune (tune_id)
+    UNIQUE KEY uk_user_tune_like (user_id, tune_id)
 );
 
 -- 用户收藏表
@@ -343,11 +267,7 @@ CREATE TABLE IF NOT EXISTS user_favorites (
     user_id VARCHAR(36) NOT NULL,
     tune_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_tune_favorite (user_id, tune_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (tune_id) REFERENCES tunes(id) ON DELETE CASCADE,
-    INDEX idx_user (user_id),
-    INDEX idx_tune (tune_id)
+    UNIQUE KEY uk_user_tune_favorite (user_id, tune_id)
 );
 
 -- 评论点赞表
@@ -356,9 +276,7 @@ CREATE TABLE IF NOT EXISTS comment_likes (
     user_id VARCHAR(36) NOT NULL,
     comment_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_comment_like (user_id, comment_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (comment_id) REFERENCES tune_comments(id) ON DELETE CASCADE
+    UNIQUE KEY uk_user_comment_like (user_id, comment_id)
 );
 
 -- 回复点赞表
@@ -367,9 +285,7 @@ CREATE TABLE IF NOT EXISTS reply_likes (
     user_id VARCHAR(36) NOT NULL,
     reply_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_reply_like (user_id, reply_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (reply_id) REFERENCES comment_replies(id) ON DELETE CASCADE
+    UNIQUE KEY uk_user_reply_like (user_id, reply_id)
 );
 
 -- 系统设置表
@@ -378,6 +294,53 @@ CREATE TABLE IF NOT EXISTS system_settings (
     setting_key VARCHAR(100) UNIQUE NOT NULL,
     setting_value TEXT,
     description TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_setting_key (setting_key)
-); 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- =====================================
+-- 示例数据插入（用于测试游戏分类功能）
+-- =====================================
+
+-- 插入示例用户
+INSERT IGNORE INTO users (id, xbox_id, email, password_hash, is_pro_player, user_tier) VALUES
+('user-001', 'ProTuner1', 'protuner1@example.com', '$2a$10$example.hash.1', TRUE, 'PRO'),
+('user-002', 'SpeedMaster', 'speedmaster@example.com', '$2a$10$example.hash.2', FALSE, 'VERIFIED'),
+('user-003', 'TuneExpert', 'tuneexpert@example.com', '$2a$10$example.hash.3', TRUE, 'PRO'),
+('user-004', 'RacingFan', 'racingfan@example.com', '$2a$10$example.hash.4', FALSE, 'STANDARD');
+
+-- 插入示例车辆 - FH5
+INSERT IGNORE INTO cars (id, name, manufacturer, year, category, pi, drivetrain, game_category, image_url) VALUES
+('1', '911 GT2 RS', 'Porsche', 2018, 'Supercars', 920, 'RWD', 'fh5', 'https://example.com/porsche-911-gt2-rs.jpg'),
+('2', 'Senna', 'McLaren', 2019, 'Hypercars', 999, 'RWD', 'fh5', 'https://example.com/mclaren-senna.jpg'),
+('3', 'Corvette C7 Z06', 'Chevrolet', 2015, 'Sports Cars', 875, 'RWD', 'fh5', 'https://example.com/corvette-c7.jpg'),
+('4', 'Mustang RTR Spec 5', 'Ford', 2018, 'Muscle Cars', 850, 'RWD', 'fh5', 'https://example.com/mustang-rtr.jpg'),
+('5', 'Huracán Performante', 'Lamborghini', 2018, 'Supercars', 920, 'AWD', 'fh5', 'https://example.com/huracan.jpg');
+
+-- 插入示例车辆 - FH4  
+INSERT IGNORE INTO cars (id, name, manufacturer, year, category, pi, drivetrain, game_category, image_url) VALUES
+('6', '911 GT2 RS', 'Porsche', 2018, 'Supercars', 920, 'RWD', 'fh4', 'https://example.com/porsche-911-gt2-rs-fh4.jpg'),
+('7', 'Senna', 'McLaren', 2019, 'Hypercars', 999, 'RWD', 'fh4', 'https://example.com/mclaren-senna-fh4.jpg'),
+('8', 'RS6 Avant', 'Audi', 2020, 'Sports Cars', 825, 'AWD', 'fh4', 'https://example.com/audi-rs6.jpg'),
+('9', 'M5 Competition', 'BMW', 2019, 'Sports Cars', 875, 'AWD', 'fh4', 'https://example.com/bmw-m5.jpg');
+
+-- 插入示例调校 - FH5
+INSERT IGNORE INTO tunes (id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi, drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune, like_count, game_category) VALUES
+('tune-fh5-001', 'porsche-911-gt2-rs', 'user-001', 'ProTuner1', 'FH5-001-ABC', 'Power', 'S2', 920, 'RWD', 'Semi-Slick', 'Road', '["Dry"]', 'FH5专用保时捷GT2 RS暴力调校', TRUE, 156, 'fh5'),
+('tune-fh5-002', 'mclaren-senna', 'user-002', 'SpeedMaster', 'FH5-002-DEF', 'Handling', 'X', 999, 'RWD', 'Slick', 'Road', '["Dry", "Wet"]', 'FH5迈凯伦Senna赛道调校', FALSE, 89, 'fh5'),
+('tune-fh5-003', 'chevrolet-corvette-c7', 'user-003', 'TuneExpert', 'FH5-003-GHI', 'Balance', 'S1', 875, 'RWD', 'Sport', 'Road', '["Dry"]', 'FH5科尔维特平衡调校', TRUE, 234, 'fh5'),
+('tune-fh5-004', 'ford-mustang-rtr', 'user-001', 'ProTuner1', 'FH5-004-JKL', 'Power', 'A', 850, 'RWD', 'Street', 'Road', '["Dry", "Wet"]', 'FH5野马街道调校', FALSE, 67, 'fh5'),
+('tune-fh5-005', 'lamborghini-huracan', 'user-003', 'TuneExpert', 'FH5-005-MNO', 'Handling', 'S2', 920, 'AWD', 'Semi-Slick', 'Road', '["Dry"]', 'FH5兰博基尼操控调校', TRUE, 198, 'fh5');
+
+-- 插入示例调校 - FH4
+INSERT IGNORE INTO tunes (id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi, drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune, like_count, game_category) VALUES
+('tune-fh4-001', 'porsche-911-gt2-rs', 'user-002', 'SpeedMaster', 'FH4-001-PQR', 'Power', 'S2', 920, 'RWD', 'Semi-Slick', 'Road', '["Dry"]', 'FH4保时捷GT2 RS英国调校', FALSE, 123, 'fh4'),
+('tune-fh4-002', 'mclaren-senna', 'user-003', 'TuneExpert', 'FH4-002-STU', 'Handling', 'X', 999, 'RWD', 'Slick', 'Road', '["Dry", "Wet"]', 'FH4迈凯伦Senna英国赛道版', TRUE, 176, 'fh4'),
+('tune-fh4-003', 'audi-rs6-avant', 'user-001', 'ProTuner1', 'FH4-003-VWX', 'Balance', 'S1', 825, 'AWD', 'Sport', 'Road', '["Dry", "Wet", "Snow"]', 'FH4奥迪RS6全天候调校', TRUE, 145, 'fh4'),
+('tune-fh4-004', 'bmw-m5-competition', 'user-004', 'RacingFan', 'FH4-004-YZA', 'Power', 'S1', 875, 'AWD', 'Street', 'Road', '["Dry"]', 'FH4宝马M5街道版', FALSE, 98, 'fh4');
+
+-- 插入一些用户活动记录
+INSERT IGNORE INTO user_activities (id, user_id, user_xbox_id, type, target_id, target_name, description) VALUES
+('activity-001', 'user-001', 'ProTuner1', 'UPLOAD', 'tune-fh5-001', 'FH5 保时捷GT2 RS调校', '上传了新的FH5调校'),
+('activity-002', 'user-002', 'SpeedMaster', 'LIKE', 'tune-fh5-003', 'FH5 科尔维特调校', '点赞了调校'),
+('activity-003', 'user-003', 'TuneExpert', 'UPLOAD', 'tune-fh4-002', 'FH4 迈凯伦Senna调校', '上传了新的FH4调校'),
+('activity-004', 'user-004', 'RacingFan', 'FAVORITE', 'tune-fh5-005', 'FH5 兰博基尼调校', '收藏了调校'); 

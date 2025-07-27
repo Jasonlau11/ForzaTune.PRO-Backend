@@ -22,6 +22,7 @@
         <result property="hasDetailedParameters" column="has_detailed_parameters"/>
         <result property="screenshotUrl" column="screenshot_url"/>
         <result property="likeCount" column="like_count"/>
+        <result property="gameCategory" column="game_category"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
         
@@ -106,10 +107,9 @@
 
     <select id="selectRecentTunesWithDetails" resultMap="TuneDtoResultMap">
         SELECT
-        t.id, t.share_code, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
-        t.final_pi, t.like_count, t.created_at,
-        c.name AS carName,
-<!--        (SELECT lt.time FROM lap_times lt WHERE lt.tune_id = t.id ORDER BY lt.time ASC LIMIT 1) AS bestLapTime-->
+        t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+        t.final_pi, t.like_count, t.game_category, t.created_at,
+        c.name AS carName
         FROM
         tunes t
         LEFT JOIN
@@ -121,10 +121,9 @@
 
     <select id="selectProTunesWithDetails" resultMap="TuneDtoResultMap">
         SELECT
-        t.id, t.share_code, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
-        t.final_pi, t.like_count, t.created_at,
-        c.name AS carName,
-<!--        (SELECT lt.time FROM lap_times lt WHERE lt.tune_id = t.id ORDER BY lt.time ASC LIMIT 1) AS bestLapTime-->
+        t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+        t.final_pi, t.like_count, t.game_category, t.created_at,
+        c.name AS carName
         FROM
         tunes t
         LEFT JOIN
@@ -138,6 +137,46 @@
 
     <select id="countTotal" resultType="long">
         SELECT COUNT(*) FROM tunes
+    </select>
+
+    <!-- 按游戏分类统计调校总数 -->
+    <select id="countTotalByGameCategory" resultType="long">
+        SELECT COUNT(*) FROM tunes WHERE game_category = #{gameCategory}
+    </select>
+
+    <!-- 按游戏分类查询最新调校 -->
+    <select id="selectRecentTunesWithDetailsByGameCategory" resultMap="TuneDtoResultMap">
+        SELECT
+            t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+            t.final_pi, t.like_count, t.game_category, t.created_at,
+            c.name AS carName
+        FROM
+            tunes t
+        LEFT JOIN
+            cars c ON t.car_id = c.id AND c.game_category = #{gameCategory}
+        WHERE
+            t.game_category = #{gameCategory}
+        ORDER BY
+            t.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 按游戏分类查询PRO调校 -->
+    <select id="selectProTunesWithDetailsByGameCategory" resultMap="TuneDtoResultMap">
+        SELECT
+            t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+            t.final_pi, t.like_count, t.game_category, t.created_at,
+            c.name AS carName
+        FROM
+            tunes t
+        LEFT JOIN
+            cars c ON t.car_id = c.id AND c.game_category = #{gameCategory}
+        WHERE
+            t.game_category = #{gameCategory}
+            AND t.is_pro_tune = 1
+        ORDER BY
+            t.like_count DESC
+        LIMIT #{limit}
     </select>
 
     <!-- 根据ID获取调校 -->
