@@ -298,4 +298,141 @@
     <update id="decrementLikeCount">
         UPDATE tunes SET like_count = GREATEST(like_count - 1, 0) WHERE id = #{id}
     </update>
+
+    <!-- 检查用户是否已点赞 -->
+    <select id="isLikedByUser" resultType="boolean">
+        SELECT COUNT(*) > 0 
+        FROM user_likes 
+        WHERE tune_id = #{tuneId} AND user_id = #{userId}
+    </select>
+
+    <!-- 添加用户点赞记录 -->
+    <insert id="addLike">
+        INSERT INTO user_likes (id, user_id, tune_id, created_at) 
+        VALUES (UUID(), #{userId}, #{tuneId}, NOW())
+    </insert>
+
+    <!-- 移除用户点赞记录 -->
+    <delete id="removeLike">
+        DELETE FROM user_likes 
+        WHERE tune_id = #{tuneId} AND user_id = #{userId}
+    </delete>
+
+    <!-- 根据车辆ID和条件查询调校 -->
+    <select id="selectByCarAndConditions" parameterType="com.forzatune.backend.vo.TunesSearchVo" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM tunes t
+        <where>
+            t.car_id = #{carId}
+            <if test="preference != null and preference != ''">
+                AND t.preference = #{preference}
+            </if>
+            <if test="piClass != null and piClass != ''">
+                AND t.pi_class = #{piClass}
+            </if>
+            <if test="drivetrain != null and drivetrain != ''">
+                AND t.drivetrain = #{drivetrain}
+            </if>
+            <if test="tireCompound != null and tireCompound != ''">
+                AND t.tire_compound = #{tireCompound}
+            </if>
+            <if test="raceType != null and raceType != ''">
+                AND t.race_type = #{raceType}
+            </if>
+            <if test="proOnly != null and proOnly == true">
+                AND t.is_pro_tune = 1
+            </if>
+        </where>
+        <include refid="Tune_Order_By"/>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 根据车辆ID和条件统计调校数量 -->
+    <select id="countByCarAndConditions" parameterType="com.forzatune.backend.vo.TunesSearchVo" resultType="long">
+        SELECT COUNT(*)
+        FROM tunes t
+        <where>
+            t.car_id = #{carId}
+            <if test="preference != null and preference != ''">
+                AND t.preference = #{preference}
+            </if>
+            <if test="piClass != null and piClass != ''">
+                AND t.pi_class = #{piClass}
+            </if>
+            <if test="drivetrain != null and drivetrain != ''">
+                AND t.drivetrain = #{drivetrain}
+            </if>
+            <if test="tireCompound != null and tireCompound != ''">
+                AND t.tire_compound = #{tireCompound}
+            </if>
+            <if test="raceType != null and raceType != ''">
+                AND t.race_type = #{raceType}
+            </if>
+            <if test="proOnly != null and proOnly == true">
+                AND t.is_pro_tune = 1
+            </if>
+        </where>
+    </select>
+
+    <!-- 调校排序规则 -->
+    <sql id="Tune_Order_By">
+        <choose>
+            <when test="sortBy != null and sortBy != ''">
+                ORDER BY 
+                <choose>
+                    <when test="sortBy == 'newest'">t.created_at</when>
+                    <when test="sortBy == 'oldest'">t.created_at</when>
+                    <when test="sortBy == 'likes'">t.like_count</when>
+                    <when test="sortBy == 'name'">t.share_code</when>
+                    <otherwise>t.created_at</otherwise>
+                </choose>
+                <choose>
+                    <when test="sortOrder == 'desc'">DESC</when>
+                    <otherwise>ASC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY t.created_at DESC
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!-- 获取热门调校（按点赞数排序） -->
+    <select id="selectPopularTunes" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM tunes t
+        ORDER BY t.like_count DESC, t.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 获取最新调校（按创建时间排序） -->
+    <select id="selectRecentTunes" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM tunes t
+        ORDER BY t.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 获取PRO调校（按点赞数排序） -->
+    <select id="selectProTunes" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM tunes t
+        WHERE t.is_pro_tune = 1
+        ORDER BY t.like_count DESC, t.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 增加收藏数 -->
+    <update id="incrementFavoriteCount">
+        UPDATE tunes SET favorite_count = favorite_count + 1 WHERE id = #{id}
+    </update>
+
+    <!-- 减少收藏数 -->
+    <update id="decrementFavoriteCount">
+        UPDATE tunes SET favorite_count = GREATEST(favorite_count - 1, 0) WHERE id = #{id}
+    </update>
 </mapper> 

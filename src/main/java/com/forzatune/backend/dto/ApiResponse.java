@@ -13,6 +13,7 @@ import lombok.Data;
 public class ApiResponse<T> {
     private boolean success;
     private T data;
+    private String message;
     private ApiError error;
 
     // 静态工厂方法，用于快速创建成功响应
@@ -20,6 +21,7 @@ public class ApiResponse<T> {
         ApiResponse<T> response = new ApiResponse<>();
         response.setSuccess(true);
         response.setData(data);
+        response.setMessage("操作成功");
         return response;
     }
 
@@ -27,7 +29,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> failure(String errorMessage) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setSuccess(false);
-        response.setError(new ApiError(errorMessage));
+        response.setMessage(errorMessage);
+        response.setError(new ApiError("ERROR", errorMessage));
         return response;
     }
 
@@ -35,11 +38,20 @@ public class ApiResponse<T> {
      * 内部类，用于表示错误信息
      */
     @Data
-    private static class ApiError {
+    public static class ApiError {
+        private String code;
         private String message;
+        private Object details;
 
-        public ApiError(String message) {
+        public ApiError(String code, String message) {
+            this.code = code;
             this.message = message;
+        }
+
+        public ApiError(String code, String message, Object details) {
+            this.code = code;
+            this.message = message;
+            this.details = details;
         }
     }
 }

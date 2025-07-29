@@ -2,6 +2,7 @@ package com.forzatune.backend.mapper;
 
 import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.entity.Tune;
+import com.forzatune.backend.vo.TunesSearchVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,6 +16,26 @@ public interface TuneMapper {
     Tune selectByIdWithDetail(@Param("id") String id);
 
     void incrementLikeCount(@Param("id") String id);
+    
+    /**
+     * 减少点赞数
+     */
+    void decrementLikeCount(@Param("id") String id);
+    
+    /**
+     * 检查用户是否已点赞
+     */
+    boolean isLikedByUser(@Param("tuneId") String tuneId, @Param("userId") String userId);
+    
+    /**
+     * 添加用户点赞记录
+     */
+    void addLike(@Param("tuneId") String tuneId, @Param("userId") String userId);
+    
+    /**
+     * 移除用户点赞记录
+     */
+    void removeLike(@Param("tuneId") String tuneId, @Param("userId") String userId);
     
     List<Tune> selectByCarId(@Param("carId") String carId);
     
@@ -61,4 +82,39 @@ public interface TuneMapper {
      * @return 总数
      */
     long countTotalByGameCategory(@Param("gameCategory") String gameCategory);
+    
+    /**
+     * 根据车辆ID和条件查询调校
+     */
+    List<Tune> selectByCarAndConditions(TunesSearchVo searchVo);
+    
+    /**
+     * 根据车辆ID和条件统计调校数量
+     */
+    long countByCarAndConditions(TunesSearchVo searchVo);
+    
+    /**
+     * 获取热门调校（按点赞数排序）
+     */
+    List<Tune> selectPopularTunes(@Param("limit") int limit);
+    
+    /**
+     * 获取最新调校（按创建时间排序）
+     */
+    List<Tune> selectRecentTunes(@Param("limit") int limit);
+    
+    /**
+     * 获取PRO调校（按点赞数排序）
+     */
+    List<Tune> selectProTunes(@Param("limit") int limit);
+    
+    /**
+     * 增加收藏数
+     */
+    void incrementFavoriteCount(@Param("id") String id);
+    
+    /**
+     * 减少收藏数
+     */
+    void decrementFavoriteCount(@Param("id") String id);
 }

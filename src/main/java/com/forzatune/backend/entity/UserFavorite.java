@@ -30,6 +30,11 @@ public class UserFavorite {
     private String tuneId;
 
     /**
+     * 收藏备注
+     */
+    private String note;
+
+    /**
      * 收藏时间
      */
     private LocalDateTime createdAt;

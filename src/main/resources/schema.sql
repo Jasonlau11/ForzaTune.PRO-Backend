@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) PRIMARY KEY,
     xbox_id VARCHAR(50) UNIQUE NOT NULL, -- Xbox Live ID，作为用户显示名称
     email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL, -- 密码字段
     is_pro_player BOOLEAN DEFAULT FALSE,
     pro_player_since TIMESTAMP NULL,
     total_tunes INT DEFAULT 0,
@@ -266,6 +266,7 @@ CREATE TABLE IF NOT EXISTS user_favorites (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
     tune_id VARCHAR(36) NOT NULL,
+    note TEXT, -- 收藏备注
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_user_tune_favorite (user_id, tune_id)
 );
@@ -302,7 +303,7 @@ CREATE TABLE IF NOT EXISTS system_settings (
 -- =====================================
 
 -- 插入示例用户
-INSERT IGNORE INTO users (id, xbox_id, email, password_hash, is_pro_player, user_tier) VALUES
+INSERT IGNORE INTO users (id, xbox_id, email, password, is_pro_player, user_tier) VALUES
 ('user-001', 'ProTuner1', 'protuner1@example.com', '$2a$10$example.hash.1', TRUE, 'PRO'),
 ('user-002', 'SpeedMaster', 'speedmaster@example.com', '$2a$10$example.hash.2', FALSE, 'VERIFIED'),
 ('user-003', 'TuneExpert', 'tuneexpert@example.com', '$2a$10$example.hash.3', TRUE, 'PRO'),

@@ -7,18 +7,19 @@
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="tuneId" column="tune_id"/>
+        <result property="note" column="note"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
     <!-- 基础列名 -->
     <sql id="Base_Column_List">
-        id, user_id, tune_id, created_at
+        id, user_id, tune_id, note, created_at
     </sql>
 
     <!-- 插入一条收藏记录 -->
     <insert id="insert" parameterType="com.forzatune.backend.entity.UserFavorite">
-        INSERT INTO user_favorites (id, user_id, tune_id, created_at)
-        VALUES (#{id}, #{userId}, #{tuneId}, NOW())
+        INSERT INTO user_favorites (id, user_id, tune_id, note, created_at)
+        VALUES (#{id}, #{userId}, #{tuneId}, #{note}, NOW())
     </insert>
 
     <!-- 删除一条收藏记录 -->
@@ -40,6 +41,23 @@
         FROM user_favorites
         WHERE user_id = #{userId}
         ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据用户ID和调校ID查找一条收藏记录（别名方法） -->
+    <select id="selectByUserAndTune" resultMap="UserFavoriteResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_favorites
+        WHERE user_id = #{userId} AND tune_id = #{tuneId}
+    </select>
+
+    <!-- 根据ID删除收藏记录 -->
+    <delete id="deleteById">
+        DELETE FROM user_favorites WHERE id = #{id}
+    </delete>
+
+    <!-- 统计指定调校的收藏数 -->
+    <select id="countByTuneId" resultType="int">
+        SELECT COUNT(*) FROM user_favorites WHERE tune_id = #{tuneId}
     </select>
 
 </mapper>

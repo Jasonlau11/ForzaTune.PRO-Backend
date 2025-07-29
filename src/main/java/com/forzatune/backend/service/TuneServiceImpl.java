@@ -1,8 +1,8 @@
 package com.forzatune.backend.service;
 
+import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.dto.TuneParametersDto;
-import com.forzatune.backend.dto.TuneSubmissionDto;
 import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.entity.TuneParameters;
 import com.forzatune.backend.entity.UserFavorite;
@@ -10,6 +10,8 @@ import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.mapper.TuneParametersMapper;
 import com.forzatune.backend.mapper.UserFavoritesMapper;
 import com.forzatune.backend.utils.RequestUtils;
+import com.forzatune.backend.vo.TunesSearchVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,10 +20,15 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TuneServiceImpl implements TuneService {
 
     private final TuneMapper tuneMapper;
@@ -36,35 +43,35 @@ public class TuneServiceImpl implements TuneService {
     }
 
     @Override
-    public TuneDto getTuneByIdWithDetail(String id) {
-        Tune tune = tuneMapper.selectByIdWithDetail(id);
-        TuneDto tuneDto = TuneDto.fromEntity(tune); // Assuming TuneDto has a suitable fromEntity method
-        if (tune != null && tune.getTuneParameters() != null) {
+    public TuneDto getTuneById(String tuneId) {
+        Tune tune = tuneMapper.selectByIdWithDetail(tuneId);
+        if (tune == null) {
+            return null;
+        }
+
+        TuneDto tuneDto = TuneDto.fromEntity(tune);
+        if (tune.getIsParametersPublic() && tune.getTuneParameters() != null) {
             tuneDto.setParameters(TuneParametersDto.fromEntity(tune.getTuneParameters()));
         }
         return tuneDto;
     }
 
     @Override
-    @Transactional // 开启事务，保证 tune 和 parameters 要么都成功，要么都失败
-    @CacheEvict(value = "homeDashboard", allEntries = true) // 新增调校后，清除首页缓存
-    public Tune createTune(TuneSubmissionDto tuneDto) {
+    @Transactional
+    @CacheEvict(value = "homeDashboard", allEntries = true)
+    public TuneDto createTune(TuneDto tuneDto) {
         String currentUserId = RequestUtils.getCurrentUserId();
-        // String currentUserGamertag = ... (从用户信息中获取)
 
         Tune tune = new Tune();
-        BeanUtils.copyProperties(tuneDto, tune); // 复制基础属性
+        BeanUtils.copyProperties(tuneDto, tune);
 
-        // 设置后端控制的属性
         String tuneId = UUID.randomUUID().toString();
         tune.setId(tuneId);
         tune.setAuthorId(currentUserId);
-        // tune.setAuthorGamertag(currentUserGamertag);
         tune.setLikeCount(0);
 
         tuneMapper.insert(tune);
 
-        // 如果提交了详细参数，则一并插入
         if (Objects.nonNull(tuneDto.getParameters())) {
             TuneParameters parameters = tuneDto.getParameters().toEntity();
             parameters.setId(UUID.randomUUID().toString());
@@ -73,17 +80,16 @@ public class TuneServiceImpl implements TuneService {
             tune.setTuneParameters(parameters);
         }
 
-        return tune;
+        return TuneDto.fromEntity(tune);
     }
 
     @Override
     @Transactional
-    @CachePut(value = "carDetails", key = "#result.carId") // 更新车辆详情缓存
-    @CacheEvict(value = "homeDashboard", allEntries = true) // 更新后可能影响首页，清除缓存
-    public Tune updateTune(String tuneId, TuneSubmissionDto tuneDto) {
+    @CachePut(value = "carDetails", key = "#result.carId")
+    @CacheEvict(value = "homeDashboard", allEntries = true)
+    public TuneDto updateTune(String tuneId, TuneDto tuneDto) {
         String currentUserId = RequestUtils.getCurrentUserId();
 
-        // 验证操作权限：确保是调校的作者本人在修改
         Tune existingTune = tuneMapper.selectById(tuneId);
         if (existingTune == null) {
             throw new RuntimeException("调校不存在");
@@ -92,26 +98,24 @@ public class TuneServiceImpl implements TuneService {
             throw new AccessDeniedException("无权修改此调校");
         }
 
-        // 更新 Tune 主表
         Tune tuneToUpdate = new Tune();
         BeanUtils.copyProperties(tuneDto, tuneToUpdate);
         tuneToUpdate.setId(tuneId);
-        tuneToUpdate.setAuthorId(currentUserId); // 确保 authorId 不会变
+        tuneToUpdate.setAuthorId(currentUserId);
         tuneMapper.update(tuneToUpdate);
 
-        // 更新 TuneParameters 表
         if (tuneDto.getParameters() != null) {
             TuneParameters parametersToUpdate = tuneDto.getParameters().toEntity();
-            parametersToUpdate.setTuneId(tuneId); // 确保 tuneId 正确
+            parametersToUpdate.setTuneId(tuneId);
             parametersMapper.updateByTuneId(parametersToUpdate);
         }
 
-        return tuneMapper.selectByIdWithDetail(tuneId);
+        return getTuneById(tuneId);
     }
 
     @Override
     @Transactional
-    @CacheEvict(value = {"carDetails", "homeDashboard"}, allEntries = true) // 删除后清除所有相关缓存
+    @CacheEvict(value = {"carDetails", "homeDashboard"}, allEntries = true)
     public void deleteTune(String tuneId) {
         String currentUserId = RequestUtils.getCurrentUserId();
 
@@ -120,22 +124,119 @@ public class TuneServiceImpl implements TuneService {
             throw new AccessDeniedException("无权删除此调校");
         }
 
-        // 在数据库层面设置了 ON DELETE CASCADE, 删除 tune 会自动删除 tune_parameters
         tuneMapper.deleteById(tuneId);
     }
 
     @Override
-    public void likeTune(String id) {
-        tuneMapper.incrementLikeCount(id);
+    public PageDto<TuneDto> getTunesByCar(TunesSearchVo searchVo) {
+        // 获取总数
+        long total = tuneMapper.countByCarAndConditions(searchVo);
+        
+        // 获取调校列表
+        List<Tune> tunes = tuneMapper.selectByCarAndConditions(searchVo);
+        
+        // 转换为DTO
+        List<TuneDto> tuneDtos = tunes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        
+        // 构建分页信息
+        PageDto<TuneDto> pageDto = new PageDto<>();
+        pageDto.setItems(tuneDtos);
+        pageDto.setPage(searchVo.getPage());
+        pageDto.setLimit(searchVo.getLimit());
+        pageDto.setTotal(total);
+        pageDto.setTotalPages((int) Math.ceil((double) total / searchVo.getLimit()));
+        pageDto.setHasNext(searchVo.getPage() < Math.ceil((double) total / searchVo.getLimit()));
+        pageDto.setHasPrev(searchVo.getPage() > 1);
+        
+        return pageDto;
     }
 
     @Override
-    public void favoriteTune(String id) {
+    @Transactional
+    public Map<String, Object> likeTune(String tuneId) {
         String currentUserId = RequestUtils.getCurrentUserId();
-        UserFavorite favorite = new UserFavorite();
-        favorite.setTuneId(id);
-        favorite.setUserId(currentUserId);
-        favorite.setId(UUID.randomUUID().toString());
-        favoritesMapper.insert(favorite);
+        
+        boolean isLiked = tuneMapper.isLikedByUser(tuneId, currentUserId);
+        
+        if (isLiked) {
+            tuneMapper.removeLike(tuneId, currentUserId);
+            tuneMapper.decrementLikeCount(tuneId);
+        } else {
+            tuneMapper.addLike(tuneId, currentUserId);
+            tuneMapper.incrementLikeCount(tuneId);
+        }
+        
+        Tune tune = tuneMapper.selectById(tuneId);
+        int likeCount = tune != null ? tune.getLikeCount() : 0;
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("liked", !isLiked);
+        result.put("likeCount", likeCount);
+        
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> favoriteTune(String tuneId, String note) {
+        String currentUserId = RequestUtils.getCurrentUserId();
+        
+        UserFavorite existingFavorite = favoritesMapper.selectByUserAndTune(currentUserId, tuneId);
+        
+        if (existingFavorite != null) {
+            favoritesMapper.deleteById(existingFavorite.getId());
+            tuneMapper.decrementFavoriteCount(tuneId);
+        } else {
+            UserFavorite favorite = new UserFavorite();
+            favorite.setId(UUID.randomUUID().toString());
+            favorite.setUserId(currentUserId);
+            favorite.setTuneId(tuneId);
+            favorite.setNote(note);
+            favoritesMapper.insert(favorite);
+            tuneMapper.incrementFavoriteCount(tuneId);
+        }
+        
+        Tune tune = tuneMapper.selectById(tuneId);
+        int favoriteCount = tune != null ? tune.getFavoriteCount() : 0;
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("favorited", existingFavorite == null);
+        result.put("favoriteCount", favoriteCount);
+        
+        return result;
+    }
+
+    @Override
+    public List<TuneDto> getPopularTunes(int limit) {
+        List<Tune> tunes = tuneMapper.selectPopularTunes(limit);
+        return tunes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TuneDto> getRecentTunes(int limit) {
+        List<Tune> tunes = tuneMapper.selectRecentTunes(limit);
+        return tunes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TuneDto> getProTunes(int limit) {
+        List<Tune> tunes = tuneMapper.selectProTunes(limit);
+        return tunes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private TuneDto convertToDto(Tune tune) {
+        TuneDto dto = TuneDto.fromEntity(tune);
+        if (tune.getIsParametersPublic() && tune.getTuneParameters() != null) {
+            dto.setParameters(TuneParametersDto.fromEntity(tune.getTuneParameters()));
+        }
+        return dto;
     }
 }

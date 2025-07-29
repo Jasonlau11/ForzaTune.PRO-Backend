@@ -60,4 +60,9 @@ public interface CarMapper {
      */
     List<Car> selectPopularCarsByGameCategory(@Param("limit") Integer limit, @Param("gameCategory") String gameCategory);
 
+    /**
+     * 获取所有制造商列表
+     * @return 制造商名称列表
+     */
+    List<String> selectAllManufacturers();
 }

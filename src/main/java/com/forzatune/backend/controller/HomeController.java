@@ -24,6 +24,9 @@ public class HomeController {
 
     /**
      * 获取首页数据
+     * URL: GET /api/home/dashboard
+     * 前端传参: game_category (可选)
+     * 后端返回: { success: boolean, data: HomeDataDto }
      * 包含热门车辆、最新调校、PRO调校等
      * 对应前端: Home.vue 的 onMounted
      */
@@ -31,7 +34,7 @@ public class HomeController {
     private HomeService homeService;
 
     @GetMapping("/dashboard")
-    public ApiResponse<HomeDataDto> getHomeData(@RequestParam(value = "game_category", required = false) String gameCategory) {
+    public ResponseEntity<ApiResponse<HomeDataDto>> getHomeData(@RequestParam(value = "game_category", required = false) String gameCategory) {
         logger.info("🏠 开始获取首页数据，游戏分类: {}", gameCategory);
         try {
             HomeDataDto homeData = homeService.getHomeDashboardData(gameCategory);
@@ -39,10 +42,10 @@ public class HomeController {
                 homeData.getPopularCars() != null ? homeData.getPopularCars().size() : 0,
                 homeData.getRecentTunes() != null ? homeData.getRecentTunes().size() : 0,
                 homeData.getProTunes() != null ? homeData.getProTunes().size() : 0);
-            return ApiResponse.success(homeData);
+            return ResponseEntity.ok(ApiResponse.success(homeData));
         } catch (Exception e) {
             logger.error("❌ 获取首页数据失败！游戏分类: {}, 错误详情:", gameCategory, e);
-            return ApiResponse.failure("获取首页数据失败: " + e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("获取首页数据失败: " + e.getMessage()));
         }
     }
 } 

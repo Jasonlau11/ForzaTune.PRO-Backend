@@ -1,5 +1,6 @@
 package com.forzatune.backend.utils;
 
+import com.forzatune.backend.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,13 @@ public class JwtUtil {
     private Long expiration;
 
     /**
+     * 生成JWT token（基于用户对象）
+     */
+    public String generateToken(User user) {
+        return generateToken(user.getId(), user.getEmail());
+    }
+
+    /**
      * 生成JWT token
      */
     public String generateToken(String userId, String email) {
@@ -32,6 +40,22 @@ public class JwtUtil {
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    /**
+     * 验证token并返回用户ID
+     */
+    public String validateToken(String token) {
+        try {
+            Claims claims = parseToken(token);
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token已过期: " + e.getMessage());
+            return null;
+        } catch (JwtException e) {
+            System.out.println("Token无效: " + e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -59,9 +83,9 @@ public class JwtUtil {
     }
 
     /**
-     * 验证token是否有效
+     * 验证token是否有效（布尔值版本）
      */
-    public boolean validateToken(String token) {
+    public boolean isTokenValid(String token) {
         try {
             parseToken(token);
             return true;

@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -33,130 +31,129 @@ public class AuthService {
      * 用户登录
      */
     public AuthResponse login(LoginRequest request) {
-        logger.info("🔐 用户登录尝试: {}", request.getEmail());
-
-        // 根据邮箱查找用户
+        logger.info("🔐 处理登录请求: {}", request.getEmail());
+        
+        // 查找用户
         User user = userMapper.findByEmail(request.getEmail());
         if (user == null) {
             logger.warn("⚠️ 用户不存在: {}", request.getEmail());
-            throw new RuntimeException("邮箱或密码错误");
+            throw new RuntimeException("用户不存在");
         }
 
         // 验证密码
-        if (!passwordEncoder.matches(request.getPass(), user.getPasswordHash())) {
+        if (!passwordEncoder.matches(request.getPass(), user.getPassword())) {
             logger.warn("⚠️ 密码错误: {}", request.getEmail());
-            throw new RuntimeException("邮箱或密码错误");
+            throw new RuntimeException("密码错误");
         }
-
-        // 检查用户状态
-        if (!user.getIsActive()) {
-            logger.warn("⚠️ 用户已被禁用: {}", request.getEmail());
-            throw new RuntimeException("账户已被禁用");
-        }
-
-        // 更新最后登录时间
-        user.setLastLogin(LocalDateTime.now());
-        userMapper.updateUser(user);
 
         // 生成JWT token
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        String token = jwtUtil.generateToken(user);
 
         // 构建响应
-        AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
+        AuthResponse.User userInfo = new AuthResponse.User(
                 user.getId(),
                 user.getEmail(),
                 user.getXboxId(),
                 user.getIsProPlayer(),
-                user.getXboxId() != null && !user.getXboxId().isEmpty(),
-                user.getUserTier().name()
+                user.getXboxId() != null && !user.getXboxId().isEmpty()
         );
 
-        logger.info("✅ 用户登录成功: {} ({})", user.getXboxId(), request.getEmail());
+        logger.info("✅ 登录成功: {}", request.getEmail());
         return new AuthResponse(token, userInfo);
     }
 
     /**
      * 用户注册
      */
-    @Transactional
     public AuthResponse register(RegisterRequest request) {
-        logger.info("📝 用户注册尝试: {} ({})", request.getXboxId(), request.getEmail());
+        logger.info("📝 处理注册请求: {} ({})", request.getXboxId(), request.getEmail());
+        
+        // 验证密码确认
+        if (!request.getPass().equals(request.getConfirmPass())) {
+            logger.warn("⚠️ 密码确认不匹配: {}", request.getEmail());
+            throw new RuntimeException("密码和确认密码不匹配");
+        }
+        
+        // 验证密码强度
+        if (!isPasswordStrong(request.getPass())) {
+            logger.warn("⚠️ 密码强度不足: {}", request.getEmail());
+            throw new RuntimeException("密码必须包含至少6个字符，包含字母和数字");
+        }
+        
+        // 验证Xbox ID格式
+        if (!isValidXboxId(request.getXboxId())) {
+            logger.warn("⚠️ Xbox ID格式不正确: {}", request.getXboxId());
+            throw new RuntimeException("Xbox ID格式不正确，只能包含字母、数字和下划线");
+        }
 
         // 检查邮箱是否已存在
         if (userMapper.findByEmail(request.getEmail()) != null) {
             logger.warn("⚠️ 邮箱已存在: {}", request.getEmail());
-            throw new RuntimeException("该邮箱已被注册");
+            throw new RuntimeException("邮箱已存在");
         }
 
         // 检查Xbox ID是否已存在
         if (userMapper.findByXboxId(request.getXboxId()) != null) {
             logger.warn("⚠️ Xbox ID已存在: {}", request.getXboxId());
-            throw new RuntimeException("该Xbox ID已被使用");
+            throw new RuntimeException("Xbox ID已存在");
         }
 
         // 创建新用户
-        User user = new User();
-        user.setId(UUID.randomUUID().toString());
-        user.setEmail(request.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(request.getPass()));
-        user.setXboxId(request.getXboxId());
-        user.setIsProPlayer(false);
-        user.setTotalTunes(0);
-        user.setTotalLikes(0);
-        user.setUserTier(User.UserTier.STANDARD);
-        user.setIsActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-        user.setLastLogin(LocalDateTime.now());
+        User newUser = new User();
+        newUser.setId(UUID.randomUUID().toString());
+        newUser.setEmail(request.getEmail());
+        newUser.setXboxId(request.getXboxId());
+        newUser.setPassword(passwordEncoder.encode(request.getPass()));
+        newUser.setIsProPlayer(false);
+        newUser.setUserTier(User.UserTier.STANDARD);
 
-        // 插入数据库
-        int result = userMapper.insertUser(user);
-        if (result <= 0) {
-            logger.error("❌ 用户注册失败: {}", request.getEmail());
-            throw new RuntimeException("注册失败，请稍后重试");
-        }
+        // 保存用户
+        userMapper.insert(newUser);
 
         // 生成JWT token
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        String token = jwtUtil.generateToken(newUser);
 
         // 构建响应
-        AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
-                user.getId(),
-                user.getEmail(),
-                user.getXboxId(),
-                user.getIsProPlayer(),
-                false, // 新用户没有链接Xbox ID
-                user.getUserTier().name()
+        AuthResponse.User userInfo = new AuthResponse.User(
+                newUser.getId(),
+                newUser.getEmail(),
+                newUser.getXboxId(),
+                newUser.getIsProPlayer(),
+                newUser.getXboxId() != null && !newUser.getXboxId().isEmpty()
         );
 
-        logger.info("✅ 用户注册成功: {} ({})", user.getXboxId(), request.getEmail());
+        logger.info("✅ 注册成功: {} ({})", request.getXboxId(), request.getEmail());
         return new AuthResponse(token, userInfo);
     }
 
     /**
-     * 验证JWT token并获取用户信息
+     * 验证token并获取用户信息
      */
     public User validateTokenAndGetUser(String token) {
         try {
-            if (!jwtUtil.validateToken(token)) {
-                return null;
+            String userId = jwtUtil.validateToken(token);
+            if (userId != null) {
+                return userMapper.findById(userId);
             }
-
-            String userId = jwtUtil.getUserIdFromToken(token);
-            if (userId == null) {
-                return null;
-            }
-
-            User user = userMapper.findById(userId);
-            if (user == null || !user.getIsActive()) {
-                return null;
-            }
-
-            return user;
         } catch (Exception e) {
-            logger.error("Token验证失败: {}", e.getMessage());
-            return null;
+            logger.warn("⚠️ Token验证失败: {}", e.getMessage());
         }
+        return null;
     }
 
+    /**
+     * 验证密码强度
+     */
+    private boolean isPasswordStrong(String password) {
+        return password.length() >= 6 && 
+               password.matches(".*[a-zA-Z].*") && 
+               password.matches(".*\\d.*");
+    }
+
+    /**
+     * 验证Xbox ID格式
+     */
+    private boolean isValidXboxId(String xboxId) {
+        return xboxId.matches("^[a-zA-Z0-9_]{3,50}$");
+    }
 } 

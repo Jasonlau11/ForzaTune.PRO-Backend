@@ -1,8 +1,12 @@
 package com.forzatune.backend.service;
 
+import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.dto.TuneDto;
-import com.forzatune.backend.dto.TuneSubmissionDto;
 import com.forzatune.backend.entity.Tune;
+import com.forzatune.backend.vo.TunesSearchVo;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description :
@@ -13,38 +17,52 @@ import com.forzatune.backend.entity.Tune;
 public interface TuneService {
 
     /**
-     * 根据ID获取调校详情，包含参数
+     * 创建调校
      */
-    TuneDto getTuneByIdWithDetail(String id);
+    TuneDto createTune(TuneDto tuneDto);
 
     /**
-     * 创建一个新的调校
-     * @param tuneDto 前端提交的数据
-     * @return 创建成功后的 Tune 实体
+     * 更新调校
      */
-    Tune createTune(TuneSubmissionDto tuneDto);
+    TuneDto updateTune(String tuneId, TuneDto tuneDto);
 
     /**
-     * 更新一个已存在的调校
-     * @param tuneId 要更新的调校ID
-     * @param tuneDto 前端提交的更新数据
-     * @return 更新成功后的 Tune 实体
-     */
-    Tune updateTune(String tuneId, TuneSubmissionDto tuneDto);
-
-    /**
-     * 删除一个调校
-     * @param tuneId 要删除的调校ID
+     * 删除调校
      */
     void deleteTune(String tuneId);
 
     /**
-     * 为调校点赞
+     * 根据ID获取调校详情
      */
-    void likeTune(String id);
+    TuneDto getTuneById(String tuneId);
+
+    /**
+     * 根据车辆ID获取调校列表
+     */
+    PageDto<TuneDto> getTunesByCar(TunesSearchVo searchVo);
+
+    /**
+     * 点赞调校
+     */
+    Map<String, Object> likeTune(String tuneId);
 
     /**
      * 收藏调校
      */
-    void favoriteTune(String id);
+    Map<String, Object> favoriteTune(String tuneId, String note);
+
+    /**
+     * 获取热门调校
+     */
+    List<TuneDto> getPopularTunes(int limit);
+
+    /**
+     * 获取最新调校
+     */
+    List<TuneDto> getRecentTunes(int limit);
+
+    /**
+     * 获取PRO调校
+     */
+    List<TuneDto> getProTunes(int limit);
 }

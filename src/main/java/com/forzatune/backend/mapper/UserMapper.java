@@ -30,16 +30,16 @@ public interface UserMapper {
     /**
      * 插入新用户
      */
-    @Insert("INSERT INTO users (id, email, password_hash, xbox_id, is_pro_player, " +
+    @Insert("INSERT INTO users (id, email, password, xbox_id, is_pro_player, " +
             "total_tunes, total_likes, user_tier, is_active, created_at, updated_at, last_login) " +
-            "VALUES (#{id}, #{email}, #{passwordHash}, #{xboxId}, #{isProPlayer}, " +
+            "VALUES (#{id}, #{email}, #{password}, #{xboxId}, #{isProPlayer}, " +
             "#{totalTunes}, #{totalLikes}, #{userTier}, #{isActive}, #{createdAt}, #{updatedAt}, #{lastLogin})")
-    int insertUser(User user);
+    int insert(User user);
 
     /**
      * 更新用户信息
      */
-    @Update("UPDATE users SET email = #{email}, password_hash = #{passwordHash}, xbox_id = #{xboxId}, " +
+    @Update("UPDATE users SET email = #{email}, password = #{password}, xbox_id = #{xboxId}, " +
             "is_pro_player = #{isProPlayer}, total_tunes = #{totalTunes}, total_likes = #{totalLikes}, " +
             "user_tier = #{userTier}, is_active = #{isActive}, updated_at = #{updatedAt}, last_login = #{lastLogin} " +
             "WHERE id = #{id}")

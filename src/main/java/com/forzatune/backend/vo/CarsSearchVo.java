@@ -2,6 +2,8 @@ package com.forzatune.backend.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 车辆搜索条件值对象，增加分页参数
  */
@@ -10,8 +12,11 @@ public class CarsSearchVo {
     private String search;
     private String manufacturer;
     private String category;
+    private List<String> categories; // 支持多个分类过滤
     private String drivetrain;
     private String gameCategory; // 游戏分类过滤参数
+    private String sortBy; // 排序字段
+    private String sortOrder; // 排序方向
 
     // 分页参数
     private int page;
@@ -44,8 +49,11 @@ public class CarsSearchVo {
     public String getSearch() { return search; }
     public String getManufacturer() { return manufacturer; }
     public String getCategory() { return category; }
+    public List<String> getCategories() { return categories; }
     public String getDrivetrain() { return drivetrain; }
     public String getGameCategory() { return gameCategory; }
+    public String getSortBy() { return sortBy; }
+    public String getSortOrder() { return sortOrder; }
     public int getPage() { return page; }
     public int getLimit() { return limit; }
 }

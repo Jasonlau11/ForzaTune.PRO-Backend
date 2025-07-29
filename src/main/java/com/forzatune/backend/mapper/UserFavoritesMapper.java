@@ -42,4 +42,25 @@ public interface UserFavoritesMapper {
      */
     List<UserFavorite> findByUserId(String userId);
 
+    /**
+     * 根据用户ID和调校ID查找一条收藏记录（别名方法）
+     * @param userId 用户ID
+     * @param tuneId 调校ID
+     * @return 收藏实体对象，如果不存在则返回 null
+     */
+    UserFavorite selectByUserAndTune(@Param("userId") String userId, @Param("tuneId") String tuneId);
+    
+    /**
+     * 根据ID删除收藏记录
+     * @param id 收藏记录ID
+     * @return 影响的行数
+     */
+    int deleteById(@Param("id") String id);
+    
+    /**
+     * 统计指定调校的收藏数
+     * @param tuneId 调校ID
+     * @return 收藏数
+     */
+    int countByTuneId(@Param("tuneId") String tuneId);
 }

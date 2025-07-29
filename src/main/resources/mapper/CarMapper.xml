@@ -33,6 +33,12 @@
             <if test="category != null and category != ''">
                 AND category = #{category}
             </if>
+            <if test="categories != null and categories.size() > 0">
+                AND category IN
+                <foreach collection="categories" item="cat" open="(" separator="," close=")">
+                    #{cat}
+                </foreach>
+            </if>
             <if test="drivetrain != null and drivetrain != ''">
                 AND drivetrain = #{drivetrain}
             </if>
@@ -42,11 +48,33 @@
         </where>
     </sql>
 
+    <sql id="Order_By">
+        <choose>
+            <when test="sortBy != null and sortBy != ''">
+                ORDER BY 
+                <choose>
+                    <when test="sortBy == 'name'">name</when>
+                    <when test="sortBy == 'manufacturer'">manufacturer</when>
+                    <when test="sortBy == 'year'">year</when>
+                    <when test="sortBy == 'pi'">pi</when>
+                    <otherwise>name</otherwise>
+                </choose>
+                <choose>
+                    <when test="sortOrder == 'desc'">DESC</when>
+                    <otherwise>ASC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY manufacturer ASC, year DESC, name ASC
+            </otherwise>
+        </choose>
+    </sql>
+
     <select id="searchCars" parameterType="com.forzatune.backend.vo.CarsSearchVo" resultMap="CarResultMap">
         SELECT <include refid="Base_Column_List"/>
         FROM cars
         <include refid="Search_Conditions"/>
-        ORDER BY manufacturer ASC, year DESC, name ASC
+        <include refid="Order_By"/>
         LIMIT #{limit} OFFSET #{offset} </select>
 
     <select id="countCars" parameterType="com.forzatune.backend.vo.CarsSearchVo" resultType="long">
@@ -136,4 +164,11 @@
     <delete id="deleteById">
         DELETE FROM cars WHERE id = #{id}
     </delete>
+
+    <!-- 获取所有制造商列表 -->
+    <select id="selectAllManufacturers" resultType="string">
+        SELECT DISTINCT manufacturer 
+        FROM cars 
+        ORDER BY manufacturer ASC
+    </select>
 </mapper>

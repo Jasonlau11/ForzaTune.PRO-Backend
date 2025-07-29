@@ -7,11 +7,12 @@ import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.service.TuneService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,87 +20,137 @@ import java.util.Map;
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class TuneController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TuneController.class);
+    
     @Autowired
     private TuneService tuneService;
 
     /**
      * 新增一个调校
+     * URL: POST /api/tunes
+     * 前端传参: TuneSubmissionDto
+     * 后端返回: { success: boolean, data: Tune }
      */
     @PostMapping
-    public ApiResponse<Tune> createTune(@RequestBody TuneSubmissionDto tuneDto) {
+    public ResponseEntity<ApiResponse<Tune>> createTune(@RequestBody TuneSubmissionDto tuneDto) {
+        logger.info("🎵 创建调校 - 车辆: {}, 作者: {}", tuneDto.getCarId(), tuneDto.getAuthorId());
+        
         try {
             Tune createdTune = tuneService.createTune(tuneDto);
-            return ApiResponse.success(createdTune);
+            logger.info("✅ 成功创建调校: {}", createdTune.getId());
+            return ResponseEntity.ok(ApiResponse.success(createdTune));
         } catch (Exception e) {
-            return ApiResponse.failure("创建调校失败: " + e.getMessage());
+            logger.error("❌ 创建调校失败: {}", e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("创建调校失败: " + e.getMessage()));
         }
     }
 
     /**
      * 更新一个调校
+     * URL: PUT /api/tunes/{tuneId}
+     * 前端传参: tuneId (路径参数), TuneSubmissionDto
+     * 后端返回: { success: boolean, data: Tune }
      */
-    @PutMapping("/{id}")
-    public ApiResponse<Tune> updateTune(@PathVariable String id, @RequestBody TuneSubmissionDto tuneDto) {
+    @PutMapping("/{tuneId}")
+    public ResponseEntity<ApiResponse<Tune>> updateTune(@PathVariable String tuneId, @RequestBody TuneSubmissionDto tuneDto) {
+        logger.info("🎵 更新调校: {}", tuneId);
+        
         try {
-            Tune updatedTune = tuneService.updateTune(id, tuneDto);
-            return ApiResponse.success(updatedTune);
+            Tune updatedTune = tuneService.updateTune(tuneId, tuneDto);
+            logger.info("✅ 成功更新调校: {}", tuneId);
+            return ResponseEntity.ok(ApiResponse.success(updatedTune));
         } catch (Exception e) {
-            return ApiResponse.failure("更新调校失败: " + e.getMessage());
+            logger.error("❌ 更新调校失败: {}, 错误: {}", tuneId, e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("更新调校失败: " + e.getMessage()));
         }
     }
 
     /**
      * 删除一个调校
+     * URL: DELETE /api/tunes/{tuneId}
+     * 前端传参: tuneId (路径参数)
+     * 后端返回: { success: boolean, data: null }
      */
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteTune(@PathVariable String id) {
+    @DeleteMapping("/{tuneId}")
+    public ResponseEntity<ApiResponse<Void>> deleteTune(@PathVariable String tuneId) {
+        logger.info("🎵 删除调校: {}", tuneId);
+        
         try {
-            tuneService.deleteTune(id);
-            return ApiResponse.success(null);
+            tuneService.deleteTune(tuneId);
+            logger.info("✅ 成功删除调校: {}", tuneId);
+            return ResponseEntity.ok(ApiResponse.success(null));
         } catch (Exception e) {
-            return ApiResponse.failure("删除调校失败: " + e.getMessage());
+            logger.error("❌ 删除调校失败: {}, 错误: {}", tuneId, e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("删除调校失败: " + e.getMessage()));
         }
     }
     
     /**
      * 根据ID获取调校详情
-     * 对应前端: getTuneById(tuneId)
+     * URL: GET /api/tunes/{tuneId}
+     * 前端传参: tuneId (路径参数)
+     * 后端返回: { success: boolean, data: TuneDto }
      */
-    @GetMapping("/{id}")
-    public ApiResponse<TuneDto> getTuneById(@PathVariable String id) {
+    @GetMapping("/{tuneId}")
+    public ResponseEntity<ApiResponse<TuneDto>> getTuneById(@PathVariable String tuneId) {
+        logger.info("🎵 获取调校详情: {}", tuneId);
+        
         try {
-            return ApiResponse.success(tuneService.getTuneByIdWithDetail(id));
+            TuneDto tune = tuneService.getTuneByIdWithDetail(tuneId);
+            if (tune == null) {
+                logger.warn("⚠️ 调校不存在: {}", tuneId);
+                return ResponseEntity.ok(ApiResponse.failure("调校不存在"));
+            }
+            logger.info("✅ 成功获取调校详情: {}", tuneId);
+            return ResponseEntity.ok(ApiResponse.success(tune));
         } catch (Exception e) {
-            return ApiResponse.failure("获取调校数据失败: " + e.getMessage());
+            logger.error("❌ 获取调校详情失败: {}, 错误: {}", tuneId, e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("获取调校数据失败: " + e.getMessage()));
         }
     }
 
     /**
-     * 调校点赞
-     * 对应前端: likeTune(tuneId)
+     * 调校点赞/取消点赞
+     * URL: POST /api/tunes/{tuneId}/like
+     * 前端传参: tuneId (路径参数)
+     * 后端返回: { success: boolean, data: { liked: boolean, likeCount: number } }
      */
-    @PostMapping("/{id}/like")
-    public ApiResponse<String> likeTune(@PathVariable String id) {
+    @PostMapping("/{tuneId}/like")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> likeTune(@PathVariable String tuneId) {
+        logger.info("👍 点赞调校: {}", tuneId);
+        
         try {
-            tuneService.likeTune(id);
-            return ApiResponse.success("ok");
+            Map<String, Object> result = tuneService.likeTune(tuneId);
+            logger.info("✅ 成功点赞调校: {}, 点赞数: {}", tuneId, result.get("likeCount"));
+            return ResponseEntity.ok(ApiResponse.success(result));
         } catch (Exception e) {
-            return ApiResponse.failure("点赞调校失败: " + e.getMessage());
+            logger.error("❌ 点赞调校失败: {}, 错误: {}", tuneId, e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("点赞调校失败: " + e.getMessage()));
         }
     }
     
     /**
      * 调校收藏/取消收藏
-     * 对应前端: favoriteTune(tuneId)
+     * URL: POST /api/tunes/{tuneId}/favorite
+     * 前端传参: tuneId (路径参数), note (可选，收藏备注)
+     * 后端返回: { success: boolean, data: { favorited: boolean, favoriteCount: number } }
      */
-    @PostMapping("/{id}/favorite")
-    public ApiResponse<String> favoriteTune(@PathVariable String id) {
+    @PostMapping("/{tuneId}/favorite")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> favoriteTune(
+            @PathVariable String tuneId,
+            @RequestBody(required = false) Map<String, String> requestBody) {
+        
+        String note = requestBody != null ? requestBody.get("note") : null;
+        logger.info("⭐ 收藏调校: {}, 备注: {}", tuneId, note);
+        
         try {
-            tuneService.favoriteTune(id);
-            return ApiResponse.success("ok");
+            Map<String, Object> result = tuneService.favoriteTune(tuneId, note);
+            logger.info("✅ 成功收藏调校: {}, 收藏数: {}", tuneId, result.get("favoriteCount"));
+            return ResponseEntity.ok(ApiResponse.success(result));
         } catch (Exception e) {
-            return ApiResponse.failure("收藏调校失败: " + e.getMessage());
+            logger.error("❌ 收藏调校失败: {}, 错误: {}", tuneId, e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("收藏调校失败: " + e.getMessage()));
         }
     }
-
 } 

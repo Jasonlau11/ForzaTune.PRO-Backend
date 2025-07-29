@@ -53,4 +53,9 @@ public class CarServiceImpl implements CarService {
         carDto.setTuneCount(tunes.size());
         return carDto;
     }
+
+    @Override
+    public List<String> getAllManufacturers() {
+        return carMapper.selectAllManufacturers();
+    }
 }

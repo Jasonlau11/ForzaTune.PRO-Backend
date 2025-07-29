@@ -47,10 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             
-            // 验证token并提取用户信息
-            if (jwtUtil.validateToken(token)) {
-                userId = jwtUtil.getUserIdFromToken(token);
-            }
+            // 验证token并提取用户ID
+            userId = jwtUtil.validateToken(token);
         }
 
         // 如果token有效且当前没有认证信息，设置认证
