@@ -56,7 +56,11 @@ public class PageDto<T> {
         this.hasNext = page < totalPages;
         this.hasPrev = page > 1;
     }
-    
+
+    public PageDto() {
+
+    }
+
     // Getters and Setters
     public List<T> getItems() { return items; }
     public void setItems(List<T> items) { this.items = items; }

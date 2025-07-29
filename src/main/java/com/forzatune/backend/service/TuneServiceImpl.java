@@ -13,7 +13,6 @@ import com.forzatune.backend.utils.RequestUtils;
 import com.forzatune.backend.vo.TunesSearchVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,13 +33,6 @@ public class TuneServiceImpl implements TuneService {
     private final TuneMapper tuneMapper;
     private final TuneParametersMapper parametersMapper;
     private final UserFavoritesMapper favoritesMapper;
-
-    @Autowired
-    public TuneServiceImpl(TuneMapper tuneMapper, TuneParametersMapper parametersMapper, UserFavoritesMapper favoritesMapper) {
-        this.tuneMapper = tuneMapper;
-        this.parametersMapper = parametersMapper;
-        this.favoritesMapper = favoritesMapper;
-    }
 
     @Override
     public TuneDto getTuneById(String tuneId) {
@@ -199,11 +191,11 @@ public class TuneServiceImpl implements TuneService {
         }
         
         Tune tune = tuneMapper.selectById(tuneId);
-        int favoriteCount = tune != null ? tune.getFavoriteCount() : 0;
+//        int favoriteCount = tune != null ? tune.getFavoriteCount() : 0;
         
         Map<String, Object> result = new HashMap<>();
         result.put("favorited", existingFavorite == null);
-        result.put("favoriteCount", favoriteCount);
+//        result.put("favoriteCount", favoriteCount);
         
         return result;
     }

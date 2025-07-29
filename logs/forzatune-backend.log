@@ -1,2 +1,11 @@
-2025-07-28 00:17:02.053 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2025-07-28 00:17:02.059 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-07-29 23:00:10.690 INFO  [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2025-07-29 23:00:10.696 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 29416 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-07-29 23:00:10.697 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-07-29 23:00:10.697 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-07-29 23:00:11.228 DEBUG [restartedMain] org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2025-07-29 23:00:11.684 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-29 23:00:11.685 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-29 23:00:11.685 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-07-29 23:00:11.737 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-07-29 23:00:11.785 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-07-29 23:00:11.794 INFO  [restartedMain] o.a.catalina.core.StandardService - Stopping service [Tomcat]

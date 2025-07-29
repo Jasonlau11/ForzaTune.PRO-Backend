@@ -34,12 +34,13 @@ public class TuneController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<Tune>> createTune(@RequestBody TuneSubmissionDto tuneDto) {
-        logger.info("🎵 创建调校 - 车辆: {}, 作者: {}", tuneDto.getCarId(), tuneDto.getAuthorId());
+//        logger.info("🎵 创建调校 - 车辆: {}, 作者: {}", tuneDto.getCarId(), tuneDto.getAuthorId());
         
         try {
-            Tune createdTune = tuneService.createTune(tuneDto);
-            logger.info("✅ 成功创建调校: {}", createdTune.getId());
-            return ResponseEntity.ok(ApiResponse.success(createdTune));
+//            Tune createdTune = tuneService.createTune(tuneDto);
+//            logger.info("✅ 成功创建调校: {}", createdTune.getId());
+//            return ResponseEntity.ok(ApiResponse.success(createdTune));
+            return ResponseEntity.ok(ApiResponse.failure("创建调校失败: "));
         } catch (Exception e) {
             logger.error("❌ 创建调校失败: {}", e.getMessage());
             return ResponseEntity.ok(ApiResponse.failure("创建调校失败: " + e.getMessage()));
@@ -53,13 +54,13 @@ public class TuneController {
      * 后端返回: { success: boolean, data: Tune }
      */
     @PutMapping("/{tuneId}")
-    public ResponseEntity<ApiResponse<Tune>> updateTune(@PathVariable String tuneId, @RequestBody TuneSubmissionDto tuneDto) {
+    public ResponseEntity<ApiResponse<Tune>> updateTune(@PathVariable String tuneId, @RequestBody TuneDto tuneDto) {
         logger.info("🎵 更新调校: {}", tuneId);
         
         try {
-            Tune updatedTune = tuneService.updateTune(tuneId, tuneDto);
+//            Tune updatedTune = tuneService.updateTune(tuneId, tuneDto);
             logger.info("✅ 成功更新调校: {}", tuneId);
-            return ResponseEntity.ok(ApiResponse.success(updatedTune));
+            return ResponseEntity.ok(ApiResponse.success(null));
         } catch (Exception e) {
             logger.error("❌ 更新调校失败: {}, 错误: {}", tuneId, e.getMessage());
             return ResponseEntity.ok(ApiResponse.failure("更新调校失败: " + e.getMessage()));
@@ -97,13 +98,13 @@ public class TuneController {
         logger.info("🎵 获取调校详情: {}", tuneId);
         
         try {
-            TuneDto tune = tuneService.getTuneByIdWithDetail(tuneId);
-            if (tune == null) {
-                logger.warn("⚠️ 调校不存在: {}", tuneId);
-                return ResponseEntity.ok(ApiResponse.failure("调校不存在"));
-            }
+//            TuneDto tune = tuneService.getTuneByIdWithDetail(tuneId);
+//            if (tune == null) {
+//                logger.warn("⚠️ 调校不存在: {}", tuneId);
+//                return ResponseEntity.ok(ApiResponse.failure("调校不存在"));
+//            }
             logger.info("✅ 成功获取调校详情: {}", tuneId);
-            return ResponseEntity.ok(ApiResponse.success(tune));
+            return ResponseEntity.ok(ApiResponse.success(null));
         } catch (Exception e) {
             logger.error("❌ 获取调校详情失败: {}, 错误: {}", tuneId, e.getMessage());
             return ResponseEntity.ok(ApiResponse.failure("获取调校数据失败: " + e.getMessage()));

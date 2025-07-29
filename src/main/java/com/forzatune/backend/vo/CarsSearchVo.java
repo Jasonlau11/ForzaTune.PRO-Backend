@@ -37,6 +37,10 @@ public class CarsSearchVo {
         this(search, manufacturer, category, drivetrain, null, page, limit);
     }
 
+    public CarsSearchVo() {
+
+    }
+
     /**
      * 计算数据库查询的偏移量
      * @return offset
