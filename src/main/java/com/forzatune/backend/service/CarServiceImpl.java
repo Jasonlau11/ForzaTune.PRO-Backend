@@ -80,7 +80,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<String> getAllManufacturers() {
-        return carMapper.selectAllManufacturers();
+    public List<String> getAllManufacturers(String gameCategory) {
+        return carMapper.selectAllManufacturers(gameCategory);
     }
 }

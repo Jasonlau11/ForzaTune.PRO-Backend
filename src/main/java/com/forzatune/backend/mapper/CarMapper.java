@@ -62,7 +62,8 @@ public interface CarMapper {
 
     /**
      * 获取所有制造商列表
+     * @param gameCategory 游戏类型
      * @return 制造商名称列表
      */
-    List<String> selectAllManufacturers();
+    List<String> selectAllManufacturers(@Param("gameCategory") String gameCategory);
 }

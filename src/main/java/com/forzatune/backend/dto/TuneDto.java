@@ -21,6 +21,7 @@ public class TuneDto {
     private Integer finalPI;
     private String drivetrain;
     private String tireCompound;
+    private String raceType;
     private List<String> surfaceConditions;
     private String description;
     private Integer likeCount;
@@ -59,6 +60,24 @@ public class TuneDto {
         }
         if (tune.getPiClass() != null) {
             dto.setPiClass(tune.getPiClass());
+        }
+        if (tune.getDrivetrain() != null) {
+            dto.setDrivetrain(tune.getDrivetrain());
+        }
+        if (tune.getTireCompound() != null) {
+            dto.setTireCompound(tune.getTireCompound());
+        }
+        if (tune.getRaceType() != null) {
+            dto.setRaceType(tune.getRaceType());
+        }
+        if (tune.getSurfaceConditions() != null) {
+            dto.setSurfaceConditions(tune.getSurfaceConditions());
+        }
+        if (tune.getDescription() != null) {
+            dto.setDescription(tune.getDescription());
+        }
+        if (tune.getFinalPI() != null) {
+            dto.setFinalPI(tune.getFinalPI());
         }
 
         if (tune.getCreatedAt() != null) {

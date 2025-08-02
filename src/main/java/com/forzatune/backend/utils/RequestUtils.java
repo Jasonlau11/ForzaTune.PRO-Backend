@@ -24,6 +24,9 @@ public final class RequestUtils {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String DEV_USER_ID_HEADER = "X-User-ID"; // 开发环境使用的自定义头
+    private static final String DEV_XBOX_ID_HEADER = "X-Xbox-ID"; // 开发环境使用的Xbox ID头
+    private static final String DEV_IS_PRO_HEADER = "X-Is-Pro"; // 开发环境使用的Pro玩家状态头
+    private static final String GAME_CATEGORY_HEADER = "X-Game-Category"; // 游戏分类头
 
     private static boolean isDevMode = false;
 
@@ -91,6 +94,83 @@ public final class RequestUtils {
         }
 
         return "";
+    }
+
+    /**
+     * 获取当前登录用户的Xbox ID。
+     * <p>
+     * 在开发模式 (auth.dev-mode=true) 下，会尝试从 "X-Xbox-ID" 请求头直接获取Xbox ID。
+     * 在生产模式下，会从 Spring Security 上下文中获取用户信息，然后查询数据库获取Xbox ID。
+     * </p>
+     * @return 当前用户的Xbox ID，如果找不到则返回空字符串。
+     */
+    public static String getCurrentUserXboxId() {
+        // 如果是开发模式，优先从请求头获取，用于快速调试
+        if (isDevMode) {
+            String devXboxId = getHeader(DEV_XBOX_ID_HEADER);
+            if (devXboxId != null && !devXboxId.isEmpty()) {
+                return devXboxId;
+            }
+            // 开发模式下如果没有提供X-Xbox-ID头，返回默认Xbox ID
+            return "dev_xbox_user";
+        }
+
+        // 生产模式：从 Spring Security 上下文中获取用户ID，然后查询数据库
+        String userId = getCurrentUserId();
+        if (userId == null || userId.isEmpty()) {
+            return "";
+        }
+
+        // TODO: 在生产环境中，这里需要注入UserService来查询用户的Xbox ID
+        // 目前返回空字符串，表示需要实现数据库查询逻辑
+        return "";
+    }
+
+    /**
+     * 获取当前登录用户的Pro玩家状态。
+     * <p>
+     * 在开发模式 (auth.dev-mode=true) 下，会尝试从 "X-Is-Pro" 请求头直接获取Pro状态。
+     * 在生产模式下，会从 Spring Security 上下文中获取用户信息，然后查询数据库获取Pro状态。
+     * </p>
+     * @return 当前用户的Pro玩家状态，如果找不到则返回false。
+     */
+    public static boolean getCurrentUserIsPro() {
+        // 如果是开发模式，优先从请求头获取，用于快速调试
+        if (isDevMode) {
+            String devIsPro = getHeader(DEV_IS_PRO_HEADER);
+            if (devIsPro != null && !devIsPro.isEmpty()) {
+                return "true".equalsIgnoreCase(devIsPro);
+            }
+            // 开发模式下如果没有提供X-Is-Pro头，返回默认值
+            return false;
+        }
+
+        // 生产模式：从 Spring Security 上下文中获取用户ID，然后查询数据库
+        String userId = getCurrentUserId();
+        if (userId == null || userId.isEmpty()) {
+            return false;
+        }
+
+        // TODO: 在生产环境中，这里需要注入UserService来查询用户的Pro状态
+        // 目前返回false，表示需要实现数据库查询逻辑
+        return false;
+    }
+
+    /**
+     * 获取当前请求的游戏分类。
+     * <p>
+     * 从 "X-Game-Category" 请求头获取游戏分类信息。
+     * 如果请求头中没有提供，则返回默认值 "fh5"。
+     * </p>
+     * @return 当前请求的游戏分类，默认为 "fh5"。
+     */
+    public static String getCurrentGameCategory() {
+        String gameCategory = getHeader(GAME_CATEGORY_HEADER);
+        if (gameCategory != null && !gameCategory.isEmpty()) {
+            return gameCategory;
+        }
+        // 如果没有提供游戏分类头，返回默认值
+        return "fh5";
     }
 
     /**

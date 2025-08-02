@@ -33,7 +33,7 @@ jwt:
 
 # Auth Configuration
 auth:
-  dev-mode: false # 开发模式：true=跳过认证，false=正常认证
+  dev-mode: true # 开发模式：true=跳过认证，false=正常认证
 
 # Logging Configuration
 logging:

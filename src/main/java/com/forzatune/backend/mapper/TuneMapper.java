@@ -125,4 +125,11 @@ public interface TuneMapper {
      * 减少收藏数
      */
     void decrementFavoriteCount(@Param("id") String id);
+    
+    /**
+     * 根据分享码查询调校
+     * @param shareCode 分享码
+     * @return 调校信息，如果不存在则返回null
+     */
+    Tune selectByShareCode(@Param("shareCode") String shareCode);
 }

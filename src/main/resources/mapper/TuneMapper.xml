@@ -7,7 +7,7 @@
         <id property="id" column="id"/>
         <result property="carId" column="car_id"/>
         <result property="authorId" column="author_id"/>
-<!--        <result property="authorGamertag" column="author_gamertag"/>-->
+        <result property="authorXboxId" column="author_xbox_id"/>
         <result property="shareCode" column="share_code"/>
         <result property="preference" column="preference"/>
         <result property="piClass" column="pi_class"/>
@@ -74,22 +74,23 @@
     <resultMap id="TuneDtoResultMap" type="com.forzatune.backend.dto.TuneDto">
         <id property="id" column="id"/>
         <result property="shareCode" column="share_code"/>
-<!--        <result property="authorGamertag" column="author_gamertag"/>-->
+        <result property="authorXboxId" column="author_xbox_id"/>
         <result property="isProTune" column="is_pro_tune"/>
         <result property="preference" column="preference"/>
         <result property="piClass" column="pi_class"/>
         <result property="finalPI" column="final_pi"/>
         <result property="likeCount" column="like_count"/>
+        <result property="gameCategory" column="game_category"/>
         <result property="createdAt" column="created_at"/>
 <!--        <result property="bestLapTime" column="bestLapTime"/>-->
     </resultMap>
 
     <!-- 基础查询字段 -->
     <sql id="Base_Column_List">
-        t.id, t.car_id, t.author_id, t.author_gamertag, t.share_code, t.preference,
+        t.id, t.car_id, t.author_id, t.author_xbox_id, t.share_code, t.preference,
         t.pi_class, t.final_pi, t.drivetrain, t.tire_compound, t.race_type, t.surface_conditions,
         t.description, t.is_pro_tune, t.is_parameters_public, t.has_detailed_parameters,
-        t.screenshot_url, t.like_count, t.created_at, t.updated_at
+        t.screenshot_url, t.like_count, t.game_category, t.created_at, t.updated_at
     </sql>
 
     <!-- 调校参数字段 -->
@@ -107,7 +108,7 @@
 
     <select id="selectRecentTunesWithDetails" resultMap="TuneDtoResultMap">
         SELECT
-        t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+        t.id, t.share_code, t.car_id, t.author_xbox_id, t.is_pro_tune, t.preference, t.pi_class,
         t.final_pi, t.like_count, t.game_category, t.created_at,
         c.name AS carName
         FROM
@@ -121,7 +122,7 @@
 
     <select id="selectProTunesWithDetails" resultMap="TuneDtoResultMap">
         SELECT
-        t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+        t.id, t.share_code, t.car_id, t.author_xbox_id, t.is_pro_tune, t.preference, t.pi_class,
         t.final_pi, t.like_count, t.game_category, t.created_at,
         c.name AS carName
         FROM
@@ -147,7 +148,7 @@
     <!-- 按游戏分类查询最新调校 -->
     <select id="selectRecentTunesWithDetailsByGameCategory" resultMap="TuneDtoResultMap">
         SELECT
-            t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+            t.id, t.share_code, t.car_id, t.author_xbox_id, t.is_pro_tune, t.preference, t.pi_class,
             t.final_pi, t.like_count, t.game_category, t.created_at,
             c.name AS carName
         FROM
@@ -164,7 +165,7 @@
     <!-- 按游戏分类查询PRO调校 -->
     <select id="selectProTunesWithDetailsByGameCategory" resultMap="TuneDtoResultMap">
         SELECT
-            t.id, t.share_code, t.car_id, t.author_gamertag, t.is_pro_tune, t.preference, t.pi_class,
+            t.id, t.share_code, t.car_id, t.author_xbox_id, t.is_pro_tune, t.preference, t.pi_class,
             t.final_pi, t.like_count, t.game_category, t.created_at,
             c.name AS carName
         FROM
@@ -246,11 +247,11 @@
     <!-- 插入调校 -->
     <insert id="insert" parameterType="com.forzatune.backend.entity.Tune">
         INSERT INTO tunes (
-            id, car_id, author_id, author_gamertag, share_code, preference, pi_class, final_pi,
+            id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi,
             drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune,
             is_parameters_public, has_detailed_parameters, screenshot_url, like_count, created_at, updated_at
         ) VALUES (
-            #{id}, #{carId}, #{authorId}, #{authorGamertag}, #{shareCode}, #{preference}, #{piClass}, #{finalPI},
+            #{id}, #{carId}, #{authorId}, #{authorXboxId}, #{shareCode}, #{preference}, #{piClass}, #{finalPI},
             #{drivetrain}, #{tireCompound}, #{raceType}, #{surfaceConditions,typeHandler=com.forzatune.backend.handler.JsonTypeHandler}, #{description}, #{isProTune},
             #{isParametersPublic}, #{hasDetailedParameters}, #{screenshotUrl}, #{likeCount}, NOW(), NOW()
         )
@@ -261,7 +262,7 @@
         UPDATE tunes SET
             car_id = #{carId},
             author_id = #{authorId},
-            author_gamertag = #{authorGamertag},
+            author_xbox_id = #{authorXboxId},
             share_code = #{shareCode},
             preference = #{preference},
             pi_class = #{piClass},
@@ -443,5 +444,14 @@
             #{carId}
         </foreach>
         GROUP BY car_id
+    </select>
+
+    <!-- 根据分享码查询调校 -->
+    <select id="selectByShareCode" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>
+        FROM tunes t
+        WHERE t.share_code = #{shareCode}
+        LIMIT 1
     </select>
 </mapper> 

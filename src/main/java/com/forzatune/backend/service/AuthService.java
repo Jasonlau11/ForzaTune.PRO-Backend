@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -57,6 +58,10 @@ public class AuthService {
                 user.getIsProPlayer(),
                 user.getXboxId() != null && !user.getXboxId().isEmpty()
         );
+
+        // 更新最近登录时间
+        user.setLastLogin(LocalDateTime.now());
+        userMapper.updateUser(user);
 
         logger.info("✅ 登录成功: {}", request.getEmail());
         return new AuthResponse(token, userInfo);
@@ -106,6 +111,9 @@ public class AuthService {
         newUser.setPasswordHash(passwordEncoder.encode(request.getPass()));
         newUser.setIsProPlayer(false);
         newUser.setUserTier(User.UserTier.STANDARD);
+        newUser.setCreatedAt(LocalDateTime.now());
+        newUser.setUpdatedAt(LocalDateTime.now());
+        newUser.setLastLogin(LocalDateTime.now());
 
         // 保存用户
         userMapper.insert(newUser);

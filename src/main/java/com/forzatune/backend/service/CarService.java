@@ -14,7 +14,8 @@ public interface CarService {
     
     /**
      * 获取所有制造商列表
+     * @param gameCategory 游戏类型
      * @return 制造商名称列表
      */
-    List<String> getAllManufacturers();
+    List<String> getAllManufacturers(String gameCategory);
 }

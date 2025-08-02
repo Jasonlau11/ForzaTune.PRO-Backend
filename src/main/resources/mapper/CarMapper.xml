@@ -169,6 +169,7 @@
     <select id="selectAllManufacturers" resultType="string">
         SELECT DISTINCT manufacturer 
         FROM cars 
+        WHERE game_category = #{gameCategory}
         ORDER BY manufacturer ASC
     </select>
 </mapper>

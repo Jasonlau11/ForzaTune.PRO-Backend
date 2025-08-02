@@ -5,10 +5,12 @@ import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.dto.TuneParametersDto;
 import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.entity.TuneParameters;
+import com.forzatune.backend.entity.User;
 import com.forzatune.backend.entity.UserFavorite;
 import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.mapper.TuneParametersMapper;
 import com.forzatune.backend.mapper.UserFavoritesMapper;
+import com.forzatune.backend.mapper.UserMapper;
 import com.forzatune.backend.utils.RequestUtils;
 import com.forzatune.backend.vo.TunesSearchVo;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +21,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +32,7 @@ public class TuneServiceImpl implements TuneService {
     private final TuneMapper tuneMapper;
     private final TuneParametersMapper parametersMapper;
     private final UserFavoritesMapper favoritesMapper;
+    private final UserMapper userMapper;
 
     @Override
     public TuneDto getTuneById(String tuneId) {
@@ -53,6 +53,29 @@ public class TuneServiceImpl implements TuneService {
     @CacheEvict(value = "homeDashboard", allEntries = true)
     public TuneDto createTune(TuneDto tuneDto) {
         String currentUserId = RequestUtils.getCurrentUserId();
+        String currentUserXboxId = RequestUtils.getCurrentUserXboxId();
+
+        // 如果从请求头获取不到Xbox ID，则从数据库查询用户信息
+        if (currentUserXboxId.isEmpty() || currentUserXboxId.equals("dev_xbox_user")) {
+            User user = userMapper.findById(currentUserId);
+            if (user == null) {
+                throw new RuntimeException("用户不存在");
+            }
+            
+            if (user.getXboxId() == null || user.getXboxId().isEmpty()) {
+                throw new RuntimeException("当前用户未绑定Xbox ID，不能上传调校");
+            }
+            
+            currentUserXboxId = user.getXboxId();
+        }
+
+        // 检查分享码是否已存在
+        if (tuneDto.getShareCode() != null && !tuneDto.getShareCode().isEmpty()) {
+            Tune existingTune = tuneMapper.selectByShareCode(tuneDto.getShareCode());
+            if (existingTune != null) {
+                throw new RuntimeException("当前调校已被上传，分享码: " + tuneDto.getShareCode());
+            }
+        }
 
         Tune tune = new Tune();
         BeanUtils.copyProperties(tuneDto, tune);
@@ -60,7 +83,15 @@ public class TuneServiceImpl implements TuneService {
         String tuneId = UUID.randomUUID().toString();
         tune.setId(tuneId);
         tune.setAuthorId(currentUserId);
+        tune.setAuthorXboxId(currentUserXboxId);
+        tune.setIsProTune(RequestUtils.getCurrentUserIsPro());
         tune.setLikeCount(0);
+        tune.setCreatedAt(new Date());
+        tune.setUpdatedAt(new Date());
+        
+        // 从请求头获取游戏分类
+        String gameCategory = RequestUtils.getCurrentGameCategory();
+        tune.setGameCategory(gameCategory);
 
         tuneMapper.insert(tune);
 
@@ -81,6 +112,21 @@ public class TuneServiceImpl implements TuneService {
     @CacheEvict(value = "homeDashboard", allEntries = true)
     public TuneDto updateTune(String tuneId, TuneDto tuneDto) {
         String currentUserId = RequestUtils.getCurrentUserId();
+        String currentUserXboxId = RequestUtils.getCurrentUserXboxId();
+
+        // 如果从请求头获取不到Xbox ID，则从数据库查询用户信息
+        if (currentUserXboxId == null || currentUserXboxId.isEmpty() || currentUserXboxId.equals("dev_xbox_user")) {
+            User user = userMapper.findById(currentUserId);
+            if (user == null) {
+                throw new RuntimeException("用户不存在");
+            }
+            
+            if (user.getXboxId() == null || user.getXboxId().isEmpty()) {
+                throw new RuntimeException("当前用户未绑定Xbox ID，不能修改调校");
+            }
+            
+            currentUserXboxId = user.getXboxId();
+        }
 
         Tune existingTune = tuneMapper.selectById(tuneId);
         if (existingTune == null) {
@@ -90,10 +136,19 @@ public class TuneServiceImpl implements TuneService {
             throw new AccessDeniedException("无权修改此调校");
         }
 
+        // 检查分享码是否已被其他调校使用（除了当前调校）
+        if (tuneDto.getShareCode() != null && !tuneDto.getShareCode().isEmpty()) {
+            Tune tuneWithSameShareCode = tuneMapper.selectByShareCode(tuneDto.getShareCode());
+            if (tuneWithSameShareCode != null && !tuneWithSameShareCode.getId().equals(tuneId)) {
+                throw new RuntimeException("分享码已被其他调校使用: " + tuneDto.getShareCode());
+            }
+        }
+
         Tune tuneToUpdate = new Tune();
         BeanUtils.copyProperties(tuneDto, tuneToUpdate);
         tuneToUpdate.setId(tuneId);
         tuneToUpdate.setAuthorId(currentUserId);
+        tuneToUpdate.setAuthorXboxId(currentUserXboxId);
         tuneMapper.update(tuneToUpdate);
 
         if (tuneDto.getParameters() != null) {

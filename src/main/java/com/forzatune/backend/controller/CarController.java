@@ -6,6 +6,7 @@ import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.service.CarService;
 import com.forzatune.backend.service.TuneService;
+import com.forzatune.backend.utils.RequestUtils;
 import com.forzatune.backend.vo.CarsSearchVo;
 import com.forzatune.backend.vo.TunesSearchVo;
 import lombok.RequiredArgsConstructor;
@@ -86,16 +87,17 @@ public class CarController {
     /**
      * 获取制造商列表
      * URL: GET /api/cars/manufacturers
-     * 前端传参: 无
+     * 前端传参: 无（从请求头获取游戏类型）
      * 后端返回: { success: boolean, data: string[] }
      */
     @GetMapping("/manufacturers")
     public ResponseEntity<ApiResponse<List<String>>> getManufacturers() {
-        logger.info("🏭 获取制造商列表");
+        String gameCategory = RequestUtils.getCurrentGameCategory();
+        logger.info("🏭 获取制造商列表 - 游戏类型: {}", gameCategory);
         
         try {
-            List<String> manufacturers = carService.getAllManufacturers();
-            logger.info("✅ 成功获取制造商列表，数量: {}", manufacturers.size());
+            List<String> manufacturers = carService.getAllManufacturers(gameCategory);
+            logger.info("✅ 成功获取制造商列表，数量: {}, 游戏类型: {}", manufacturers.size(), gameCategory);
             return ResponseEntity.ok(ApiResponse.success(manufacturers));
         } catch (Exception e) {
             logger.error("❌ 获取制造商列表失败: {}", e.getMessage());
