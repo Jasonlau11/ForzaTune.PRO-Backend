@@ -16,12 +16,12 @@ public class TuneDto {
     private String authorId;
     private String authorXboxId; // 作者的Xbox ID
     private Boolean isProTune;
-    private Tune.TunePreference preference;
-    private Tune.PIClass piClass;
+    private String preference;
+    private String piClass;
     private Integer finalPI;
-    private Tune.Drivetrain drivetrain;
-    private Tune.TireCompound tireCompound;
-    private List<Tune.SurfaceCondition> surfaceConditions;
+    private String drivetrain;
+    private String tireCompound;
+    private List<String> surfaceConditions;
     private String description;
     private Integer likeCount;
     private Integer favoriteCount;

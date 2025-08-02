@@ -1,5 +1,6 @@
 package com.forzatune.backend.mapper;
 
+import com.forzatune.backend.dto.CarTuneCount;
 import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.vo.TunesSearchVo;
@@ -41,10 +42,10 @@ public interface TuneMapper {
     
     List<Tune> selectByAuthorId(@Param("authorId") String authorId);
     
-    List<Tune> selectProTunes();
+    List<Tune> selectProTunesBasic();
     
-    // 新增方法：获取最新调校
-    List<Tune> selectRecentTunes();
+    // 新增方法：获取最新调校（包含参数）
+    List<Tune> selectRecentTunesWithParameters();
     
     int insert(Tune tune);
     
@@ -107,6 +108,13 @@ public interface TuneMapper {
      * 获取PRO调校（按点赞数排序）
      */
     List<Tune> selectProTunes(@Param("limit") int limit);
+    
+    /**
+     * 批量查询车辆调校数量
+     * @param carIds 车辆ID列表
+     * @return 车辆ID和调校数量的映射
+     */
+    List<CarTuneCount> selectTuneCountByCarIds(@Param("carIds") List<String> carIds);
     
     /**
      * 增加收藏数

@@ -5,7 +5,6 @@
     <!-- 结果映射 -->
     <resultMap id="UserResultMap" type="com.forzatune.backend.entity.User">
         <id property="id" column="id"/>
-        <result property="gamertag" column="gamertag"/>
         <result property="email" column="email"/>
         <result property="passwordHash" column="password_hash"/>
         <result property="xboxId" column="xbox_id"/>
@@ -32,7 +31,7 @@
 
     <!-- 基础查询字段 -->
     <sql id="Base_Column_List">
-        id, gamertag, email, password_hash, xbox_id, is_pro_player, pro_player_since,
+        id, email, password_hash, xbox_id, is_pro_player, pro_player_since,
         total_tunes, total_likes, avatar_url, created_at, updated_at, bio, user_tier, last_login, is_active
     </sql>
     
@@ -79,22 +78,11 @@
         WHERE is_pro_player = 1 AND is_active = 1
         ORDER BY total_likes DESC, created_at DESC
     </select>
-    
-    <!-- 插入用户 -->
-    <insert id="insert" parameterType="com.forzatune.backend.entity.User">
-        INSERT INTO users (
-            id, gamertag, email, password_hash, xbox_id, is_pro_player, pro_player_since,
-            total_tunes, total_likes, avatar_url, bio, user_tier, last_login, is_active, created_at, updated_at
-        ) VALUES (
-            #{id}, #{gamertag}, #{email}, #{passwordHash}, #{xboxId}, #{isProPlayer}, #{proPlayerSince},
-            #{totalTunes}, #{totalLikes}, #{avatarUrl}, #{bio}, #{userTier}, #{lastLogin}, #{isActive}, NOW(), NOW()
-        )
-    </insert>
+
     
     <!-- 更新用户 -->
     <update id="update" parameterType="com.forzatune.backend.entity.User">
         UPDATE users SET
-            gamertag = #{gamertag},
             email = #{email},
             password_hash = #{passwordHash},
             xbox_id = #{xboxId},

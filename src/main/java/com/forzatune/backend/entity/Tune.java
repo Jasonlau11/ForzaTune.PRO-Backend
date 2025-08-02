@@ -18,13 +18,13 @@ public class Tune {
     private String authorId;
     private String authorXboxId; // 作者的Xbox ID
     private String shareCode;
-    private TunePreference preference;
-    private PIClass piClass;
+    private String preference;
+    private String piClass;
     private Integer finalPI;
-    private Drivetrain drivetrain;
-    private TireCompound tireCompound;
-    private RaceType raceType;
-    private List<SurfaceCondition> surfaceConditions;
+    private String drivetrain;
+    private String tireCompound;
+    private String raceType;
+    private List<String> surfaceConditions;
     private String description;
     private Boolean isProTune = false;
     private Boolean isParametersPublic = false;
@@ -37,27 +37,5 @@ public class Tune {
 //    private List<LapTime> lapTimes;
     private TuneParameters tuneParameters;
     
-    public enum TunePreference {
-        Power, Handling, Balance
-    }
-    
-    public enum PIClass {
-        X, S2, S1, A, B, C, D
-    }
-    
-    public enum Drivetrain {
-        RWD, FWD, AWD
-    }
-    
-    public enum TireCompound {
-        Stock, Street, Sport, SemiSlick, Slick, Rally, Snow, OffRoad, Drag, Drift
-    }
-    
-    public enum RaceType {
-        Road, Dirt, CrossCountry
-    }
-    
-    public enum SurfaceCondition {
-        Dry, Wet, Snow
-    }
+
 } 

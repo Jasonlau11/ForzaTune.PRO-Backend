@@ -103,7 +103,7 @@ public class AuthService {
         newUser.setId(UUID.randomUUID().toString());
         newUser.setEmail(request.getEmail());
         newUser.setXboxId(request.getXboxId());
-        newUser.setPassword(passwordEncoder.encode(request.getPass()));
+        newUser.setPasswordHash(passwordEncoder.encode(request.getPass()));
         newUser.setIsProPlayer(false);
         newUser.setUserTier(User.UserTier.STANDARD);
 

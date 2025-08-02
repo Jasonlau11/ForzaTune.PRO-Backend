@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class CorsConfig {
 
     @Value("${cors.allowed-origins}")
-    private String[] allowedOrigins;
+    private String allowedOrigins;
 
     @Value("${cors.allowed-methods}")
     private String allowedMethods;
@@ -29,7 +29,7 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // 设置允许的源
-        configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins));
+        configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
         
         // 设置允许的方法
         configuration.setAllowedMethods(Arrays.asList(allowedMethods.split(",")));

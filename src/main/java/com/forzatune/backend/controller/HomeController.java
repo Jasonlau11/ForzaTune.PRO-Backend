@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/home")
-@RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class HomeController {
 

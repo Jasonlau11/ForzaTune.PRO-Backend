@@ -9,3 +9,616 @@
 2025-07-29 23:00:11.737 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
 2025-07-29 23:00:11.785 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
 2025-07-29 23:00:11.794 INFO  [restartedMain] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 12:56:08.381 INFO  [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2025-08-02 12:56:08.387 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 29612 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 12:56:08.387 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 12:56:08.388 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 12:56:08.864 DEBUG [restartedMain] org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2025-08-02 12:56:09.272 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 12:56:09.274 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 12:56:09.274 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 12:56:09.319 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 12:56:09.355 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 12:56:09.615 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-08-02 12:56:09.709 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-08-02 12:56:09.776 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-02 12:56:09.781 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-08-02 12:56:09.785 INFO  [restartedMain] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 12:58:37.189 INFO  [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2025-08-02 12:58:37.193 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 3976 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 12:58:37.193 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 12:58:37.194 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 12:58:37.659 DEBUG [restartedMain] org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2025-08-02 12:58:38.106 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 12:58:38.108 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 12:58:38.108 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 12:58:38.160 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 12:58:38.206 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 12:58:38.491 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-08-02 12:58:38.581 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-08-02 12:58:38.720 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 12:58:39.162 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 12:58:39.186 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 2.316 seconds (JVM running for 2.647)
+2025-08-02 12:58:44.176 INFO  [http-nio-8080-exec-3] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-02 12:58:44.241 INFO  [http-nio-8080-exec-3] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 12:58:44.284 INFO  [http-nio-8080-exec-3] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 12:58:44.304 INFO  [http-nio-8080-exec-4] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 12:58:44.306 INFO  [http-nio-8080-exec-4] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 12:58:46.676 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 12:58:49.953 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 12:58:49.974 INFO  [http-nio-8080-exec-5] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 12:58:49.996 INFO  [http-nio-8080-exec-5] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:01:11.627 INFO  [http-nio-8080-exec-8] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:01:16.548 INFO  [http-nio-8080-exec-7] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:01:17.215 INFO  [http-nio-8080-exec-8] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:01:17.217 INFO  [http-nio-8080-exec-7] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:01:17.228 INFO  [http-nio-8080-exec-10] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:01:17.232 INFO  [http-nio-8080-exec-10] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:01:30.158 INFO  [http-nio-8080-exec-3] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:01:30.161 INFO  [http-nio-8080-exec-3] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:01:30.165 INFO  [http-nio-8080-exec-4] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:01:30.168 INFO  [http-nio-8080-exec-4] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:01:36.076 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:01:36.085 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:01:36.097 INFO  [http-nio-8080-exec-1] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:01:36.100 INFO  [http-nio-8080-exec-1] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:01:39.900 INFO  [http-nio-8080-exec-5] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:01:39.902 INFO  [http-nio-8080-exec-5] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:01:39.906 INFO  [http-nio-8080-exec-6] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:01:39.909 INFO  [http-nio-8080-exec-6] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:01:39.949 INFO  [http-nio-8080-exec-9] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:01:39.955 INFO  [http-nio-8080-exec-9] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:01:39.969 INFO  [http-nio-8080-exec-7] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:01:39.973 INFO  [http-nio-8080-exec-7] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:02:06.866 INFO  [http-nio-8080-exec-8] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:02:06.868 INFO  [http-nio-8080-exec-8] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:02:06.871 INFO  [http-nio-8080-exec-10] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:02:06.873 INFO  [http-nio-8080-exec-10] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:02:06.936 INFO  [http-nio-8080-exec-3] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:02:06.941 INFO  [http-nio-8080-exec-3] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:02:06.953 INFO  [http-nio-8080-exec-4] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:02:06.956 INFO  [http-nio-8080-exec-4] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:03:56.435 INFO  [http-nio-8080-exec-5] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:03:56.437 INFO  [http-nio-8080-exec-5] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:03:56.441 INFO  [http-nio-8080-exec-6] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:03:56.443 INFO  [http-nio-8080-exec-6] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:04:02.922 INFO  [http-nio-8080-exec-9] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:04:05.133 INFO  [http-nio-8080-exec-9] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:04:05.143 INFO  [http-nio-8080-exec-7] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:04:43.321 INFO  [http-nio-8080-exec-7] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:05:17.960 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-02 13:05:17.965 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-08-02 13:05:19.457 INFO  [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2025-08-02 13:05:19.461 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:05:19.461 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:05:19.461 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:05:19.936 DEBUG [restartedMain] org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2025-08-02 13:05:20.346 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:05:20.348 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:05:20.348 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:05:20.395 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:05:20.437 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:05:20.742 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-08-02 13:05:20.844 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-08-02 13:05:20.978 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:05:21.457 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:05:21.483 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 2.361 seconds (JVM running for 2.722)
+2025-08-02 13:05:25.002 INFO  [http-nio-8080-exec-2] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-02 13:05:25.071 INFO  [http-nio-8080-exec-2] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:05:25.120 INFO  [http-nio-8080-exec-2] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:05:25.137 INFO  [http-nio-8080-exec-1] c.f.b.controller.AuthController - 👤 获取用户信息
+2025-08-02 13:05:25.141 INFO  [http-nio-8080-exec-1] c.f.b.controller.AuthController - ✅ 获取用户信息成功: 188449829@qq.com
+2025-08-02 13:05:26.406 INFO  [http-nio-8080-exec-3] c.f.backend.controller.CarController - 🚗 获取车辆详情: 5
+2025-08-02 13:05:27.117 INFO  [http-nio-8080-exec-3] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Huracán Performante
+2025-08-02 13:05:27.135 INFO  [http-nio-8080-exec-4] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:05:29.082 INFO  [http-nio-8080-exec-4] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:05:45.930 INFO  [http-nio-8080-exec-6] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 5, 页码: 1, 每页: 10, 偏好: Handling, PI等级: null, Pro调校: false
+2025-08-02 13:05:49.174 INFO  [http-nio-8080-exec-6] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 1, 当前页: 1
+2025-08-02 13:06:56.474 INFO  [http-nio-8080-exec-10] c.f.backend.controller.CarController - 🏭 获取制造商列表
+2025-08-02 13:06:56.477 INFO  [http-nio-8080-exec-10] c.f.backend.controller.CarController - ✅ 成功获取制造商列表，数量: 7
+2025-08-02 13:06:56.489 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - 🚗 获取车辆列表 - 页码: 1, 每页: 12, 搜索: null, 游戏: null, 制造商: null, 驱动: null
+2025-08-02 13:07:00.088 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - ✅ 成功获取车辆列表，总数: 9, 当前页: 1
+2025-08-02 13:09:47.627 INFO  [Thread-7] o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:09:47.629 INFO  [Thread-7] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 13:09:47.630 INFO  [Thread-7] o.a.c.c.C.[.[localhost].[/api] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+2025-08-02 13:09:47.631 INFO  [Thread-7] o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:09:47.633 INFO  [Thread-7] o.a.coyote.http11.Http11NioProtocol - Destroying ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:09:47.635 INFO  [Thread-7] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-02 13:09:47.641 INFO  [Thread-7] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-08-02 13:09:47.757 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:09:47.757 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:09:47.758 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:00.844 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:10:00.845 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:10:00.845 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:06.612 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:10:06.612 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:10:06.612 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:06.828 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:06.829 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:10:06.829 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:10:06.842 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:10:06.853 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:10:06.952 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2025-08-02 13:10:06.956 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2025-08-02 13:10:06.987 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:10:07.058 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:07.061 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 0.463 seconds (JVM running for 288.3)
+2025-08-02 13:10:16.906 INFO  [Thread-9] o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:16.906 INFO  [Thread-9] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 13:10:16.908 INFO  [Thread-9] o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:16.909 INFO  [Thread-9] o.a.coyote.http11.Http11NioProtocol - Destroying ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:16.911 INFO  [Thread-9] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown initiated...
+2025-08-02 13:10:16.913 INFO  [Thread-9] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown completed.
+2025-08-02 13:10:17.017 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:10:17.017 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:10:17.017 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:17.159 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:17.159 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:10:17.159 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:10:17.166 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:10:17.172 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:10:17.230 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2025-08-02 13:10:17.234 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2025-08-02 13:10:17.258 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:10:17.311 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:17.313 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 0.316 seconds (JVM running for 298.552)
+2025-08-02 13:10:26.099 INFO  [Thread-20] o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:26.099 INFO  [Thread-20] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 13:10:26.101 INFO  [Thread-20] o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:26.102 INFO  [Thread-20] o.a.coyote.http11.Http11NioProtocol - Destroying ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:26.103 INFO  [Thread-20] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown initiated...
+2025-08-02 13:10:26.104 INFO  [Thread-20] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown completed.
+2025-08-02 13:10:26.202 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:10:26.202 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:10:26.203 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:26.341 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:26.341 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:10:26.341 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:10:26.350 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:10:26.356 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:10:26.402 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
+2025-08-02 13:10:26.404 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
+2025-08-02 13:10:26.423 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:10:26.469 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:26.472 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 0.287 seconds (JVM running for 307.711)
+2025-08-02 13:10:37.334 INFO  [Thread-25] o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:37.335 INFO  [Thread-25] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 13:10:37.337 INFO  [Thread-25] o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:37.339 INFO  [Thread-25] o.a.coyote.http11.Http11NioProtocol - Destroying ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:37.339 INFO  [Thread-25] com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown initiated...
+2025-08-02 13:10:37.341 INFO  [Thread-25] com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown completed.
+2025-08-02 13:10:37.448 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:10:37.448 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:10:37.448 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:37.610 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:37.610 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:10:37.610 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:10:37.618 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:10:37.623 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:10:37.673 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Starting...
+2025-08-02 13:10:37.676 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Start completed.
+2025-08-02 13:10:37.683 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Shutdown initiated...
+2025-08-02 13:10:37.683 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Shutdown completed.
+2025-08-02 13:10:37.684 INFO  [restartedMain] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 13:10:45.395 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 28608 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:10:45.395 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:10:45.395 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:10:45.520 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:45.520 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:10:45.521 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:10:45.530 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:10:45.536 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:10:45.587 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-6 - Starting...
+2025-08-02 13:10:45.588 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-6 - Start completed.
+2025-08-02 13:10:45.609 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:10:45.662 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:10:45.664 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 0.285 seconds (JVM running for 326.903)
+2025-08-02 13:11:54.308 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-6 - Shutdown initiated...
+2025-08-02 13:11:54.311 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - HikariPool-6 - Shutdown completed.
+2025-08-02 13:11:57.588 INFO  [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.2.5.Final
+2025-08-02 13:11:57.590 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 16504 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:11:57.590 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:11:57.592 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:11:58.087 DEBUG [restartedMain] org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2025-08-02 13:11:58.512 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:11:58.514 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:11:58.514 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:11:58.562 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:11:58.603 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:11:58.877 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-08-02 13:11:58.963 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-08-02 13:11:59.073 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:11:59.488 INFO  [restartedMain] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:11:59.511 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 2.269 seconds (JVM running for 2.589)
+2025-08-02 13:12:01.188 INFO  [http-nio-8080-exec-1] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-02 13:12:01.259 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - 🚗 获取车辆详情: 9
+2025-08-02 13:12:01.299 INFO  [http-nio-8080-exec-2] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: M5 Competition
+2025-08-02 13:12:01.328 INFO  [http-nio-8080-exec-4] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 9, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:12:01.348 INFO  [http-nio-8080-exec-4] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 0, 当前页: 1
+2025-08-02 13:12:03.075 INFO  [http-nio-8080-exec-5] c.f.backend.controller.CarController - 🏭 获取制造商列表
+2025-08-02 13:12:03.077 INFO  [http-nio-8080-exec-5] c.f.backend.controller.CarController - ✅ 成功获取制造商列表，数量: 7
+2025-08-02 13:12:03.086 INFO  [http-nio-8080-exec-6] c.f.backend.controller.CarController - 🚗 获取车辆列表 - 页码: 1, 每页: 12, 搜索: null, 游戏: null, 制造商: null, 驱动: null
+2025-08-02 13:12:03.096 INFO  [http-nio-8080-exec-6] c.f.backend.controller.CarController - ✅ 成功获取车辆列表，总数: 9, 当前页: 1
+2025-08-02 13:12:35.168 INFO  [http-nio-8080-exec-8] c.f.backend.controller.CarController - 🚗 获取车辆详情: 3
+2025-08-02 13:12:35.175 INFO  [http-nio-8080-exec-8] c.f.backend.controller.CarController - ✅ 成功获取车辆详情: Corvette C7 Z06
+2025-08-02 13:12:35.191 INFO  [http-nio-8080-exec-10] c.f.backend.controller.CarController - 🎵 获取车辆调校列表 - 车辆: 3, 页码: 1, 每页: 10, 偏好: null, PI等级: null, Pro调校: false
+2025-08-02 13:12:35.194 INFO  [http-nio-8080-exec-10] c.f.backend.controller.CarController - ✅ 成功获取车辆调校列表，总数: 2, 当前页: 1
+2025-08-02 13:13:20.749 INFO  [Thread-7] o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:13:20.750 INFO  [Thread-7] o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-08-02 13:13:20.753 INFO  [Thread-7] o.a.c.c.C.[.[localhost].[/api] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+2025-08-02 13:13:20.756 INFO  [Thread-7] o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:13:20.758 INFO  [Thread-7] o.a.coyote.http11.Http11NioProtocol - Destroying ProtocolHandler ["http-nio-8080"]
+2025-08-02 13:13:20.764 INFO  [Thread-7] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-02 13:13:20.790 INFO  [Thread-7] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-08-02 13:13:23.096 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Starting ForzaTuneProBackendApplication using Java 1.8.0_452 on YHLC-HS76AWIFIZY with PID 16504 (D:\ForzaTune.PRO-Backend\target\classes started by Admin in D:\ForzaTune.PRO-Backend)
+2025-08-02 13:13:23.096 DEBUG [restartedMain] c.f.b.ForzaTuneProBackendApplication - Running with Spring Boot v2.7.18, Spring v5.3.31
+2025-08-02 13:13:23.096 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-02 13:13:23.352 INFO  [restartedMain] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-02 13:13:23.352 INFO  [restartedMain] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-08-02 13:13:23.373 INFO  [restartedMain] o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2025-08-02 13:13:23.395 DEBUG [restartedMain] c.f.b.filter.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-08-02 13:13:23.675 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2025-08-02 13:13:23.682 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2025-08-02 13:13:23.754 ERROR [restartedMain] c.f.backend.service.CarDataService - Failed to load car data from static file
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "gameId" (class com.forzatune.backend.entity.Car), not marked as ignorable (11 known properties: "gameCategory", "manufacturer", "imageUrl", "pi", "id", "year", "category", "name", "drivetrain", "createdAt", "updatedAt"])
+ at [Source: UNKNOWN; byte offset: #UNKNOWN] (through reference chain: com.forzatune.backend.entity.Car["gameId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1127)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2036)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1700)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1678)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:320)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:323)
+	at com.fasterxml.jackson.databind.ObjectMapper._readValue(ObjectMapper.java:4650)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2831)
+	at com.fasterxml.jackson.databind.ObjectMapper.treeToValue(ObjectMapper.java:3295)
+	at com.forzatune.backend.service.CarDataService.loadCarData(CarDataService.java:54)
+	at com.forzatune.backend.service.CarDataService.init(CarDataService.java:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:929)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:591)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:409)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
+	at com.forzatune.backend.ForzaTuneProBackendApplication.main(ForzaTuneProBackendApplication.java:14)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-08-02 13:13:23.884 INFO  [restartedMain] c.f.b.ForzaTuneProBackendApplication - Started ForzaTuneProBackendApplication in 0.822 seconds (JVM running for 86.962)

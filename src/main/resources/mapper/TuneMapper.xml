@@ -7,7 +7,7 @@
         <id property="id" column="id"/>
         <result property="carId" column="car_id"/>
         <result property="authorId" column="author_id"/>
-        <result property="authorGamertag" column="author_gamertag"/>
+<!--        <result property="authorGamertag" column="author_gamertag"/>-->
         <result property="shareCode" column="share_code"/>
         <result property="preference" column="preference"/>
         <result property="piClass" column="pi_class"/>
@@ -74,7 +74,7 @@
     <resultMap id="TuneDtoResultMap" type="com.forzatune.backend.dto.TuneDto">
         <id property="id" column="id"/>
         <result property="shareCode" column="share_code"/>
-        <result property="authorGamertag" column="author_gamertag"/>
+<!--        <result property="authorGamertag" column="author_gamertag"/>-->
         <result property="isProTune" column="is_pro_tune"/>
         <result property="preference" column="preference"/>
         <result property="piClass" column="pi_class"/>
@@ -182,8 +182,7 @@
     <!-- 根据ID获取调校 -->
     <select id="selectById" resultMap="TuneResultMap">
         SELECT
-        <include refid="Base_Column_List"/>,
-<!--        <include refid="Parameters_Column_List"/>-->
+        <include refid="Base_Column_List"/>
         FROM tunes t
 <!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
         WHERE t.id = #{id}
@@ -202,11 +201,10 @@
     <!-- 根据车辆ID获取调校 -->
     <select id="selectByCarId" resultMap="TuneResultMap">
         SELECT 
-            <include refid="Base_Column_List"/>,
-<!--            <include refid="Parameters_Column_List"/>-->
+            <include refid="Base_Column_List"/>
         FROM tunes t
 <!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
-<!--        WHERE t.car_id = #{carId}-->
+        WHERE t.car_id = #{carId}
         ORDER BY t.is_pro_tune DESC, t.like_count DESC, t.created_at DESC
     </select>
     
@@ -221,19 +219,17 @@
         ORDER BY t.created_at DESC
     </select>
     
-    <!-- 获取PRO调校 -->
-    <select id="selectProTunes" resultMap="TuneResultMap">
+    <!-- 获取PRO调校（基础版本） -->
+    <select id="selectProTunesBasic" resultMap="TuneResultMap">
         SELECT 
-            <include refid="Base_Column_List"/>,
-<!--            <include refid="Parameters_Column_List"/>-->
+            <include refid="Base_Column_List"/>
         FROM tunes t
-<!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
-<!--        WHERE t.is_pro_tune = 1-->
+        WHERE t.is_pro_tune = 1
         ORDER BY t.like_count DESC, t.created_at DESC
     </select>
     
-    <!-- 获取最新调校 -->
-    <select id="selectRecentTunes" resultMap="TuneResultMap">
+    <!-- 获取最新调校（包含参数） -->
+    <select id="selectRecentTunesWithParameters" resultMap="TuneResultMap">
         SELECT 
             <include refid="Base_Column_List"/>,
             <include refid="Parameters_Column_List"/>
@@ -435,4 +431,17 @@
     <update id="decrementFavoriteCount">
         UPDATE tunes SET favorite_count = GREATEST(favorite_count - 1, 0) WHERE id = #{id}
     </update>
+
+    <!-- 批量查询车辆调校数量 -->
+    <select id="selectTuneCountByCarIds" resultType="com.forzatune.backend.dto.CarTuneCount">
+        SELECT 
+            car_id as carId,
+            COUNT(*) as tuneCount
+        FROM tunes 
+        WHERE car_id IN
+        <foreach collection="carIds" item="carId" open="(" separator="," close=")">
+            #{carId}
+        </foreach>
+        GROUP BY car_id
+    </select>
 </mapper> 

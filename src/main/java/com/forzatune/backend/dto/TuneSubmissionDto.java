@@ -15,13 +15,13 @@ public class TuneSubmissionDto {
     // 包含 Tune 实体的基本信息
     private String carId;
     private String shareCode;
-    private Tune.TunePreference preference;
-    private Tune.PIClass piClass;
+    private String preference;
+    private String piClass;
     private Integer finalPI;
-    private Tune.Drivetrain drivetrain;
-    private Tune.TireCompound tireCompound;
-    private Tune.RaceType raceType;
-    private List<Tune.SurfaceCondition> surfaceConditions;
+    private String drivetrain;
+    private String tireCompound;
+    private String raceType;
+    private List<String> surfaceConditions;
     private String description;
     private Boolean isProTune;
     private Boolean isParametersPublic;

@@ -20,7 +20,7 @@ public class User implements UserDetails {
     private String id;
     private String xboxId; // Xbox Live ID，用于显示和社交
     private String email;
-    private String password; // 密码字段
+    private String passwordHash; // 密码哈希字段
     private Boolean isProPlayer = false;
     private LocalDateTime proPlayerSince;
     private Integer totalTunes = 0;
@@ -45,7 +45,7 @@ public class User implements UserDetails {
     
     @Override
     public String getPassword() {
-        return password;
+        return passwordHash;
     }
     
     @Override
