@@ -25,50 +25,7 @@
         <result property="gameCategory" column="game_category"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        
-        <!-- 关联调校参数 -->
-        <association property="tuneParameters" javaType="com.forzatune.backend.entity.TuneParameters">
-            <id property="id" column="param_id"/>
-            <result property="tuneId" column="tune_id"/>
-            <result property="frontTirePressure" column="front_tire_pressure"/>
-            <result property="rearTirePressure" column="rear_tire_pressure"/>
-            <result property="transmissionSpeeds" column="transmission_speeds"/>
-            <result property="finalDrive" column="final_drive"/>
-            <result property="gear1Ratio" column="gear_1_ratio"/>
-            <result property="gear2Ratio" column="gear_2_ratio"/>
-            <result property="gear3Ratio" column="gear_3_ratio"/>
-            <result property="gear4Ratio" column="gear_4_ratio"/>
-            <result property="gear5Ratio" column="gear_5_ratio"/>
-            <result property="gear6Ratio" column="gear_6_ratio"/>
-            <result property="gear7Ratio" column="gear_7_ratio"/>
-            <result property="gear8Ratio" column="gear_8_ratio"/>
-            <result property="gear9Ratio" column="gear_9_ratio"/>
-            <result property="frontCamber" column="front_camber"/>
-            <result property="rearCamber" column="rear_camber"/>
-            <result property="frontToe" column="front_toe"/>
-            <result property="rearToe" column="rear_toe"/>
-            <result property="frontCaster" column="front_caster"/>
-            <result property="frontAntiRollBar" column="front_anti_roll_bar"/>
-            <result property="rearAntiRollBar" column="rear_anti_roll_bar"/>
-            <result property="frontSprings" column="front_springs"/>
-            <result property="rearSprings" column="rear_springs"/>
-            <result property="frontRideHeight" column="front_ride_height"/>
-            <result property="rearRideHeight" column="rear_ride_height"/>
-            <result property="frontRebound" column="front_rebound"/>
-            <result property="rearRebound" column="rear_rebound"/>
-            <result property="frontBump" column="front_bump"/>
-            <result property="rearBump" column="rear_bump"/>
-            <result property="differentialType" column="differential_type"/>
-            <result property="frontAcceleration" column="front_acceleration"/>
-            <result property="frontDeceleration" column="front_deceleration"/>
-            <result property="rearAcceleration" column="rear_acceleration"/>
-            <result property="rearDeceleration" column="rear_deceleration"/>
-            <result property="centerBalance" column="center_balance"/>
-            <result property="brakePressure" column="brake_pressure"/>
-            <result property="frontBrakeBalance" column="front_brake_balance"/>
-            <result property="frontDownforce" column="front_downforce"/>
-            <result property="rearDownforce" column="rear_downforce"/>
-        </association>
+        <result property="parameters" column="parameters" typeHandler="com.forzatune.backend.handler.JsonObjectTypeHandler"/>
     </resultMap>
 
     <resultMap id="TuneDtoResultMap" type="com.forzatune.backend.dto.TuneDto">
@@ -82,7 +39,6 @@
         <result property="likeCount" column="like_count"/>
         <result property="gameCategory" column="game_category"/>
         <result property="createdAt" column="created_at"/>
-<!--        <result property="bestLapTime" column="bestLapTime"/>-->
     </resultMap>
 
     <!-- 基础查询字段 -->
@@ -90,20 +46,7 @@
         t.id, t.car_id, t.author_id, t.author_xbox_id, t.share_code, t.preference,
         t.pi_class, t.final_pi, t.drivetrain, t.tire_compound, t.race_type, t.surface_conditions,
         t.description, t.is_pro_tune, t.is_parameters_public, t.has_detailed_parameters,
-        t.screenshot_url, t.like_count, t.game_category, t.created_at, t.updated_at
-    </sql>
-
-    <!-- 调校参数字段 -->
-    <sql id="Parameters_Column_List">
-        tp.id as param_id, tp.tune_id, tp.front_tire_pressure, tp.rear_tire_pressure,
-        tp.transmission_speeds, tp.final_drive, tp.gear_1_ratio, tp.gear_2_ratio, tp.gear_3_ratio,
-        tp.gear_4_ratio, tp.gear_5_ratio, tp.gear_6_ratio, tp.gear_7_ratio, tp.gear_8_ratio, tp.gear_9_ratio,
-        tp.front_camber, tp.rear_camber, tp.front_toe, tp.rear_toe, tp.front_caster,
-        tp.front_anti_roll_bar, tp.rear_anti_roll_bar, tp.front_springs, tp.rear_springs,
-        tp.front_ride_height, tp.rear_ride_height, tp.front_rebound, tp.rear_rebound,
-        tp.front_bump, tp.rear_bump, tp.differential_type, tp.front_acceleration,
-        tp.front_deceleration, tp.rear_acceleration, tp.rear_deceleration, tp.center_balance,
-        tp.brake_pressure, tp.front_brake_balance, tp.front_downforce, tp.rear_downforce
+        t.screenshot_url, t.like_count, t.game_category, t.created_at, t.updated_at, t.parameters
     </sql>
 
     <select id="selectRecentTunesWithDetails" resultMap="TuneDtoResultMap">
@@ -185,17 +128,14 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM tunes t
-<!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
         WHERE t.id = #{id}
     </select>
 
     <!-- 根据ID获取调校及详情信息 -->
     <select id="selectByIdWithDetail" resultMap="TuneResultMap">
         SELECT 
-            <include refid="Base_Column_List"/>,
-            <include refid="Parameters_Column_List"/>
+            <include refid="Base_Column_List"/>
         FROM tunes t
-        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id
         WHERE t.id = #{id}
     </select>
     
@@ -204,7 +144,6 @@
         SELECT 
             <include refid="Base_Column_List"/>
         FROM tunes t
-<!--        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id-->
         WHERE t.car_id = #{carId}
         ORDER BY t.is_pro_tune DESC, t.like_count DESC, t.created_at DESC
     </select>
@@ -212,10 +151,8 @@
     <!-- 根据作者ID获取调校 -->
     <select id="selectByAuthorId" resultMap="TuneResultMap">
         SELECT 
-            <include refid="Base_Column_List"/>,
-            <include refid="Parameters_Column_List"/>
+            <include refid="Base_Column_List"/>
         FROM tunes t
-        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id
         WHERE t.author_id = #{authorId}
         ORDER BY t.created_at DESC
     </select>
@@ -232,10 +169,8 @@
     <!-- 获取最新调校（包含参数） -->
     <select id="selectRecentTunesWithParameters" resultMap="TuneResultMap">
         SELECT 
-            <include refid="Base_Column_List"/>,
-            <include refid="Parameters_Column_List"/>
+            <include refid="Base_Column_List"/>
         FROM tunes t
-        LEFT JOIN tune_parameters tp ON t.id = tp.tune_id
         ORDER BY t.created_at DESC
     </select>
     
@@ -249,11 +184,13 @@
         INSERT INTO tunes (
             id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi,
             drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune,
-            is_parameters_public, has_detailed_parameters, screenshot_url, like_count, created_at, updated_at
+            is_parameters_public, has_detailed_parameters, screenshot_url, like_count, game_category,
+            parameters, created_at, updated_at
         ) VALUES (
             #{id}, #{carId}, #{authorId}, #{authorXboxId}, #{shareCode}, #{preference}, #{piClass}, #{finalPI},
             #{drivetrain}, #{tireCompound}, #{raceType}, #{surfaceConditions,typeHandler=com.forzatune.backend.handler.JsonTypeHandler}, #{description}, #{isProTune},
-            #{isParametersPublic}, #{hasDetailedParameters}, #{screenshotUrl}, #{likeCount}, NOW(), NOW()
+            #{isParametersPublic}, #{hasDetailedParameters}, #{screenshotUrl}, #{likeCount}, #{gameCategory},
+            #{parameters,typeHandler=com.forzatune.backend.handler.JsonObjectTypeHandler}, NOW(), NOW()
         )
     </insert>
     
@@ -277,6 +214,8 @@
             has_detailed_parameters = #{hasDetailedParameters},
             screenshot_url = #{screenshotUrl},
             like_count = #{likeCount},
+            game_category = #{gameCategory},
+            parameters = #{parameters,typeHandler=com.forzatune.backend.handler.JsonObjectTypeHandler},
             updated_at = NOW()
         WHERE id = #{id}
     </update>

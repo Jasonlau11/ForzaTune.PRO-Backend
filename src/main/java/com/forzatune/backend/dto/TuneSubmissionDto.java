@@ -1,7 +1,5 @@
 package com.forzatune.backend.dto;
 
-import com.forzatune.backend.entity.Tune;
-import com.forzatune.backend.entity.TuneParameters;
 import lombok.Data;
 
 import java.util.List;
@@ -27,7 +25,7 @@ public class TuneSubmissionDto {
     private Boolean isParametersPublic;
     private String screenshotUrl;
 
-    // 包含详细的调校参数
-    private TuneParametersDto parameters;
+    // 包含详细的调校参数 - 使用Object类型支持不同游戏的JSON格式
+    private Object parameters;
 
 }

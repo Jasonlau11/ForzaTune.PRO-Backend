@@ -28,11 +28,12 @@ public class TuneDto {
     private Integer favoriteCount;
     private String createdAt;
     private String gameCategory; // 游戏分类字段
-    private TuneParametersDto parameters;
+    private Boolean isParametersPublic; // 是否公开详细参数
+    private Object parameters; // 调校参数JSON对象，支持不同游戏格式
 
     /**
      * 静态工厂方法：从 Tune 实体对象及关联信息转换为 TuneDto 对象。
-     * 这个方法是“只读”的，专门用于将后端数据转换为API响应格式。
+     * 这个方法是"只读"的，专门用于将后端数据转换为API响应格式。
      *
      * @param tune 调校实体对象
      * @return 转换后的 TuneDto 对象
@@ -49,6 +50,7 @@ public class TuneDto {
         dto.setShareCode(tune.getShareCode());
         dto.setCarId(tune.getCarId());
         dto.setIsProTune(tune.getIsProTune());
+        dto.setIsParametersPublic(tune.getIsParametersPublic());
         dto.setLikeCount(tune.getLikeCount() != null ? tune.getLikeCount() : 0);
         dto.setGameCategory(tune.getGameCategory()); // 设置游戏分类
 
@@ -78,6 +80,11 @@ public class TuneDto {
         }
         if (tune.getFinalPI() != null) {
             dto.setFinalPI(tune.getFinalPI());
+        }
+
+        // 处理调校参数 - 直接传递JSON对象
+        if (tune.getParameters() != null && tune.getIsParametersPublic()) {
+            dto.setParameters(tune.getParameters());
         }
 
         if (tune.getCreatedAt() != null) {

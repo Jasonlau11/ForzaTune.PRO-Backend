@@ -3,6 +3,8 @@ package com.forzatune.backend.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -34,8 +36,5 @@ public class Tune {
     private Date updatedAt;
     private Integer likeCount = 0;
     private String gameCategory; // 游戏分类字段
-//    private List<LapTime> lapTimes;
-    private TuneParameters tuneParameters;
-    
-
+    private Object parameters; // 调校参数JSON字段，支持不同游戏格式
 } 

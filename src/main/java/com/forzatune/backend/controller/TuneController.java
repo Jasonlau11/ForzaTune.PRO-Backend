@@ -50,22 +50,8 @@ public class TuneController {
             tuneDtoForService.setSurfaceConditions(tuneDto.getSurfaceConditions());
             tuneDtoForService.setDescription(tuneDto.getDescription());
             tuneDtoForService.setIsProTune(tuneDto.getIsProTune());
+            tuneDtoForService.setIsParametersPublic(tuneDto.getIsParametersPublic());
             tuneDtoForService.setParameters(tuneDto.getParameters());
-            
-            // 记录接收到的数据用于调试
-            logger.info("📋 接收到的调校数据:");
-            logger.info("  - 车辆ID: {}", tuneDto.getCarId());
-            logger.info("  - 分享码: {}", tuneDto.getShareCode());
-            logger.info("  - 倾向: {}", tuneDto.getPreference());
-            logger.info("  - PI等级: {}", tuneDto.getPiClass());
-            logger.info("  - 最终PI: {}", tuneDto.getFinalPI());
-            logger.info("  - 驱动: {}", tuneDto.getDrivetrain());
-            logger.info("  - 轮胎: {}", tuneDto.getTireCompound());
-            logger.info("  - 地面条件: {}", tuneDto.getSurfaceConditions());
-            logger.info("  - 描述: {}", tuneDto.getDescription());
-            logger.info("  - 是否Pro: {}", tuneDto.getIsProTune());
-            logger.info("  - 参数公开: {}", tuneDto.getIsParametersPublic());
-            logger.info("  - 详细参数: {}", tuneDto.getParameters() != null ? "有" : "无");
             
             TuneDto createdTune = tuneService.createTune(tuneDtoForService);
             logger.info("✅ 成功创建调校: {}", createdTune.getId());
@@ -127,13 +113,13 @@ public class TuneController {
         logger.info("🎵 获取调校详情: {}", tuneId);
         
         try {
-//            TuneDto tune = tuneService.getTuneByIdWithDetail(tuneId);
-//            if (tune == null) {
-//                logger.warn("⚠️ 调校不存在: {}", tuneId);
-//                return ResponseEntity.ok(ApiResponse.failure("调校不存在"));
-//            }
+            TuneDto tune = tuneService.getTuneById(tuneId);
+            if (tune == null) {
+                logger.warn("⚠️ 调校不存在: {}", tuneId);
+                return ResponseEntity.ok(ApiResponse.failure("调校不存在"));
+            }
             logger.info("✅ 成功获取调校详情: {}", tuneId);
-            return ResponseEntity.ok(ApiResponse.success(null));
+            return ResponseEntity.ok(ApiResponse.success(tune));
         } catch (Exception e) {
             logger.error("❌ 获取调校详情失败: {}, 错误: {}", tuneId, e.getMessage());
             return ResponseEntity.ok(ApiResponse.failure("获取调校数据失败: " + e.getMessage()));

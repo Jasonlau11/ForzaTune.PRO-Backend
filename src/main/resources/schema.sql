@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS tunes (
     screenshot_url VARCHAR(255),
     like_count INT DEFAULT 0,
     game_category ENUM('fh4', 'fh5') NOT NULL, -- 游戏分类字段
+    parameters JSON, -- 调校参数JSON字段，支持不同游戏格式
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
