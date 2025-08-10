@@ -38,6 +38,38 @@ public class CachingConfig {
 //                        .expireAfterWrite(2, TimeUnit.HOURS)
 //                        .build());
 
+        // 邮箱验证码缓存：10分钟有效
+        cacheManager.registerCustomCache("emailVerification",
+                Caffeine.newBuilder()
+                        .initialCapacity(1000)
+                        .maximumSize(10000)
+                        .expireAfterWrite(10, TimeUnit.MINUTES)
+                        .build());
+
+        // 发送冷却缓存：60秒
+        cacheManager.registerCustomCache("emailSendCooldown",
+                Caffeine.newBuilder()
+                        .initialCapacity(1000)
+                        .maximumSize(10000)
+                        .expireAfterWrite(60, TimeUnit.SECONDS)
+                        .build());
+
+        // 验证码失败计数锁定：15分钟
+        cacheManager.registerCustomCache("emailCodeFailCount",
+                Caffeine.newBuilder()
+                        .initialCapacity(1000)
+                        .maximumSize(10000)
+                        .expireAfterWrite(15, TimeUnit.MINUTES)
+                        .build());
+
+        // 每日配额：24小时
+        cacheManager.registerCustomCache("emailDailyQuota",
+                Caffeine.newBuilder()
+                        .initialCapacity(1000)
+                        .maximumSize(20000)
+                        .expireAfterWrite(24, TimeUnit.HOURS)
+                        .build());
+
         return cacheManager;
     }
 }

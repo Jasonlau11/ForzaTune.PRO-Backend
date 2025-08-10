@@ -42,6 +42,11 @@ public interface TuneMapper {
     
     List<Tune> selectByAuthorId(@Param("authorId") String authorId);
     
+    /**
+     * 查询属于某用户的调校（owner_user_id=用户 或 owner_xbox_id=用户xboxId）
+     */
+    List<Tune> selectByOwner(@Param("ownerUserId") String ownerUserId, @Param("ownerXboxId") String ownerXboxId);
+    
     List<Tune> selectProTunesBasic();
     
     // 新增方法：获取最新调校（包含参数）

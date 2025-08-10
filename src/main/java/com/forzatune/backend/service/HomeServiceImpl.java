@@ -7,7 +7,6 @@ import com.forzatune.backend.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,6 +66,24 @@ public class HomeServiceImpl implements HomeService {
             // 查询所有游戏的调校
             recentTunes = tuneMapper.selectRecentTunesWithDetails(3);
             proTunes = tuneMapper.selectProTunesWithDetails(3);
+        }
+
+        // 基于归属人是否为PRO来决定 proTunes：若 owner_user_id 对应用户为 PRO，或 ownership_status=verified 且该用户为 PRO
+        // 简化：当 ownerUserId 存在且该用户为 PRO 则保留；否则按 isProTune 保留。
+        if (proTunes != null && !proTunes.isEmpty()) {
+            proTunes = proTunes.stream().filter(t -> {
+                if (t.getOwnerUserId() != null && !t.getOwnerUserId().isEmpty()) {
+                    try {
+                        com.forzatune.backend.entity.User owner = userMapper.findById(t.getOwnerUserId());
+                        boolean ownerPro = owner != null && Boolean.TRUE.equals(owner.getIsProPlayer());
+                        t.setOwnerIsPro(ownerPro);
+                        return ownerPro; // 以归属人是否PRO为准
+                    } catch (Exception ignored) {
+                        return Boolean.TRUE.equals(t.getIsProTune());
+                    }
+                }
+                return Boolean.TRUE.equals(t.getIsProTune());
+            }).collect(java.util.stream.Collectors.toList());
         }
         
         homeData.setRecentTunes(recentTunes);

@@ -8,6 +8,10 @@
         <result property="carId" column="car_id"/>
         <result property="authorId" column="author_id"/>
         <result property="authorXboxId" column="author_xbox_id"/>
+        <result property="ownerUserId" column="owner_user_id"/>
+        <result property="ownerXboxId" column="owner_xbox_id"/>
+        <result property="ownershipStatus" column="ownership_status"/>
+        <result property="ownerVerifiedAt" column="owner_verified_at"/>
         <result property="shareCode" column="share_code"/>
         <result property="preference" column="preference"/>
         <result property="piClass" column="pi_class"/>
@@ -43,7 +47,8 @@
 
     <!-- 基础查询字段 -->
     <sql id="Base_Column_List">
-        t.id, t.car_id, t.author_id, t.author_xbox_id, t.share_code, t.preference,
+        t.id, t.car_id, t.author_id, t.author_xbox_id, t.owner_user_id, t.owner_xbox_id, t.ownership_status, t.owner_verified_at,
+        t.share_code, t.preference,
         t.pi_class, t.final_pi, t.drivetrain, t.tire_compound, t.race_type, t.surface_conditions,
         t.description, t.is_pro_tune, t.is_parameters_public, t.has_detailed_parameters,
         t.screenshot_url, t.like_count, t.game_category, t.created_at, t.updated_at, t.parameters
@@ -145,7 +150,7 @@
             <include refid="Base_Column_List"/>
         FROM tunes t
         WHERE t.car_id = #{carId}
-        ORDER BY t.is_pro_tune DESC, t.like_count DESC, t.created_at DESC
+        ORDER BY t.like_count DESC, t.created_at DESC
     </select>
     
     <!-- 根据作者ID获取调校 -->
@@ -156,6 +161,16 @@
         WHERE t.author_id = #{authorId}
         ORDER BY t.created_at DESC
     </select>
+
+  <!-- 按归属查询：owner_user_id=我 或 owner_xbox_id=我的xboxId -->
+  <select id="selectByOwner" resultMap="TuneResultMap">
+    SELECT 
+      <include refid="Base_Column_List"/>
+    FROM tunes t
+    WHERE (t.owner_user_id = #{ownerUserId}
+           OR (#{ownerXboxId} IS NOT NULL AND #{ownerXboxId} != '' AND t.owner_xbox_id = #{ownerXboxId}))
+    ORDER BY t.created_at DESC
+  </select>
     
     <!-- 获取PRO调校（基础版本） -->
     <select id="selectProTunesBasic" resultMap="TuneResultMap">
@@ -182,12 +197,14 @@
     <!-- 插入调校 -->
     <insert id="insert" parameterType="com.forzatune.backend.entity.Tune">
         INSERT INTO tunes (
-            id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi,
+            id, car_id, author_id, author_xbox_id, owner_user_id, owner_xbox_id, ownership_status, owner_verified_at,
+            share_code, preference, pi_class, final_pi,
             drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune,
             is_parameters_public, has_detailed_parameters, screenshot_url, like_count, game_category,
             parameters, created_at, updated_at
         ) VALUES (
-            #{id}, #{carId}, #{authorId}, #{authorXboxId}, #{shareCode}, #{preference}, #{piClass}, #{finalPI},
+            #{id}, #{carId}, #{authorId}, #{authorXboxId}, #{ownerUserId}, #{ownerXboxId}, #{ownershipStatus}, #{ownerVerifiedAt},
+            #{shareCode}, #{preference}, #{piClass}, #{finalPI},
             #{drivetrain}, #{tireCompound}, #{raceType}, #{surfaceConditions,typeHandler=com.forzatune.backend.handler.JsonTypeHandler}, #{description}, #{isProTune},
             #{isParametersPublic}, #{hasDetailedParameters}, #{screenshotUrl}, #{likeCount}, #{gameCategory},
             #{parameters,typeHandler=com.forzatune.backend.handler.JsonObjectTypeHandler}, NOW(), NOW()
@@ -200,6 +217,10 @@
             car_id = #{carId},
             author_id = #{authorId},
             author_xbox_id = #{authorXboxId},
+            owner_user_id = #{ownerUserId},
+            owner_xbox_id = #{ownerXboxId},
+            ownership_status = #{ownershipStatus},
+            owner_verified_at = #{ownerVerifiedAt},
             share_code = #{shareCode},
             preference = #{preference},
             pi_class = #{piClass},

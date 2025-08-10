@@ -24,6 +24,7 @@ public class TuneSubmissionDto {
     private Boolean isProTune;
     private Boolean isParametersPublic;
     private String screenshotUrl;
+    private String ownerXboxId; // 归属Xbox ID（可选）
 
     // 包含详细的调校参数 - 使用Object类型支持不同游戏的JSON格式
     private Object parameters;

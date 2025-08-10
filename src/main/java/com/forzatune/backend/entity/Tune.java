@@ -3,10 +3,6 @@ package com.forzatune.backend.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +15,10 @@ public class Tune {
     private String carId;
     private String authorId;
     private String authorXboxId; // 作者的Xbox ID
+    private String ownerUserId; // 归属者站内用户ID（可空）
+    private String ownerXboxId; // 归属 Xbox ID（可空）
+    private String ownershipStatus; // unverified/pending/verified
+    private Date ownerVerifiedAt; // 归属被验证/认领时间
     private String shareCode;
     private String preference;
     private String piClass;

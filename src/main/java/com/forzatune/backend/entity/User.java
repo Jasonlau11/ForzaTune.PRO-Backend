@@ -4,13 +4,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +17,11 @@ public class User implements UserDetails {
     
     private String id;
     private String xboxId; // Xbox Live ID，用于显示和社交
+    private String xuid; // Xbox 用户XUID（可空）
+    private String xboxVerificationStatus; // pending/approved/denied
+    private Object xboxEvidence; // JSON 证据（URL数组、备注）
+    private LocalDateTime xboxVerifiedAt; // 审核通过时间
+    private String xboxDeniedReason; // 审核拒绝原因
     private String email;
     private String passwordHash; // 密码哈希字段
     private Boolean isProPlayer = false;
@@ -32,6 +35,7 @@ public class User implements UserDetails {
     private UserTier userTier = UserTier.STANDARD;
     private LocalDateTime lastLogin;
     private Boolean isActive = true;
+    private LocalDateTime emailVerifiedAt;
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

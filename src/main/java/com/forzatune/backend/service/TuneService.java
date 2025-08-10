@@ -2,7 +2,6 @@ package com.forzatune.backend.service;
 
 import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.dto.TuneDto;
-import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.vo.TunesSearchVo;
 
 import java.util.List;
@@ -65,4 +64,15 @@ public interface TuneService {
      * 获取PRO调校
      */
     List<TuneDto> getProTunes(int limit);
+
+    /**
+     * 获取指定用户的调校（分页）
+     */
+    PageDto<TuneDto> getMyTunes(String userId, int page, int limit, String gameCategory);
+
+    /**
+     * 获取“属于我的调校”（按归属人）
+     * 包含：owner_user_id = 我，或 owner_xbox_id 等于我的 xboxId
+     */
+    PageDto<TuneDto> getOwnedTunes(String userId, int page, int limit, String gameCategory);
 }

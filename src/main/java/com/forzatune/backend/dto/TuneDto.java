@@ -2,7 +2,6 @@ package com.forzatune.backend.dto;
 
 import com.forzatune.backend.entity.Tune;
 import lombok.Data;
-import java.time.Instant; // 使用 Instant 类型处理 UTC 时间戳
 import java.util.List;
 
 /**
@@ -15,6 +14,11 @@ public class TuneDto {
     private String carId;
     private String authorId;
     private String authorXboxId; // 作者的Xbox ID
+    private String ownerUserId; // 归属者用户ID（可空）
+    private String ownerXboxId; // 归属Xbox ID（可空）
+    private String ownershipStatus; // 归属状态
+    private String ownerVerifiedAt; // 归属验证时间
+    private Boolean ownerIsPro; // 归属者是否为PRO（用于展示与筛选）
     private Boolean isProTune;
     private String preference;
     private String piClass;
@@ -49,6 +53,16 @@ public class TuneDto {
         dto.setAuthorXboxId(tune.getAuthorXboxId());
         dto.setShareCode(tune.getShareCode());
         dto.setCarId(tune.getCarId());
+        // 归属信息
+        dto.setOwnerUserId(tune.getOwnerUserId());
+        dto.setOwnerXboxId(tune.getOwnerXboxId());
+        dto.setOwnershipStatus(tune.getOwnershipStatus());
+        if (tune.getOwnerVerifiedAt() != null) {
+            dto.setOwnerVerifiedAt(String.valueOf(tune.getOwnerVerifiedAt().getTime()));
+        }
+        // 归属人是否为PRO
+        // 简化：当 ownerUserId 存在时，调用方应补充 ownerIsPro；这里先默认由 isProTune 决定，后续在查询处修正
+        dto.setOwnerIsPro(tune.getIsProTune());
         dto.setIsProTune(tune.getIsProTune());
         dto.setIsParametersPublic(tune.getIsParametersPublic());
         dto.setLikeCount(tune.getLikeCount() != null ? tune.getLikeCount() : 0);

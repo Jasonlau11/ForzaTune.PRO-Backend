@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * 认证控制器
@@ -47,6 +48,24 @@ public class AuthController {
     }
 
     /**
+     * 解除当前用户的 Xbox 绑定
+     * URL: POST /api/auth/xbox/unlink
+     * Header: Authorization: Bearer {token}
+     * 返回: 最新的用户信息 UserInfo
+     */
+    @PostMapping("/xbox/unlink")
+    public ResponseEntity<AuthResponse.UserInfo> unlinkXbox(@RequestHeader("Authorization") String token) {
+        try {
+            String actualToken = token.replace("Bearer ", "");
+            AuthResponse.UserInfo updated = authService.unlinkXbox(actualToken);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            logger.error("❌ 解除Xbox绑定失败: {}", e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    /**
      * 用户注册
      * URL: POST /api/auth/register
      * 前端传参: { email: string, xboxId: string, pass: string, confirmPass: string }
@@ -63,6 +82,24 @@ public class AuthController {
         } catch (Exception e) {
             logger.error("❌ 注册失败: {}, 错误: {}", request.getEmail(), e.getMessage());
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 发送邮箱验证码
+     * URL: POST /api/auth/send-email-code
+     * 前端传参: { email: string }
+     * 后端返回: { success: true }
+     */
+    @PostMapping("/send-email-code")
+    public ResponseEntity<?> sendEmailCode(@RequestBody Map<String, String> body, @RequestHeader(value = "X-Forwarded-For", required = false) String xff, @RequestHeader(value = "X-Real-IP", required = false) String realIp) {
+        String email = body.get("email");
+        String clientIp = realIp != null && !realIp.isEmpty() ? realIp : (xff != null && !xff.isEmpty() ? xff.split(",")[0].trim() : null);
+        try {
+            authService.sendEmailCode(email, clientIp);
+            return ResponseEntity.ok(com.forzatune.backend.dto.ApiResponse.success(true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(com.forzatune.backend.dto.ApiResponse.failure(e.getMessage()));
         }
     }
 
@@ -115,8 +152,9 @@ public class AuthController {
         logger.info("🚪 用户登出");
         
         try {
-            // 移除Bearer前缀
+            // 移除Bearer前缀并简单记录长度以避免未使用变量告警
             String actualToken = token.replace("Bearer ", "");
+            logger.debug("Parsed token length: {}", actualToken.length());
             // 这里可以添加token到黑名单的逻辑
             logger.info("✅ 登出成功");
             return ResponseEntity.ok("登出成功");

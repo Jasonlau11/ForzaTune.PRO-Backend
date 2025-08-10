@@ -18,6 +18,25 @@ spring:
       name: admin
       password: admin
 
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: 93fcd2001@smtp-brevo.com
+    password: ${SMTP_PASSWORD:REPLACE_WITH_YOUR_REAL_SMTP_KEY}  # 设置环境变量 SMTP_PASSWORD
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        debug: true
+
+app:
+  mail:
+    sender-name: 'ForzaTune.PRO 团队'
+    from: 'noreply@forzatune.pro'  # 确保已在Brevo验证
+
 # MyBatis配置
 mybatis:
   mapper-locations: classpath:mapper/*.xml

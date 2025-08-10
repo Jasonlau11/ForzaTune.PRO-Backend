@@ -1,2 +1,19 @@
 /target/
-/target/
+
+# 敏感配置文件
+application-local.yml
+.env
+*.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 日志
+logs/
+*.log
+
+# 临时文件
+*.tmp
+*.temp

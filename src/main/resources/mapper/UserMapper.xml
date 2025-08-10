@@ -8,6 +8,11 @@
         <result property="email" column="email"/>
         <result property="passwordHash" column="password_hash"/>
         <result property="xboxId" column="xbox_id"/>
+        <result property="xuid" column="xuid"/>
+        <result property="xboxVerificationStatus" column="xbox_verification_status"/>
+        <result property="xboxEvidence" column="xbox_evidence"/>
+        <result property="xboxVerifiedAt" column="xbox_verified_at"/>
+        <result property="xboxDeniedReason" column="xbox_denied_reason"/>
         <result property="isProPlayer" column="is_pro_player"/>
         <result property="proPlayerSince" column="pro_player_since"/>
         <result property="totalTunes" column="total_tunes"/>
@@ -19,6 +24,7 @@
         <result property="userTier" column="user_tier"/>
         <result property="lastLogin" column="last_login"/>
         <result property="isActive" column="is_active"/>
+        <result property="emailVerifiedAt" column="email_verified_at"/>
     </resultMap>
 
     <select id="countTotal" resultType="long">
@@ -31,8 +37,9 @@
 
     <!-- 基础查询字段 -->
     <sql id="Base_Column_List">
-        id, email, password_hash, xbox_id, is_pro_player, pro_player_since,
-        total_tunes, total_likes, avatar_url, created_at, updated_at, bio, user_tier, last_login, is_active
+        id, email, password_hash, xbox_id, xuid, xbox_verification_status, xbox_evidence, xbox_verified_at, xbox_denied_reason,
+        is_pro_player, pro_player_since,
+        total_tunes, total_likes, avatar_url, created_at, updated_at, bio, user_tier, last_login, is_active, email_verified_at
     </sql>
     
     <!-- 根据ID获取用户 -->
@@ -86,6 +93,11 @@
             email = #{email},
             password_hash = #{passwordHash},
             xbox_id = #{xboxId},
+            xuid = #{xuid},
+            xbox_verification_status = #{xboxVerificationStatus},
+            xbox_evidence = #{xboxEvidence},
+            xbox_verified_at = #{xboxVerifiedAt},
+            xbox_denied_reason = #{xboxDeniedReason},
             is_pro_player = #{isProPlayer},
             pro_player_since = #{proPlayerSince},
             total_tunes = #{totalTunes},
@@ -95,6 +107,7 @@
             user_tier = #{userTier},
             last_login = #{lastLogin},
             is_active = #{isActive},
+            email_verified_at = #{emailVerifiedAt},
             updated_at = NOW()
         WHERE id = #{id}
     </update>

@@ -129,8 +129,8 @@
             c.game_category = #{gameCategory}
         GROUP BY
             c.id
-        HAVING
-            tuneCount > 0
+<!--        HAVING-->
+<!--            tuneCount > 0-->
         ORDER BY
             tuneCount DESC
         LIMIT #{limit}

@@ -4,8 +4,9 @@ import com.forzatune.backend.dto.ApiResponse;
 import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.dto.TuneSubmissionDto;
 import com.forzatune.backend.entity.Tune;
-import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.service.TuneService;
+import com.forzatune.backend.dto.PageDto;
+import com.forzatune.backend.utils.RequestUtils;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ public class TuneController {
             tuneDtoForService.setDescription(tuneDto.getDescription());
             tuneDtoForService.setIsProTune(tuneDto.getIsProTune());
             tuneDtoForService.setIsParametersPublic(tuneDto.getIsParametersPublic());
+            tuneDtoForService.setOwnerXboxId(tuneDto.getOwnerXboxId());
             tuneDtoForService.setParameters(tuneDto.getParameters());
             
             TuneDto createdTune = tuneService.createTune(tuneDtoForService);
@@ -59,6 +61,53 @@ public class TuneController {
         } catch (Exception e) {
             logger.error("❌ 创建调校失败: {}", e.getMessage());
             return ResponseEntity.ok(ApiResponse.failure("创建调校失败: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 获取当前登录用户的调校列表
+     * URL: GET /api/tunes/mine
+     * 查询参数:
+     *  - page: 页码，默认1
+     *  - limit: 每页数量，默认12
+     * 其他上下文参数从请求头读取（游戏分类等）
+     * 返回: { success: boolean, data: PageDto<TuneDto> }
+     */
+    @GetMapping("/mine")
+    public ResponseEntity<ApiResponse<PageDto<TuneDto>>> getMyTunes(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", defaultValue = "12") Integer limit) {
+        String userId = RequestUtils.getCurrentUserId();
+        String gameCategory = RequestUtils.getCurrentGameCategory();
+        logger.info("👤 获取我的调校 - userId: {}, page: {}, limit: {}, game: {}", userId, page, limit, gameCategory);
+
+        try {
+            PageDto<TuneDto> result = tuneService.getMyTunes(userId, page, limit, gameCategory);
+            return ResponseEntity.ok(ApiResponse.success(result));
+        } catch (Exception e) {
+            logger.error("❌ 获取我的调校失败: {}", e.getMessage());
+            return ResponseEntity.ok(ApiResponse.failure("获取我的调校失败: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 获取属于我的调校（按归属人）
+     * URL: GET /api/tunes/owned
+     * 查询参数:
+     *  - page: 页码，默认1
+     *  - limit: 每页数量，默认12
+     */
+    @GetMapping("/owned")
+    public ResponseEntity<ApiResponse<PageDto<TuneDto>>> getOwnedTunes(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", defaultValue = "12") Integer limit) {
+        try {
+            String userId = com.forzatune.backend.utils.RequestUtils.getCurrentUserId();
+            String gameCategory = com.forzatune.backend.utils.RequestUtils.getCurrentGameCategory();
+            PageDto<TuneDto> result = tuneService.getOwnedTunes(userId, page, limit, gameCategory);
+            return ResponseEntity.ok(ApiResponse.success(result));
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResponse.failure("获取属于我的调校失败: " + e.getMessage()));
         }
     }
 

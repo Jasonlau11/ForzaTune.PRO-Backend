@@ -27,4 +27,7 @@ public class RegisterRequest {
     @Size(min = 3, max = 50, message = "Xbox ID长度必须在3-50个字符之间")
     private String xboxId; // Xbox Live ID
 
+    @NotBlank(message = "邮箱验证码不能为空")
+    @Size(min = 6, max = 6, message = "验证码为6位数字")
+    private String emailCode;
 } 
