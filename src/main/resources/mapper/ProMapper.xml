@@ -76,17 +76,30 @@
         SELECT * FROM pro_applications WHERE user_id = #{userId} ORDER BY submitted_at DESC
     </select>
 
-    <!-- 根据ID获取PRO申请 -->
+    <!-- 根据ID获取PRO申请（为Map结果提供驼峰别名，便于服务层读取） -->
     <select id="selectApplicationById" resultType="map">
-        SELECT * FROM pro_applications WHERE id = #{id}
+        SELECT 
+            id,
+            user_id AS userId,
+            gamertag,
+            experience,
+            achievements,
+            sample_tunes AS sampleTunes,
+            status,
+            submitted_at AS submittedAt,
+            reviewed_at AS reviewedAt,
+            reviewed_by AS reviewedBy,
+            notes
+        FROM pro_applications 
+        WHERE id = #{id}
     </select>
 
-    <!-- 插入PRO申请 -->
-    <insert id="insertApplication" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+    <!-- 插入PRO申请（由应用层生成UUID主键） -->
+    <insert id="insertApplication" parameterType="map">
         INSERT INTO pro_applications (
-        user_id, gamertag, experience, achievements, sample_tunes, status, submitted_at
+        id, user_id, gamertag, experience, achievements, sample_tunes, status, submitted_at
         ) VALUES (
-        #{userId}, #{gamertag}, #{experience},
+        #{id}, #{userId}, #{gamertag}, #{experience},
         #{achievements, typeHandler=com.forzatune.backend.handler.JsonTypeHandler},
         #{sampleTunes, typeHandler=com.forzatune.backend.handler.JsonTypeHandler},
         'PENDING', NOW()

@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ProMapper {
     
     // PRO认证相关
-//    List<ProCertification> selectByUserId(@Param("userId") String userId);
+    List<ProCertification> selectCertificationsByUserId(@Param("userId") String userId);
     
     ProCertification selectById(@Param("id") String id);
     
@@ -26,11 +26,11 @@ public interface ProMapper {
     int countByUserId(@Param("userId") String userId);
     
     // PRO申请相关
-//    List<Map<String, Object>> selectApplications(@Param("status") String status);
+    List<Map<String, Object>> selectApplications(@Param("status") String status);
     
-//    List<Map<String, Object>> selectByUserId(@Param("userId") String userId);
+    List<Map<String, Object>> selectApplicationsByUserId(@Param("userId") String userId);
     
-//    Map<String, Object> selectApplicationById(@Param("id") String id);
+    Map<String, Object> selectApplicationById(@Param("id") String id);
     
     int insertApplication(Map<String, Object> application);
     

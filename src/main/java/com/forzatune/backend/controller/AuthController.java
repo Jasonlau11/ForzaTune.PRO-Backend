@@ -130,7 +130,8 @@ public class AuthController {
                     user.getXboxId(),
                     user.getIsProPlayer(),
                     user.getXboxId() != null && !user.getXboxId().isEmpty(),
-                    user.getUserTier().name()
+                    user.getUserTier().name(),
+                    user.getProPlayerSince() != null ? user.getProPlayerSince().toString() : null
             );
             
             logger.info("✅ 获取用户信息成功: {}", user.getEmail());

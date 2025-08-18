@@ -383,15 +383,7 @@
         LIMIT #{limit}
     </select>
 
-    <!-- 增加收藏数 -->
-    <update id="incrementFavoriteCount">
-        UPDATE tunes SET favorite_count = favorite_count + 1 WHERE id = #{id}
-    </update>
-
-    <!-- 减少收藏数 -->
-    <update id="decrementFavoriteCount">
-        UPDATE tunes SET favorite_count = GREATEST(favorite_count - 1, 0) WHERE id = #{id}
-    </update>
+    <!-- 收藏数不再在tunes表中维护，改由 user_favorites 统计 -->
 
     <!-- 批量查询车辆调校数量 -->
     <select id="selectTuneCountByCarIds" resultType="com.forzatune.backend.dto.CarTuneCount">
@@ -413,5 +405,65 @@
         FROM tunes t
         WHERE t.share_code = #{shareCode}
         LIMIT 1
+    </select>
+
+    <!-- 查询用户点赞的调校 -->
+    <select id="selectLikedByUser" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            c.name AS carName
+        FROM tunes t
+        LEFT JOIN cars c ON c.id = t.car_id
+        INNER JOIN user_likes ul ON ul.tune_id = t.id
+        WHERE ul.user_id = #{userId}
+        ORDER BY ul.created_at DESC
+    </select>
+
+    <select id="countLikedByUser" resultType="long">
+        SELECT COUNT(*)
+        FROM user_likes ul
+        WHERE ul.user_id = #{userId}
+    </select>
+
+    <select id="selectLikedByUserPaged" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            c.name AS carName
+        FROM tunes t
+        LEFT JOIN cars c ON c.id = t.car_id
+        INNER JOIN user_likes ul ON ul.tune_id = t.id
+        WHERE ul.user_id = #{userId}
+        ORDER BY ul.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 查询用户收藏的调校 -->
+    <select id="selectFavoritedByUser" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            c.name AS carName
+        FROM tunes t
+        LEFT JOIN cars c ON c.id = t.car_id
+        INNER JOIN user_favorites uf ON uf.tune_id = t.id
+        WHERE uf.user_id = #{userId}
+        ORDER BY uf.created_at DESC
+    </select>
+
+    <select id="countFavoritedByUser" resultType="long">
+        SELECT COUNT(*)
+        FROM user_favorites uf
+        WHERE uf.user_id = #{userId}
+    </select>
+
+    <select id="selectFavoritedByUserPaged" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            c.name AS carName
+        FROM tunes t
+        LEFT JOIN cars c ON c.id = t.car_id
+        INNER JOIN user_favorites uf ON uf.tune_id = t.id
+        WHERE uf.user_id = #{userId}
+        ORDER BY uf.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 </mapper> 

@@ -137,4 +137,18 @@ public interface TuneMapper {
      * @return 调校信息，如果不存在则返回null
      */
     Tune selectByShareCode(@Param("shareCode") String shareCode);
+
+    /**
+     * 查询用户点赞的调校
+     */
+    List<Tune> selectLikedByUser(@Param("userId") String userId);
+    List<Tune> selectLikedByUserPaged(@Param("userId") String userId, @Param("limit") int limit, @Param("offset") int offset);
+    long countLikedByUser(@Param("userId") String userId);
+
+    /**
+     * 查询用户收藏的调校
+     */
+    List<Tune> selectFavoritedByUser(@Param("userId") String userId);
+    List<Tune> selectFavoritedByUserPaged(@Param("userId") String userId, @Param("limit") int limit, @Param("offset") int offset);
+    long countFavoritedByUser(@Param("userId") String userId);
 }

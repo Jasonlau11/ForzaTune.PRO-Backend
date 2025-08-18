@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/activities")
@@ -47,22 +48,20 @@ public class ActivityController {
      * 获取活动统计
      */
     @GetMapping("/stats/user/{userId}")
-    public ResponseEntity<Object> getUserActivityStats(@PathVariable String userId) {
+    public ResponseEntity<Map<String, Object>> getUserActivityStats(@PathVariable String userId) {
         int totalActivities = activityMapper.countByUserId(userId);
-        int likedTunes = activityMapper.countByUserIdAndType(userId, "LIKED_TUNE");
-        int favoritedTunes = activityMapper.countByUserIdAndType(userId, "FAVORITED_TUNE");
-        int commentedTunes = activityMapper.countByUserIdAndType(userId, "COMMENTED_TUNE");
-        int uploadedTunes = activityMapper.countByUserIdAndType(userId, "UPLOADED_TUNE");
-        
-//        Map<String, Object> stats = Map.of(
-//            "totalActivities", totalActivities,
-//            "likedTunes", likedTunes,
-//            "favoritedTunes", favoritedTunes,
-//            "commentedTunes", commentedTunes,
-//            "uploadedTunes", uploadedTunes
-//        );
-        
-//        return ResponseEntity.ok(stats);
-        return ResponseEntity.ok(null);
+        int likedTunes = activityMapper.countByUserIdAndType(userId, "LIKE");
+        int favoritedTunes = activityMapper.countByUserIdAndType(userId, "FAVORITE");
+        int commentedTunes = activityMapper.countByUserIdAndType(userId, "COMMENT");
+        int uploadedTunes = activityMapper.countByUserIdAndType(userId, "UPLOAD");
+
+        Map<String, Object> stats = new HashMap<String, Object>();
+        stats.put("totalActivities", totalActivities);
+        stats.put("likedTunes", likedTunes);
+        stats.put("favoritedTunes", favoritedTunes);
+        stats.put("commentedTunes", commentedTunes);
+        stats.put("uploadedTunes", uploadedTunes);
+
+        return ResponseEntity.ok(stats);
     }
 } 

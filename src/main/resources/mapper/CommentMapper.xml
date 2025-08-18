@@ -6,8 +6,7 @@
         <id property="id" column="id"/>
         <result property="tuneId" column="tune_id"/>
         <result property="userId" column="user_id"/>
-        <result property="userGamertag" column="user_gamertag"/>
-        <result property="isProPlayer" column="is_pro_player"/>
+        <result property="userXboxId" column="user_xbox_id"/>
         <result property="content" column="content"/>
         <result property="rating" column="rating"/>
         <result property="likeCount" column="like_count"/>
@@ -22,8 +21,7 @@
         <id property="id" column="id"/>
         <result property="commentId" column="comment_id"/>
         <result property="userId" column="user_id"/>
-        <result property="userGamertag" column="user_gamertag"/>
-        <result property="isProPlayer" column="is_pro_player"/>
+        <result property="userXboxId" column="user_xbox_id"/>
         <result property="content" column="content"/>
         <result property="likeCount" column="like_count"/>
         <result property="createdAt" column="created_at"/>
@@ -32,7 +30,7 @@
 
     <select id="selectByTuneId" resultMap="CommentResultMap">
         SELECT
-        id, tune_id, user_id, user_gamertag, is_pro_player,
+        id, tune_id, user_id, user_xbox_id,
         content, rating, like_count, created_at, updated_at
         FROM tune_comments
         WHERE tune_id = #{tuneId}
@@ -41,7 +39,7 @@
 
     <select id="selectById" resultMap="CommentResultMap">
         SELECT
-        id, tune_id, user_id, user_gamertag, is_pro_player,
+        id, tune_id, user_id, user_xbox_id,
         content, rating, like_count, created_at, updated_at
         FROM tune_comments
         WHERE id = #{id}
@@ -78,11 +76,11 @@
 <!--    </select>-->
     
     <!-- 插入评论 -->
-    <insert id="insert" parameterType="com.forzatune.backend.entity.TuneComment" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.forzatune.backend.entity.TuneComment">
         INSERT INTO tune_comments (
-            tune_id, user_id, user_gamertag, is_pro_player, content, rating, like_count, created_at, updated_at
+            id, tune_id, user_id, user_xbox_id, content, rating, like_count, created_at, updated_at
         ) VALUES (
-            #{tuneId}, #{userId}, #{userGamertag}, #{isProPlayer}, #{content}, #{rating}, #{likeCount}, NOW(), NOW()
+            #{id}, #{tuneId}, #{userId}, #{userXboxId}, #{content}, #{rating}, #{likeCount}, NOW(), NOW()
         )
     </insert>
     
@@ -117,7 +115,7 @@
     
     <!-- 根据评论ID获取回复 -->
     <select id="selectRepliesByCommentId" resultMap="ReplyResultMap">
-        SELECT id, comment_id, user_id, user_gamertag, is_pro_player, content, like_count, created_at, updated_at
+        SELECT id, comment_id, user_id, user_xbox_id, content, like_count, created_at, updated_at
         FROM comment_replies
         WHERE comment_id = #{commentId}
         ORDER BY created_at ASC
@@ -125,17 +123,17 @@
     
     <!-- 根据ID获取回复 -->
     <select id="selectReplyById" resultMap="ReplyResultMap">
-        SELECT id, comment_id, user_id, user_gamertag, is_pro_player, content, like_count, created_at, updated_at
+        SELECT id, comment_id, user_id, user_xbox_id, content, like_count, created_at, updated_at
         FROM comment_replies
         WHERE id = #{id}
     </select>
     
     <!-- 插入回复 -->
-    <insert id="insertReply" parameterType="com.forzatune.backend.entity.TuneCommentReply" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertReply" parameterType="com.forzatune.backend.entity.TuneCommentReply">
         INSERT INTO comment_replies (
-            comment_id, user_id, user_gamertag, is_pro_player, content, like_count, created_at, updated_at
+            id, comment_id, user_id, user_xbox_id, content, like_count, created_at, updated_at
         ) VALUES (
-            #{commentId}, #{userId}, #{userGamertag}, #{isProPlayer}, #{content}, #{likeCount}, NOW(), NOW()
+            #{id}, #{commentId}, #{userId}, #{userXboxId}, #{content}, #{likeCount}, NOW(), NOW()
         )
     </insert>
     

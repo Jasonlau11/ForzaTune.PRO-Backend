@@ -11,7 +11,7 @@ public class UserActivity {
     
     private String id;
     private String userId;
-    private String userGamertag;
+    private String userXboxId;
     private ActivityType type;
     private String targetId; // tuneId, commentId, etc.
     private String targetName; // tune name, comment content, etc.
@@ -19,12 +19,11 @@ public class UserActivity {
     private String createdAt;
     
     public enum ActivityType {
-        LIKED_TUNE,
-        FAVORITED_TUNE,
-        COMMENTED_TUNE,
-        UPLOADED_TUNE,
-        JOINED_TEAM,
-        LEFT_TEAM,
-        BECAME_PRO
+        LIKE,
+        FAVORITE,
+        COMMENT,
+        UPLOAD,
+        JOIN_TEAM,
+        PRO_APPLICATION
     }
 } 

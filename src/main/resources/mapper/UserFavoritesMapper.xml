@@ -7,19 +7,18 @@
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="tuneId" column="tune_id"/>
-        <result property="note" column="note"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
     <!-- 基础列名 -->
     <sql id="Base_Column_List">
-        id, user_id, tune_id, note, created_at
+        id, user_id, tune_id, created_at
     </sql>
 
     <!-- 插入一条收藏记录 -->
     <insert id="insert" parameterType="com.forzatune.backend.entity.UserFavorite">
-        INSERT INTO user_favorites (id, user_id, tune_id, note, created_at)
-        VALUES (#{id}, #{userId}, #{tuneId}, #{note}, NOW())
+        INSERT INTO user_favorites (id, user_id, tune_id, created_at)
+        VALUES (#{id}, #{userId}, #{tuneId}, NOW())
     </insert>
 
     <!-- 删除一条收藏记录 -->

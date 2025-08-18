@@ -4,7 +4,9 @@ import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.dto.TuneDto;
 import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.entity.User;
+import com.forzatune.backend.entity.UserActivity;
 import com.forzatune.backend.entity.UserFavorite;
+import com.forzatune.backend.mapper.ActivityMapper;
 import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.mapper.UserFavoritesMapper;
 import com.forzatune.backend.mapper.UserMapper;
@@ -28,6 +30,7 @@ public class TuneServiceImpl implements TuneService {
     private final TuneMapper tuneMapper;
     private final UserFavoritesMapper favoritesMapper;
     private final UserMapper userMapper;
+    private final ActivityMapper activityMapper;
 
     @Override
     public TuneDto getTuneById(String tuneId) {
@@ -125,6 +128,20 @@ public class TuneServiceImpl implements TuneService {
         }
 
         tuneMapper.insert(tune);
+
+        // 记录上传活动
+        try {
+            User me = userMapper.findById(currentUserId);
+            UserActivity act = new UserActivity();
+            act.setId(UUID.randomUUID().toString());
+            act.setUserId(currentUserId);
+            act.setUserXboxId(me != null ? me.getXboxId() : null);
+            act.setType(UserActivity.ActivityType.UPLOAD);
+            act.setTargetId(tuneId);
+            act.setTargetName(null);
+            act.setDescription("上传调校");
+            activityMapper.insert(act);
+        } catch (Exception ignore) {}
 
         return TuneDto.fromEntity(tune);
     }
@@ -244,14 +261,31 @@ public class TuneServiceImpl implements TuneService {
             tuneMapper.decrementLikeCount(tuneId);
             Map<String, Object> result = new HashMap<>();
             result.put("liked", false);
+            Tune t = tuneMapper.selectById(tuneId);
+            result.put("likeCount", t != null ? t.getLikeCount() : 0);
             result.put("message", "取消点赞成功");
             return result;
         } else {
             // 添加点赞
             tuneMapper.addLike(tuneId, currentUserId);
             tuneMapper.incrementLikeCount(tuneId);
+            // 记录活动
+            try {
+                User me = userMapper.findById(currentUserId);
+                UserActivity act = new UserActivity();
+                act.setId(UUID.randomUUID().toString());
+                act.setUserId(currentUserId);
+                act.setUserXboxId(me != null ? me.getXboxId() : null);
+                act.setType(UserActivity.ActivityType.LIKE);
+                act.setTargetId(tuneId);
+                act.setTargetName(null);
+                act.setDescription("点赞调校");
+                activityMapper.insert(act);
+            } catch (Exception ignore) {}
             Map<String, Object> result = new HashMap<>();
             result.put("liked", true);
+            Tune t = tuneMapper.selectById(tuneId);
+            result.put("likeCount", t != null ? t.getLikeCount() : 0);
             result.put("message", "点赞成功");
             return result;
         }
@@ -268,9 +302,10 @@ public class TuneServiceImpl implements TuneService {
         if (existingFavorite != null) {
             // 取消收藏
             favoritesMapper.delete(currentUserId, tuneId);
-            tuneMapper.decrementFavoriteCount(tuneId);
             Map<String, Object> result = new HashMap<>();
             result.put("favorited", false);
+            int count = favoritesMapper.countByTuneId(tuneId);
+            result.put("favoriteCount", count);
             result.put("message", "取消收藏成功");
             return result;
         } else {
@@ -279,11 +314,25 @@ public class TuneServiceImpl implements TuneService {
             favorite.setId(UUID.randomUUID().toString());
             favorite.setUserId(currentUserId);
             favorite.setTuneId(tuneId);
-            favorite.setNote(note);
+            // 当前表结构无note列
             favoritesMapper.insert(favorite);
-            tuneMapper.incrementFavoriteCount(tuneId);
+            // 记录活动
+            try {
+                User me = userMapper.findById(currentUserId);
+                UserActivity act = new UserActivity();
+                act.setId(UUID.randomUUID().toString());
+                act.setUserId(currentUserId);
+                act.setUserXboxId(me != null ? me.getXboxId() : null);
+                act.setType(UserActivity.ActivityType.FAVORITE);
+                act.setTargetId(tuneId);
+                act.setTargetName(null);
+                act.setDescription("收藏调校");
+                activityMapper.insert(act);
+            } catch (Exception ignore) {}
             Map<String, Object> result = new HashMap<>();
             result.put("favorited", true);
+            int count = favoritesMapper.countByTuneId(tuneId);
+            result.put("favoriteCount", count);
             result.put("message", "收藏成功");
             return result;
         }

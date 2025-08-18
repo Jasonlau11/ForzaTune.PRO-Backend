@@ -29,10 +29,7 @@ public class UserFavorite {
      */
     private String tuneId;
 
-    /**
-     * 收藏备注
-     */
-    private String note;
+    // 备注列已移除，与当前表结构保持一致
 
     /**
      * 收藏时间

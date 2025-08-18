@@ -15,7 +15,7 @@ public class TuneComment {
     private String id;
     private String tuneId;
     private String userId;
-    private String userGamertag;
+    private String userXboxId;
     private Boolean isProPlayer = false;
     private String content;
     private Integer rating; // 1-5星评分

@@ -12,7 +12,7 @@ public class TuneCommentReply {
     private String id;
     private String commentId;
     private String userId;
-    private String userGamertag;
+    private String userXboxId;
     private Boolean isProPlayer = false;
     private String content;
     private Integer likeCount = 0;

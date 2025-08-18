@@ -30,6 +30,7 @@ public class AuthResponse {
         private Boolean isProPlayer;
         private Boolean hasLinkedXboxId;
         private String userTier;
+        private String proPlayerSince;
     }
 
     /**

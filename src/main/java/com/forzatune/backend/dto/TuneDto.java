@@ -12,6 +12,7 @@ public class TuneDto {
     private String id;
     private String shareCode;
     private String carId;
+    private String carName;
     private String authorId;
     private String authorXboxId; // 作者的Xbox ID
     private String ownerUserId; // 归属者用户ID（可空）

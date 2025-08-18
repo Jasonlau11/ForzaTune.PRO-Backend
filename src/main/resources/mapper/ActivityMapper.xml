@@ -6,7 +6,7 @@
     <resultMap id="UserActivityResultMap" type="com.forzatune.backend.entity.UserActivity">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
-        <result property="userGamertag" column="user_gamertag"/>
+        <result property="userXboxId" column="user_xbox_id"/>
         <result property="type" column="type"/>
         <result property="targetId" column="target_id"/>
         <result property="targetName" column="target_name"/>
@@ -29,12 +29,12 @@
         SELECT * FROM user_activities WHERE id = #{id}
     </select>
     
-    <!-- 插入活动 -->
-    <insert id="insert" parameterType="com.forzatune.backend.entity.UserActivity" useGeneratedKeys="true" keyProperty="id">
+    <!-- 插入活动（由应用生成UUID主键） -->
+    <insert id="insert" parameterType="com.forzatune.backend.entity.UserActivity">
         INSERT INTO user_activities (
-            user_id, user_gamertag, type, target_id, target_name, description, created_at
+            id, user_id, user_xbox_id, type, target_id, target_name, description, created_at
         ) VALUES (
-            #{userId}, #{userGamertag}, #{type}, #{targetId}, #{targetName}, #{description}, NOW()
+            #{id}, #{userId}, #{userXboxId}, #{type}, #{targetId}, #{targetName}, #{description}, NOW()
         )
     </insert>
     
