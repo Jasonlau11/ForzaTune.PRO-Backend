@@ -3,13 +3,13 @@
     <!-- 控制台输出配置 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <!-- 日志输出格式：时间 日志级别 [线程名] 类名 - 消息 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n</pattern>
+            <!-- 简化日志格式，移除颜色和复杂格式 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
-    <!-- 文件输出配置（可选） -->
+    <!-- 文件输出配置 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/forzatune-backend.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -17,7 +17,7 @@
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>30</maxHistory>
+            <maxHistory>7</maxHistory> <!-- 减少保留天数 -->
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
@@ -25,59 +25,105 @@
         </encoder>
     </appender>
 
-    <!-- 异步输出配置 -->
+    <!-- 异步输出配置 - 优化性能 -->
     <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="CONSOLE"/>
-        <queueSize>1024</queueSize>
-        <discardingThreshold>0</discardingThreshold>
-        <includeCallerData>true</includeCallerData>
+        <queueSize>512</queueSize> <!-- 减少队列大小 -->
+        <discardingThreshold>20</discardingThreshold> <!-- 增加丢弃阈值 -->
+        <includeCallerData>false</includeCallerData> <!-- 关闭调用者信息以提升性能 -->
     </appender>
 
-    <!-- 特定包的日志级别配置 -->
-    <logger name="com.forzatune.backend" level="DEBUG" additivity="false">
-        <appender-ref ref="ASYNC_CONSOLE"/>
+    <!-- 异步文件输出 -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>20</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- 应用主要包日志 - 调整为INFO级别 -->
+    <logger name="com.forzatune.backend" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
     </logger>
 
-    <!-- Spring相关日志 -->
-    <logger name="org.springframework" level="INFO" additivity="false">
+    <!-- 应用控制器日志 - 保持重要请求日志 -->
+    <logger name="com.forzatune.backend.controller" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </logger>
+
+    <!-- 应用服务层日志 - 调整为WARN级别，减少噪音 -->
+    <logger name="com.forzatune.backend.service" level="WARN" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </logger>
+
+    <!-- 异常处理器日志 - 保持ERROR级别 -->
+    <logger name="com.forzatune.backend.exception" level="ERROR" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </logger>
+
+    <!-- Spring框架日志 - 调整为WARN级别 -->
+    <logger name="org.springframework" level="WARN" additivity="false">
         <appender-ref ref="ASYNC_CONSOLE"/>
     </logger>
 
-    <!-- MyBatis SQL日志 -->
-    <logger name="com.forzatune.backend.mapper" level="DEBUG" additivity="false">
+    <!-- Spring Security日志 - 只记录重要信息 -->
+    <logger name="org.springframework.security" level="WARN" additivity="false">
         <appender-ref ref="ASYNC_CONSOLE"/>
     </logger>
 
-    <!-- 安全相关日志 -->
-    <logger name="org.springframework.security" level="INFO" additivity="false">
+    <!-- MyBatis日志 - 移除详细SQL日志 -->
+    <logger name="com.forzatune.backend.mapper" level="WARN" additivity="false">
         <appender-ref ref="ASYNC_CONSOLE"/>
     </logger>
 
-    <!-- Hibernate SQL日志（如果使用JPA） -->
-    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+    <!-- 数据库连接池日志 -->
+    <logger name="com.zaxxer.hikari" level="WARN" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </logger>
+
+    <!-- Tomcat日志 -->
+    <logger name="org.apache.catalina" level="WARN" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE"/>
+    </logger>
+
+    <!-- HTTP协议日志 -->
+    <logger name="org.apache.coyote" level="WARN" additivity="false">
         <appender-ref ref="ASYNC_CONSOLE"/>
     </logger>
 
     <!-- 根日志级别 -->
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="ASYNC_CONSOLE"/>
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="ASYNC_FILE"/>
     </root>
 
     <!-- 开发环境配置 -->
-    <springProfile name="dev">
-        <root level="DEBUG">
+    <springProfile name="dev,local">
+        <!-- 开发环境适当降低日志级别以便调试 -->
+        <logger name="com.forzatune.backend" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="com.forzatune.backend.controller" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <!-- 开发环境下显示更多SQL详情 -->
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
     </springProfile>
 
     <!-- 生产环境配置 -->
     <springProfile name="prod">
+        <!-- 生产环境只记录警告和错误 -->
         <root level="WARN">
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="ASYNC_FILE"/>
         </root>
+        <!-- 关闭控制台输出 -->
+        <logger name="com.forzatune.backend" level="WARN" additivity="false">
+            <appender-ref ref="ASYNC_FILE"/>
+        </logger>
     </springProfile>
 </configuration> 

@@ -34,16 +34,16 @@ public class HomeController {
 
     @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<HomeDataDto>> getHomeData(@RequestParam(value = "game_category", required = false) String gameCategory) {
-        logger.info("🏠 开始获取首页数据，游戏分类: {}", gameCategory);
+        logger.info("获取首页数据，游戏分类: {}", gameCategory);
         try {
             HomeDataDto homeData = homeService.getHomeDashboardData(gameCategory);
-            logger.info("✅ 成功获取首页数据，热门车辆: {}辆, 最新调校: {}个, PRO调校: {}个", 
+            logger.debug("获取首页数据完成，热门车辆: {}辆, 最新调校: {}个, PRO调校: {}个", 
                 homeData.getPopularCars() != null ? homeData.getPopularCars().size() : 0,
                 homeData.getRecentTunes() != null ? homeData.getRecentTunes().size() : 0,
                 homeData.getProTunes() != null ? homeData.getProTunes().size() : 0);
             return ResponseEntity.ok(ApiResponse.success(homeData));
         } catch (Exception e) {
-            logger.error("❌ 获取首页数据失败！游戏分类: {}, 错误详情:", gameCategory, e);
+            logger.error("获取首页数据失败，游戏分类: {}", gameCategory, e);
             return ResponseEntity.ok(ApiResponse.failure("获取首页数据失败: " + e.getMessage()));
         }
     }

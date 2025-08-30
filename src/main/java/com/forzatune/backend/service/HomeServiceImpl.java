@@ -4,6 +4,7 @@ import com.forzatune.backend.dto.*;
 import com.forzatune.backend.mapper.CarMapper;
 import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * HomeService 的具体实现类
  */
+@Slf4j
 @Service
 public class HomeServiceImpl implements HomeService {
 
@@ -34,7 +36,7 @@ public class HomeServiceImpl implements HomeService {
     @Override
     @Cacheable(value = "homeDashboard", key = "#gameCategory")
     public HomeDataDto getHomeDashboardData(String gameCategory) {
-        System.out.println("HomeService.getHomeDashboardData called with gameCategory: " + gameCategory);
+        log.debug("获取首页数据，游戏分类: {}", gameCategory);
         
         // 1. 创建最终要返回的 DTO 对象
         HomeDataDto homeData = new HomeDataDto();

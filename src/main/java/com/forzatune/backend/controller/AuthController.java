@@ -36,10 +36,10 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        logger.info("🔐 收到登录请求: {}", request.getEmail());
+        logger.info("用户登录: {}", request.getEmail());
         
         AuthResponse authResponse = authService.login(request);
-        logger.info("✅ 登录成功: {}", request.getEmail());
+        logger.info("登录成功: {}", request.getEmail());
         return ResponseEntity.ok(authResponse);
     }
 
@@ -56,7 +56,7 @@ public class AuthController {
             AuthResponse.UserInfo updated = authService.unlinkXbox(actualToken);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
-            logger.error("❌ 解除Xbox绑定失败: {}", e.getMessage());
+            logger.error("解除Xbox绑定失败: {}", e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -69,10 +69,10 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        logger.info("📝 收到注册请求: {} ({})", request.getXboxId(), request.getEmail());
+        logger.info("用户注册: {} ({})", request.getXboxId(), request.getEmail());
         
         AuthResponse authResponse = authService.register(request);
-        logger.info("✅ 注册成功: {} ({})", request.getXboxId(), request.getEmail());
+        logger.info("注册成功: {} ({})", request.getXboxId(), request.getEmail());
         return ResponseEntity.ok(authResponse);
     }
 
@@ -103,7 +103,7 @@ public class AuthController {
     @GetMapping("/profile")
     public ResponseEntity<AuthResponse.UserInfo> getProfile(
             @RequestHeader("Authorization") String token) {
-        logger.info("👤 获取用户信息");
+        logger.debug("获取用户信息");
         
         try {
             // 移除Bearer前缀
@@ -111,7 +111,7 @@ public class AuthController {
             User user = authService.validateTokenAndGetUser(actualToken);
             
             if (user == null) {
-                logger.warn("⚠️ 用户未认证或token无效");
+                logger.warn("用户未认证或token无效");
                 return ResponseEntity.status(401).build();
             }
             
@@ -125,10 +125,10 @@ public class AuthController {
                     user.getProPlayerSince() != null ? user.getProPlayerSince().toString() : null
             );
             
-            logger.info("✅ 获取用户信息成功: {}", user.getEmail());
+            logger.debug("获取用户信息成功: {}", user.getEmail());
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
-            logger.error("❌ 获取用户信息失败: {}", e.getMessage());
+            logger.error("获取用户信息失败: {}", e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -141,17 +141,17 @@ public class AuthController {
      */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
-        logger.info("🚪 用户登出");
+        logger.debug("用户登出");
 
         try {
             // 移除Bearer前缀并简单记录长度以避免未使用变量告警
             String actualToken = token.replace("Bearer ", "");
-            logger.debug("Parsed token length: {}", actualToken.length());
+            logger.debug("Token长度: {}", actualToken.length());
             // 这里可以添加token到黑名单的逻辑
-            logger.info("✅ 登出成功");
+            logger.debug("登出成功");
             return ResponseEntity.ok("登出成功");
         } catch (Exception e) {
-            logger.error("❌ 登出失败: {}", e.getMessage());
+            logger.error("登出失败: {}", e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -169,7 +169,7 @@ public class AuthController {
             authService.sendForgotPasswordCode(email);
             return ResponseEntity.ok(com.forzatune.backend.dto.ApiResponse.success(true));
         } catch (Exception e) {
-            logger.error("❌ 发送忘记密码验证码失败: {}", e.getMessage());
+            logger.error("发送忘记密码验证码失败: {}", e.getMessage());
             return ResponseEntity.badRequest().body(com.forzatune.backend.dto.ApiResponse.failure(e.getMessage()));
         }
     }
@@ -190,7 +190,7 @@ public class AuthController {
                 Collections.singletonMap("token", resetToken)
             ));
         } catch (Exception e) {
-            logger.error("❌ 验证重置密码验证码失败: {}", e.getMessage());
+            logger.error("验证重置密码验证码失败: {}", e.getMessage());
             return ResponseEntity.badRequest().body(com.forzatune.backend.dto.ApiResponse.failure(e.getMessage()));
         }
     }
@@ -210,7 +210,7 @@ public class AuthController {
             authService.resetPassword(token, newPassword, confirmPassword);
             return ResponseEntity.ok(com.forzatune.backend.dto.ApiResponse.success(true));
         } catch (Exception e) {
-            logger.error("❌ 重置密码失败: {}", e.getMessage());
+            logger.error("重置密码失败: {}", e.getMessage());
             return ResponseEntity.badRequest().body(com.forzatune.backend.dto.ApiResponse.failure(e.getMessage()));
         }
     }
@@ -225,7 +225,7 @@ public class AuthController {
             password = "12345678";
         }
         
-        logger.info("🧪 开始测试密码加密逻辑");
+        logger.debug("测试密码加密逻辑");
         authService.testPasswordEncryption(password);
         
         return ResponseEntity.ok(Collections.singletonMap("message", "测试完成，请查看日志"));

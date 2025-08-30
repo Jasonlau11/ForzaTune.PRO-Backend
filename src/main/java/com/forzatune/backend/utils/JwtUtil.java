@@ -3,6 +3,7 @@ package com.forzatune.backend.utils;
 import com.forzatune.backend.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
 
@@ -50,10 +52,10 @@ public class JwtUtil {
             Claims claims = parseToken(token);
             return claims.getSubject();
         } catch (ExpiredJwtException e) {
-            System.out.println("Token已过期: " + e.getMessage());
+            log.debug("Token已过期: {}", e.getMessage());
             return null;
         } catch (JwtException e) {
-            System.out.println("Token无效: " + e.getMessage());
+            log.debug("Token无效: {}", e.getMessage());
             return null;
         }
     }
@@ -90,10 +92,10 @@ public class JwtUtil {
             parseToken(token);
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("Token已过期: " + e.getMessage());
+            log.debug("Token已过期: {}", e.getMessage());
             return false;
         } catch (JwtException e) {
-            System.out.println("Token无效: " + e.getMessage());
+            log.debug("Token无效: {}", e.getMessage());
             return false;
         }
     }

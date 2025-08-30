@@ -36,6 +36,11 @@ app:
   mail:
     sender-name: 'ForzaTune.PRO 团队'
     from: 'noreply@forzatune.pro'  # 确保已在Brevo验证
+  upload:
+    path: uploads  # 文件上传根目录
+    car-images: car-images  # 车辆图片子目录
+    max-file-size: 10MB  # 最大文件大小
+    allowed-types: jpg,jpeg,png,gif,webp  # 允许的文件类型
 
 # MyBatis配置
 mybatis:
@@ -43,7 +48,8 @@ mybatis:
   type-aliases-package: com.forzatune.backend.entity
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 移除SQL日志输出以减少冗余信息
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # JWT Configuration
 jwt:
@@ -54,20 +60,25 @@ jwt:
 auth:
   dev-mode: true # 开发模式：true=跳过认证，false=正常认证
 
-# Logging Configuration
+# Logging Configuration - 优化后的简洁配置
 logging:
   level:
-    root: INFO
-    com.forzatune.backend: DEBUG
-    com.forzatune.backend.controller: INFO
-    com.forzatune.backend.service: DEBUG
-    com.forzatune.backend.mapper: DEBUG
-    com.forzatune.backend.exception: ERROR
-    org.springframework.security: INFO
-    org.springframework.web: INFO
-    org.apache.ibatis: DEBUG
+    root: WARN  # 根日志级别提升到WARN
+    com.forzatune.backend: INFO  # 应用主包调整为INFO
+    com.forzatune.backend.controller: INFO  # 控制器保持INFO以记录请求
+    com.forzatune.backend.service: WARN  # 服务层调整为WARN减少噪音
+    com.forzatune.backend.mapper: WARN  # Mapper层调整为WARN移除SQL详情
+    com.forzatune.backend.exception: ERROR  # 异常保持ERROR
+    org.springframework.security: WARN  # Spring Security调整为WARN
+    org.springframework.web: WARN  # Spring Web调整为WARN
+    org.springframework: WARN  # Spring框架整体调整为WARN
+    org.apache.ibatis: WARN  # MyBatis调整为WARN移除SQL日志
+    com.zaxxer.hikari: WARN  # 数据库连接池调整为WARN
+    org.apache.catalina: WARN  # Tomcat调整为WARN
+    org.apache.coyote: WARN  # HTTP协议调整为WARN
+    org.hibernate: WARN  # Hibernate调整为WARN
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
 
 # CORS Configuration
