@@ -27,6 +27,8 @@ public interface CommentMapper {
     
     int countByUserId(@Param("userId") String userId);
     
+    List<String> selectTuneIdsByUserId(@Param("userId") String userId);
+    
     // 回复相关
     List<TuneCommentReply> selectRepliesByCommentId(@Param("commentId") String commentId);
     

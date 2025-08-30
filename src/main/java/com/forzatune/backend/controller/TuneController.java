@@ -118,13 +118,13 @@ public class TuneController {
      * 后端返回: { success: boolean, data: Tune }
      */
     @PutMapping("/{tuneId}")
-    public ResponseEntity<ApiResponse<Tune>> updateTune(@PathVariable String tuneId, @RequestBody TuneDto tuneDto) {
+    public ResponseEntity<ApiResponse<TuneDto>> updateTune(@PathVariable String tuneId, @RequestBody TuneDto tuneDto) {
         logger.info("🎵 更新调校: {}", tuneId);
         
         try {
-//            Tune updatedTune = tuneService.updateTune(tuneId, tuneDto);
+            TuneDto updatedTune = tuneService.updateTune(tuneId, tuneDto);
             logger.info("✅ 成功更新调校: {}", tuneId);
-            return ResponseEntity.ok(ApiResponse.success(null));
+            return ResponseEntity.ok(ApiResponse.success(updatedTune));
         } catch (Exception e) {
             logger.error("❌ 更新调校失败: {}, 错误: {}", tuneId, e.getMessage());
             return ResponseEntity.ok(ApiResponse.failure("更新调校失败: " + e.getMessage()));

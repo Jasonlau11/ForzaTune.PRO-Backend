@@ -2,11 +2,13 @@ package com.forzatune.backend.service;
 
 import com.forzatune.backend.dto.PageDto;
 import com.forzatune.backend.dto.TuneDto;
+import com.forzatune.backend.entity.Car;
 import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.entity.User;
 import com.forzatune.backend.entity.UserActivity;
 import com.forzatune.backend.entity.UserFavorite;
 import com.forzatune.backend.mapper.ActivityMapper;
+import com.forzatune.backend.mapper.CarMapper;
 import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.mapper.UserFavoritesMapper;
 import com.forzatune.backend.mapper.UserMapper;
@@ -31,6 +33,8 @@ public class TuneServiceImpl implements TuneService {
     private final UserFavoritesMapper favoritesMapper;
     private final UserMapper userMapper;
     private final ActivityMapper activityMapper;
+    private final CarMapper carMapper;
+    private final NotificationService notificationService;
 
     @Override
     public TuneDto getTuneById(String tuneId) {
@@ -269,23 +273,46 @@ public class TuneServiceImpl implements TuneService {
             // 添加点赞
             tuneMapper.addLike(tuneId, currentUserId);
             tuneMapper.incrementLikeCount(tuneId);
+            
+            // 获取调校信息和用户信息
+            Tune tune = tuneMapper.selectById(tuneId);
+            User currentUser = userMapper.findById(currentUserId);
+            
             // 记录活动
             try {
-                User me = userMapper.findById(currentUserId);
                 UserActivity act = new UserActivity();
                 act.setId(UUID.randomUUID().toString());
                 act.setUserId(currentUserId);
-                act.setUserXboxId(me != null ? me.getXboxId() : null);
+                act.setUserXboxId(currentUser != null ? currentUser.getXboxId() : null);
                 act.setType(UserActivity.ActivityType.LIKE);
                 act.setTargetId(tuneId);
                 act.setTargetName(null);
                 act.setDescription("点赞调校");
                 activityMapper.insert(act);
             } catch (Exception ignore) {}
+            
+            // 发送通知给调校作者
+            if (tune != null && currentUser != null) {
+                try {
+                    // 确定调校的拥有者
+                    String tuneOwnerId = tune.getOwnerUserId() != null ? tune.getOwnerUserId() : tune.getAuthorId();
+                    if (tuneOwnerId != null && !tuneOwnerId.equals(currentUserId)) {
+                        notificationService.sendTuneLikeNotification(
+                            tuneOwnerId, 
+                            tuneId, 
+                            tune.getShareCode(),
+                            currentUserId, 
+                            currentUser.getXboxId()
+                        );
+                    }
+                } catch (Exception e) {
+                    // 通知发送失败不影响主流程
+                }
+            }
+            
             Map<String, Object> result = new HashMap<>();
             result.put("liked", true);
-            Tune t = tuneMapper.selectById(tuneId);
-            result.put("likeCount", t != null ? t.getLikeCount() : 0);
+            result.put("likeCount", tune != null ? tune.getLikeCount() : 0);
             result.put("message", "点赞成功");
             return result;
         }
@@ -316,19 +343,43 @@ public class TuneServiceImpl implements TuneService {
             favorite.setTuneId(tuneId);
             // 当前表结构无note列
             favoritesMapper.insert(favorite);
+            
+            // 获取调校信息和用户信息
+            Tune tune = tuneMapper.selectById(tuneId);
+            User currentUser = userMapper.findById(currentUserId);
+            
             // 记录活动
             try {
-                User me = userMapper.findById(currentUserId);
                 UserActivity act = new UserActivity();
                 act.setId(UUID.randomUUID().toString());
                 act.setUserId(currentUserId);
-                act.setUserXboxId(me != null ? me.getXboxId() : null);
+                act.setUserXboxId(currentUser != null ? currentUser.getXboxId() : null);
                 act.setType(UserActivity.ActivityType.FAVORITE);
                 act.setTargetId(tuneId);
                 act.setTargetName(null);
                 act.setDescription("收藏调校");
                 activityMapper.insert(act);
             } catch (Exception ignore) {}
+            
+            // 发送通知给调校作者
+            if (tune != null && currentUser != null) {
+                try {
+                    // 确定调校的拥有者
+                    String tuneOwnerId = tune.getOwnerUserId() != null ? tune.getOwnerUserId() : tune.getAuthorId();
+                    if (tuneOwnerId != null && !tuneOwnerId.equals(currentUserId)) {
+                        notificationService.sendTuneFavoriteNotification(
+                            tuneOwnerId, 
+                            tuneId, 
+                            tune.getShareCode(),
+                            currentUserId, 
+                            currentUser.getXboxId()
+                        );
+                    }
+                } catch (Exception e) {
+                    // 通知发送失败不影响主流程
+                }
+            }
+            
             Map<String, Object> result = new HashMap<>();
             result.put("favorited", true);
             int count = favoritesMapper.countByTuneId(tuneId);
@@ -374,7 +425,10 @@ public class TuneServiceImpl implements TuneService {
         int from = Math.max(0, (page - 1) * limit);
         int to = Math.min(total, from + limit);
         List<Tune> pageItems = from >= total ? Collections.emptyList() : all.subList(from, to);
-        List<TuneDto> items = pageItems.stream().map(TuneDto::fromEntity).collect(Collectors.toList());
+        List<TuneDto> items = pageItems.stream().map(tune -> {
+            String carName = getCarName(tune.getCarId());
+            return TuneDto.fromEntity(tune, carName);
+        }).collect(Collectors.toList());
 
         PageDto<TuneDto> dto = new PageDto<>();
         dto.setItems(items);
@@ -401,7 +455,10 @@ public class TuneServiceImpl implements TuneService {
         int from = Math.max(0, (page - 1) * limit);
         int to = Math.min(total, from + limit);
         List<Tune> pageItems = from >= total ? Collections.emptyList() : all.subList(from, to);
-        List<TuneDto> items = pageItems.stream().map(TuneDto::fromEntity).collect(Collectors.toList());
+        List<TuneDto> items = pageItems.stream().map(tune -> {
+            String carName = getCarName(tune.getCarId());
+            return TuneDto.fromEntity(tune, carName);
+        }).collect(Collectors.toList());
 
         // 标注 ownerIsPro
         for (TuneDto dto : items) {
@@ -422,5 +479,23 @@ public class TuneServiceImpl implements TuneService {
         dto.setHasNext(page < dto.getTotalPages());
         dto.setHasPrev(page > 1);
         return dto;
+    }
+
+    /**
+     * 获取车辆名称
+     */
+    private String getCarName(String carId) {
+        if (carId == null) {
+            return "Unknown Car";
+        }
+        try {
+            Car car = carMapper.selectById(carId);
+            if (car != null) {
+                return car.getYear() + " " + car.getManufacturer() + " " + car.getName();
+            }
+        } catch (Exception e) {
+            // Ignore exception, return default value
+        }
+        return "Unknown Car";
     }
 }

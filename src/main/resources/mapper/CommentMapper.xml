@@ -113,6 +113,13 @@
         SELECT COUNT(*) FROM tune_comments WHERE user_id = #{userId}
     </select>
     
+    <!-- 获取用户评论过的调校ID列表 -->
+    <select id="selectTuneIdsByUserId" resultType="string">
+        SELECT tune_id FROM tune_comments WHERE user_id = #{userId} 
+        GROUP BY tune_id 
+        ORDER BY MAX(created_at) DESC
+    </select>
+    
     <!-- 根据评论ID获取回复 -->
     <select id="selectRepliesByCommentId" resultMap="ReplyResultMap">
         SELECT id, comment_id, user_id, user_xbox_id, content, like_count, created_at, updated_at

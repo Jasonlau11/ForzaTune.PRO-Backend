@@ -2,6 +2,8 @@ package com.forzatune.backend.controller;
 
 import com.forzatune.backend.entity.UserActivity;
 import com.forzatune.backend.mapper.ActivityMapper;
+import com.forzatune.backend.mapper.TuneMapper;
+import com.forzatune.backend.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.HashMap;
 public class ActivityController {
     
     private final ActivityMapper activityMapper;
+    private final TuneMapper tuneMapper;
+    private final CommentMapper commentMapper;
     
     /**
      * 获取用户活动列表
@@ -49,18 +53,17 @@ public class ActivityController {
      */
     @GetMapping("/stats/user/{userId}")
     public ResponseEntity<Map<String, Object>> getUserActivityStats(@PathVariable String userId) {
-        int totalActivities = activityMapper.countByUserId(userId);
-        int likedTunes = activityMapper.countByUserIdAndType(userId, "LIKE");
-        int favoritedTunes = activityMapper.countByUserIdAndType(userId, "FAVORITE");
-        int commentedTunes = activityMapper.countByUserIdAndType(userId, "COMMENT");
-        int uploadedTunes = activityMapper.countByUserIdAndType(userId, "UPLOAD");
+        // 从实际的业务表中获取统计数据
+        long likedTunes = tuneMapper.countLikedByUser(userId);
+        long favoritedTunes = tuneMapper.countFavoritedByUser(userId);
+        int commentedTunes = commentMapper.countByUserId(userId);
+        long uploadedTunes = tuneMapper.countByAuthorId(userId);
 
         Map<String, Object> stats = new HashMap<String, Object>();
-        stats.put("totalActivities", totalActivities);
-        stats.put("likedTunes", likedTunes);
-        stats.put("favoritedTunes", favoritedTunes);
+        stats.put("likedTunes", (int) likedTunes);
+        stats.put("favoritedTunes", (int) favoritedTunes);
         stats.put("commentedTunes", commentedTunes);
-        stats.put("uploadedTunes", uploadedTunes);
+        stats.put("uploadedTunes", (int) uploadedTunes);
 
         return ResponseEntity.ok(stats);
     }

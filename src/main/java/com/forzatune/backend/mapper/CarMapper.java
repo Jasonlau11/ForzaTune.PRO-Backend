@@ -1,6 +1,5 @@
 package com.forzatune.backend.mapper;
 
-import com.forzatune.backend.dto.CarDto;
 import com.forzatune.backend.entity.Car;
 import com.forzatune.backend.vo.CarsSearchVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -66,4 +65,35 @@ public interface CarMapper {
      * @return 制造商名称列表
      */
     List<String> selectAllManufacturers(@Param("gameCategory") String gameCategory);
+    
+    // ========== 管理员专用CRUD方法 ==========
+    
+    /**
+     * 插入新车辆
+     * @param car 车辆实体
+     * @return 影响行数
+     */
+    int insert(Car car);
+    
+    /**
+     * 更新车辆信息
+     * @param car 车辆实体
+     * @return 影响行数
+     */
+    int update(Car car);
+    
+    /**
+     * 根据ID删除车辆
+     * @param id 车辆ID
+     * @return 影响行数
+     */
+    int deleteById(@Param("id") String id);
+    
+    /**
+     * 更新车辆图片URL
+     * @param id 车辆ID
+     * @param imageUrl 图片URL
+     * @return 影响行数
+     */
+    int updateImageUrl(@Param("id") String id, @Param("imageUrl") String imageUrl);
 }

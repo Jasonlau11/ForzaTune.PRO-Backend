@@ -39,6 +39,23 @@ public class EmailService {
         }
     }
 
+    public void sendPasswordResetCode(String toEmail, String code) {
+        String subject = "[ForzaTune.PRO] 密码重置验证码";
+        String text = String.format("您正在请求重置密码，验证码为：%s\n验证码5分钟内有效。\n如果这不是您的操作，请忽略此邮件。\n\nForzaTune.PRO 团队", code);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(String.format("%s <%s>", senderName, senderAddress));
+            message.setTo(toEmail);
+            message.setSubject(subject);
+            message.setText(text);
+            mailSender.send(message);
+            logger.info("📧 密码重置验证码邮件已发送到: {}", maskEmail(toEmail));
+        } catch (Exception e) {
+            logger.error("❌ 发送密码重置验证码邮件失败: {}", e.getMessage());
+            throw new RuntimeException("邮件发送失败，请稍后重试");
+        }
+    }
+
     private String maskEmail(String email) {
         int atIndex = email.indexOf('@');
         if (atIndex <= 1) return "***" + email.substring(atIndex);

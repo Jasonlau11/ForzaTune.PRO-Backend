@@ -141,7 +141,7 @@
         INSERT INTO cars (
             id, name, manufacturer, year, category, pi, drivetrain, image_url, game_category, created_at, updated_at
         ) VALUES (
-            #{id}, #{name}, #{manufacturer}, #{year}, #{category}, #{pi}, #{drivetrain}, #{imageUrl}, #{gameCategory}, NOW(), NOW()
+            #{id}, #{name}, #{manufacturer}, #{year}, #{category,typeHandler=com.forzatune.backend.handler.CarCategoryTypeHandler}, #{pi}, #{drivetrain}, #{imageUrl}, #{gameCategory}, NOW(), NOW()
         )
     </insert>
 
@@ -151,7 +151,7 @@
             name = #{name},
             manufacturer = #{manufacturer},
             year = #{year},
-            category = #{category},
+            category = #{category,typeHandler=com.forzatune.backend.handler.CarCategoryTypeHandler},
             pi = #{pi},
             drivetrain = #{drivetrain},
             image_url = #{imageUrl},
@@ -172,4 +172,12 @@
         WHERE game_category = #{gameCategory}
         ORDER BY manufacturer ASC
     </select>
+    
+    <!-- 更新车辆图片URL -->
+    <update id="updateImageUrl">
+        UPDATE cars SET
+            image_url = #{imageUrl},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
 </mapper>

@@ -1,349 +1,353 @@
--- 创建数据库
-CREATE DATABASE IF NOT EXISTS forzatune_pro CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- forzatune_pro.cars definition
 
-USE forzatune_pro;
+CREATE TABLE `cars` (
+  `id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `manufacturer` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `year` int NOT NULL,
+  `category` enum('Sports Cars','Muscle Cars','Supercars','Classic Cars','Hypercars','Track Toys') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pi` int NOT NULL,
+  `drivetrain` enum('RWD','FWD','AWD') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `game_category` enum('fh4','fh5','fm') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`,`game_category`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 用户表
-CREATE TABLE IF NOT EXISTS users (
-    id VARCHAR(36) PRIMARY KEY,
-    xbox_id VARCHAR(50) UNIQUE NOT NULL, -- Xbox Live ID，作为用户显示名称
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL, -- 密码字段
-    is_pro_player BOOLEAN DEFAULT FALSE,
-    pro_player_since TIMESTAMP NULL,
-    total_tunes INT DEFAULT 0,
-    total_likes INT DEFAULT 0,
-    bio TEXT,
-    avatar_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    user_tier ENUM('STANDARD', 'VERIFIED', 'PRO') DEFAULT 'STANDARD',
-    last_login DATETIME,
-    is_active BOOLEAN DEFAULT TRUE,
-    email_verified_at DATETIME NULL
-);
 
--- 车辆表
-CREATE TABLE IF NOT EXISTS cars (
-    id VARCHAR(50) NOT NULL, -- 简化的ID，如 'porsche-911-gt2-rs'
-    name VARCHAR(200) NOT NULL,
-    manufacturer VARCHAR(100) NOT NULL,
-    year INT NOT NULL,
-    category ENUM('Sports Cars', 'Muscle Cars', 'Supercars', 'Classic Cars', 'Hypercars', 'Track Toys') NOT NULL,
-    pi INT NOT NULL,
-    drivetrain ENUM('RWD', 'FWD', 'AWD') NOT NULL,
-    game_category ENUM('fh4', 'fh5') NOT NULL, -- 游戏分类字段
-    image_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    -- 复合主键：同一车辆在不同游戏中是独立记录
-    PRIMARY KEY (id, game_category)
-);
+-- forzatune_pro.comment_likes definition
 
--- 调校表
-CREATE TABLE IF NOT EXISTS tunes (
-    id VARCHAR(50) PRIMARY KEY, -- 简化的ID，如 'tune-001'
-    car_id VARCHAR(50) NOT NULL,
-    author_id VARCHAR(36) NOT NULL,
-    author_xbox_id VARCHAR(50) NOT NULL, -- 作者Xbox ID，冗余存储便于查询
-    share_code VARCHAR(20) UNIQUE NOT NULL,
-    preference ENUM('Power', 'Handling', 'Balance') NOT NULL,
-    pi_class ENUM('X', 'S2', 'S1', 'A', 'B', 'C', 'D') NOT NULL,
-    final_pi INT NOT NULL,
-    drivetrain ENUM('RWD', 'FWD', 'AWD'),
-    tire_compound ENUM('Stock', 'Street', 'Sport', 'Semi-Slick', 'Slick', 'Rally', 'Snow', 'Off-Road', 'Drag', 'Drift'),
-    race_type ENUM('Road', 'Dirt', 'Cross Country'),
-    surface_conditions JSON, -- 存储地面条件数组 ['Dry', 'Wet', 'Snow']
-    description TEXT,
-    is_pro_tune BOOLEAN DEFAULT FALSE,
-    is_parameters_public BOOLEAN DEFAULT FALSE,
-    has_detailed_parameters BOOLEAN DEFAULT FALSE,
-    screenshot_url VARCHAR(255),
-    like_count INT DEFAULT 0,
-    game_category ENUM('fh4', 'fh5') NOT NULL, -- 游戏分类字段
-    parameters JSON, -- 调校参数JSON字段，支持不同游戏格式
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+CREATE TABLE `comment_likes` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_comment_like` (`user_id`,`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 调校参数表
-CREATE TABLE IF NOT EXISTS tune_parameters (
-    id VARCHAR(36) PRIMARY KEY,
-    tune_id VARCHAR(50) NOT NULL, -- 修正数据类型，与tunes表保持一致
-    
-    -- 轮胎
-    front_tire_pressure DECIMAL(4,1),
-    rear_tire_pressure DECIMAL(4,1),
-    
-    -- 变速箱
-    transmission_speeds INT, -- 变速箱速别 (6, 7, 8, 9)
-    final_drive DECIMAL(4,3), -- 终传比
-    gear_1_ratio DECIMAL(4,3),
-    gear_2_ratio DECIMAL(4,3),
-    gear_3_ratio DECIMAL(4,3),
-    gear_4_ratio DECIMAL(4,3),
-    gear_5_ratio DECIMAL(4,3),
-    gear_6_ratio DECIMAL(4,3),
-    gear_7_ratio DECIMAL(4,3),
-    gear_8_ratio DECIMAL(4,3),
-    gear_9_ratio DECIMAL(4,3),
-    
-    -- 校准
-    front_camber DECIMAL(3,1),
-    rear_camber DECIMAL(3,1),
-    front_toe DECIMAL(3,2),
-    rear_toe DECIMAL(3,2),
-    front_caster DECIMAL(3,1),
-    
-    -- 防倾杆
-    front_anti_roll_bar DECIMAL(4,1),
-    rear_anti_roll_bar DECIMAL(4,1),
-    
-    -- 弹簧
-    front_springs DECIMAL(5,1),
-    rear_springs DECIMAL(5,1),
-    front_ride_height DECIMAL(4,1),
-    rear_ride_height DECIMAL(4,1),
-    
-    -- 阻尼
-    front_rebound DECIMAL(3,1),
-    rear_rebound DECIMAL(3,1),
-    front_bump DECIMAL(3,1),
-    rear_bump DECIMAL(3,1),
-    
-    -- 差速器
-    differential_type ENUM('Stock', 'Street', 'Sport', 'Off-Road', 'Rally', 'Drift'), -- 差速器类型
-    front_acceleration DECIMAL(4,1), -- 前差速器加速比
-    front_deceleration DECIMAL(4,1), -- 前差速器减速比
-    rear_acceleration DECIMAL(4,1),  -- 后差速器加速比
-    rear_deceleration DECIMAL(4,1),  -- 后差速器减速比
-    center_balance DECIMAL(4,1),     -- 中央差速器动力分配比例 (仅AWD)
-    
-    -- 制动
-    brake_pressure INT,
-    front_brake_balance INT,
-    
-    -- 空气动力学
-    front_downforce DECIMAL(4,1),
-    rear_downforce DECIMAL(4,1),
-    
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 
--- 赛道表和圈速记录表已移除：地平线系列不使用传统赛道概念
+-- forzatune_pro.pro_applications definition
 
--- 调校评论表
-CREATE TABLE IF NOT EXISTS tune_comments (
-    id VARCHAR(36) PRIMARY KEY,
-    tune_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    user_xbox_id VARCHAR(100) NOT NULL,
-    content TEXT NOT NULL,
-    rating INT CHECK (rating >= 1 AND rating <= 5),
-    like_count INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+CREATE TABLE `pro_applications` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gamertag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `experience` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `achievements` json DEFAULT NULL,
+  `sample_tunes` json DEFAULT NULL,
+  `status` enum('PENDING','APPROVED','REJECTED') COLLATE utf8mb4_unicode_ci DEFAULT 'PENDING',
+  `submitted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `reviewed_at` datetime DEFAULT NULL,
+  `reviewed_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 评论回复表
-CREATE TABLE IF NOT EXISTS comment_replies (
-    id VARCHAR(36) PRIMARY KEY,
-    comment_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    user_xbox_id VARCHAR(100) NOT NULL,
-    content TEXT NOT NULL,
-    like_count INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 
--- 车队表
-CREATE TABLE IF NOT EXISTS teams (
-    id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    description TEXT,
-    founder_id VARCHAR(36) NOT NULL,
-    founder_xbox_id VARCHAR(100) NOT NULL,
-    is_public BOOLEAN DEFAULT TRUE,
-    tags JSON,
-    total_members INT DEFAULT 1,
-    total_tunes INT DEFAULT 0,
-    total_downloads INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+-- forzatune_pro.pro_certifications definition
 
--- 车队成员表
-CREATE TABLE IF NOT EXISTS team_members (
-    id VARCHAR(36) PRIMARY KEY,
-    team_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    user_xbox_id VARCHAR(100) NOT NULL,
-    role ENUM('OWNER', 'ADMIN', 'MODERATOR', 'MEMBER') DEFAULT 'MEMBER',
-    permissions JSON,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total_contributions INT DEFAULT 0,
-    total_tunes INT DEFAULT 0,
-    UNIQUE KEY uk_team_user (team_id, user_id)
-);
+CREATE TABLE `pro_certifications` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('championship','world_record','achievement','expertise') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `verified_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `verified_by` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 车队申请表
-CREATE TABLE IF NOT EXISTS team_applications (
-    id VARCHAR(36) PRIMARY KEY,
-    team_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    user_xbox_id VARCHAR(100) NOT NULL,
-    message TEXT,
-    status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
-    reviewed_by VARCHAR(36),
-    reviewed_at DATETIME,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_team_user_application (team_id, user_id)
-);
 
--- 车队邀请表
-CREATE TABLE IF NOT EXISTS team_invitations (
-    id VARCHAR(36) PRIMARY KEY,
-    team_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
-    invited_by VARCHAR(36) NOT NULL,
-    message TEXT,
-    status ENUM('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED') DEFAULT 'PENDING',
-    expires_at DATETIME,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_team_user_invitation (team_id, user_id)
-);
+-- forzatune_pro.reply_likes definition
 
--- PRO认证表
-CREATE TABLE IF NOT EXISTS pro_certifications (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    type ENUM('championship', 'world_record', 'achievement', 'expertise') NOT NULL,
-    title VARCHAR(200) NOT NULL,
-    description TEXT,
-    verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    verified_by VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE `reply_likes` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reply_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_reply_like` (`user_id`,`reply_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- PRO申请表
-CREATE TABLE IF NOT EXISTS pro_applications (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    xbox_id VARCHAR(100) NOT NULL,
-    experience TEXT NOT NULL,
-    achievements JSON,
-    sample_tunes JSON,
-    status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
-    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    reviewed_at DATETIME,
-    reviewed_by VARCHAR(36),
-    notes TEXT
-);
 
--- 用户活动表
-CREATE TABLE IF NOT EXISTS user_activities (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    user_xbox_id VARCHAR(100) NOT NULL,
-    type ENUM('LIKE', 'FAVORITE', 'COMMENT', 'UPLOAD', 'JOIN_TEAM', 'PRO_APPLICATION') NOT NULL,
-    target_id VARCHAR(36),
-    target_name VARCHAR(255),
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- forzatune_pro.system_settings definition
 
--- 用户点赞表
-CREATE TABLE IF NOT EXISTS user_likes (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    tune_id VARCHAR(36) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_tune_like (user_id, tune_id)
-);
+CREATE TABLE `system_settings` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `setting_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `setting_value` text COLLATE utf8mb4_unicode_ci,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 用户收藏表
-CREATE TABLE IF NOT EXISTS user_favorites (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    tune_id VARCHAR(36) NOT NULL,
-    note TEXT, -- 收藏备注
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_tune_favorite (user_id, tune_id)
-);
 
--- 评论点赞表
-CREATE TABLE IF NOT EXISTS comment_likes (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    comment_id VARCHAR(36) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_comment_like (user_id, comment_id)
-);
+-- forzatune_pro.team_applications definition
 
--- 回复点赞表
-CREATE TABLE IF NOT EXISTS reply_likes (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    reply_id VARCHAR(36) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_user_reply_like (user_id, reply_id)
-);
+CREATE TABLE `team_applications` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `team_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_gamertag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci,
+  `status` enum('PENDING','APPROVED','REJECTED') COLLATE utf8mb4_unicode_ci DEFAULT 'PENDING',
+  `reviewed_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reviewed_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_team_user_application` (`team_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 系统设置表
-CREATE TABLE IF NOT EXISTS system_settings (
-    id VARCHAR(36) PRIMARY KEY,
-    setting_key VARCHAR(100) UNIQUE NOT NULL,
-    setting_value TEXT,
-    description TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 
--- =====================================
--- 示例数据插入（用于测试游戏分类功能）
--- =====================================
+-- forzatune_pro.team_invitations definition
 
--- 插入示例用户
-INSERT IGNORE INTO users (id, xbox_id, email, password, is_pro_player, user_tier) VALUES
-('user-001', 'ProTuner1', 'protuner1@example.com', '$2a$10$example.hash.1', TRUE, 'PRO'),
-('user-002', 'SpeedMaster', 'speedmaster@example.com', '$2a$10$example.hash.2', FALSE, 'VERIFIED'),
-('user-003', 'TuneExpert', 'tuneexpert@example.com', '$2a$10$example.hash.3', TRUE, 'PRO'),
-('user-004', 'RacingFan', 'racingfan@example.com', '$2a$10$example.hash.4', FALSE, 'STANDARD');
+CREATE TABLE `team_invitations` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `team_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `invited_by` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci,
+  `status` enum('PENDING','ACCEPTED','DECLINED','EXPIRED') COLLATE utf8mb4_unicode_ci DEFAULT 'PENDING',
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_team_user_invitation` (`team_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 插入示例车辆 - FH5
-INSERT IGNORE INTO cars (id, name, manufacturer, year, category, pi, drivetrain, game_category, image_url) VALUES
-('1', '911 GT2 RS', 'Porsche', 2018, 'Supercars', 920, 'RWD', 'fh5', 'https://example.com/porsche-911-gt2-rs.jpg'),
-('2', 'Senna', 'McLaren', 2019, 'Hypercars', 999, 'RWD', 'fh5', 'https://example.com/mclaren-senna.jpg'),
-('3', 'Corvette C7 Z06', 'Chevrolet', 2015, 'Sports Cars', 875, 'RWD', 'fh5', 'https://example.com/corvette-c7.jpg'),
-('4', 'Mustang RTR Spec 5', 'Ford', 2018, 'Muscle Cars', 850, 'RWD', 'fh5', 'https://example.com/mustang-rtr.jpg'),
-('5', 'Huracán Performante', 'Lamborghini', 2018, 'Supercars', 920, 'AWD', 'fh5', 'https://example.com/huracan.jpg');
 
--- 插入示例车辆 - FH4  
-INSERT IGNORE INTO cars (id, name, manufacturer, year, category, pi, drivetrain, game_category, image_url) VALUES
-('6', '911 GT2 RS', 'Porsche', 2018, 'Supercars', 920, 'RWD', 'fh4', 'https://example.com/porsche-911-gt2-rs-fh4.jpg'),
-('7', 'Senna', 'McLaren', 2019, 'Hypercars', 999, 'RWD', 'fh4', 'https://example.com/mclaren-senna-fh4.jpg'),
-('8', 'RS6 Avant', 'Audi', 2020, 'Sports Cars', 825, 'AWD', 'fh4', 'https://example.com/audi-rs6.jpg'),
-('9', 'M5 Competition', 'BMW', 2019, 'Sports Cars', 875, 'AWD', 'fh4', 'https://example.com/bmw-m5.jpg');
+-- forzatune_pro.team_members definition
 
--- 插入示例调校 - FH5
-INSERT IGNORE INTO tunes (id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi, drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune, like_count, game_category) VALUES
-('tune-fh5-001', 'porsche-911-gt2-rs', 'user-001', 'ProTuner1', 'FH5-001-ABC', 'Power', 'S2', 920, 'RWD', 'Semi-Slick', 'Road', '["Dry"]', 'FH5专用保时捷GT2 RS暴力调校', TRUE, 156, 'fh5'),
-('tune-fh5-002', 'mclaren-senna', 'user-002', 'SpeedMaster', 'FH5-002-DEF', 'Handling', 'X', 999, 'RWD', 'Slick', 'Road', '["Dry", "Wet"]', 'FH5迈凯伦Senna赛道调校', FALSE, 89, 'fh5'),
-('tune-fh5-003', 'chevrolet-corvette-c7', 'user-003', 'TuneExpert', 'FH5-003-GHI', 'Balance', 'S1', 875, 'RWD', 'Sport', 'Road', '["Dry"]', 'FH5科尔维特平衡调校', TRUE, 234, 'fh5'),
-('tune-fh5-004', 'ford-mustang-rtr', 'user-001', 'ProTuner1', 'FH5-004-JKL', 'Power', 'A', 850, 'RWD', 'Street', 'Road', '["Dry", "Wet"]', 'FH5野马街道调校', FALSE, 67, 'fh5'),
-('tune-fh5-005', 'lamborghini-huracan', 'user-003', 'TuneExpert', 'FH5-005-MNO', 'Handling', 'S2', 920, 'AWD', 'Semi-Slick', 'Road', '["Dry"]', 'FH5兰博基尼操控调校', TRUE, 198, 'fh5');
+CREATE TABLE `team_members` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `team_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_gamertag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('OWNER','ADMIN','MODERATOR','MEMBER') COLLATE utf8mb4_unicode_ci DEFAULT 'MEMBER',
+  `permissions` json DEFAULT NULL,
+  `joined_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `total_contributions` int DEFAULT '0',
+  `total_tunes` int DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_team_user` (`team_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 插入示例调校 - FH4
-INSERT IGNORE INTO tunes (id, car_id, author_id, author_xbox_id, share_code, preference, pi_class, final_pi, drivetrain, tire_compound, race_type, surface_conditions, description, is_pro_tune, like_count, game_category) VALUES
-('tune-fh4-001', 'porsche-911-gt2-rs', 'user-002', 'SpeedMaster', 'FH4-001-PQR', 'Power', 'S2', 920, 'RWD', 'Semi-Slick', 'Road', '["Dry"]', 'FH4保时捷GT2 RS英国调校', FALSE, 123, 'fh4'),
-('tune-fh4-002', 'mclaren-senna', 'user-003', 'TuneExpert', 'FH4-002-STU', 'Handling', 'X', 999, 'RWD', 'Slick', 'Road', '["Dry", "Wet"]', 'FH4迈凯伦Senna英国赛道版', TRUE, 176, 'fh4'),
-('tune-fh4-003', 'audi-rs6-avant', 'user-001', 'ProTuner1', 'FH4-003-VWX', 'Balance', 'S1', 825, 'AWD', 'Sport', 'Road', '["Dry", "Wet", "Snow"]', 'FH4奥迪RS6全天候调校', TRUE, 145, 'fh4'),
-('tune-fh4-004', 'bmw-m5-competition', 'user-004', 'RacingFan', 'FH4-004-YZA', 'Power', 'S1', 875, 'AWD', 'Street', 'Road', '["Dry"]', 'FH4宝马M5街道版', FALSE, 98, 'fh4');
 
--- 插入一些用户活动记录
-INSERT IGNORE INTO user_activities (id, user_id, user_xbox_id, type, target_id, target_name, description) VALUES
-('activity-001', 'user-001', 'ProTuner1', 'UPLOAD', 'tune-fh5-001', 'FH5 保时捷GT2 RS调校', '上传了新的FH5调校'),
-('activity-002', 'user-002', 'SpeedMaster', 'LIKE', 'tune-fh5-003', 'FH5 科尔维特调校', '点赞了调校'),
-('activity-003', 'user-003', 'TuneExpert', 'UPLOAD', 'tune-fh4-002', 'FH4 迈凯伦Senna调校', '上传了新的FH4调校'),
-('activity-004', 'user-004', 'RacingFan', 'FAVORITE', 'tune-fh5-005', 'FH5 兰博基尼调校', '收藏了调校'); 
+-- forzatune_pro.teams definition
+
+CREATE TABLE `teams` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `founder_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `founder_gamertag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_public` tinyint(1) DEFAULT '1',
+  `tags` json DEFAULT NULL,
+  `total_members` int DEFAULT '1',
+  `total_tunes` int DEFAULT '0',
+  `total_downloads` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.tunes definition
+
+CREATE TABLE `tunes` (
+  `id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `car_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `author_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `author_xbox_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `share_code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preference` enum('Power','Handling','Balance') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pi_class` enum('X','S2','S1','A','B','C','D') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `final_pi` int NOT NULL,
+  `drivetrain` enum('RWD','FWD','AWD') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tire_compound` enum('Stock','Street','Sport','Semi-Slick','Slick','Rally','Snow','Off-Road','Drag','Drift') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `race_type` enum('Road','Dirt','Cross Country') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `surface_conditions` json DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `is_pro_tune` tinyint(1) DEFAULT '0',
+  `is_parameters_public` tinyint(1) DEFAULT '0',
+  `has_detailed_parameters` tinyint(1) DEFAULT '0',
+  `screenshot_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `like_count` int DEFAULT '0',
+  `game_category` enum('fh4','fh5','fm') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `parameters` json DEFAULT NULL,
+  `owner_user_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '归属者站内用户ID（若归属给站内用户）',
+  `owner_xbox_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '归属Xbox ID（可为他人，未必在站内）',
+  `ownership_status` enum('unverified','pending','verified') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unverified' COMMENT '归属状态：未验证/审核中/已验证',
+  `owner_verified_at` datetime DEFAULT NULL COMMENT '归属被验证或认领通过的时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `share_code` (`share_code`),
+  KEY `idx_tunes_owner_user_id` (`owner_user_id`),
+  KEY `idx_tunes_owner_xbox_id` (`owner_xbox_id`),
+  KEY `idx_tunes_ownership_status` (`ownership_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.user_activities definition
+
+CREATE TABLE `user_activities` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('LIKE','FAVORITE','COMMENT','UPLOAD','JOIN_TEAM','PRO_APPLICATION') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `target_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `target_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `notifications_sent` int DEFAULT '0' COMMENT '发送的通知数量',
+  `notifications_received` int DEFAULT '0' COMMENT '收到的通知数量',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.user_favorites definition
+
+CREATE TABLE `user_favorites` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tune_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_tune_favorite` (`user_id`,`tune_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.user_likes definition
+
+CREATE TABLE `user_likes` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tune_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_tune_like` (`user_id`,`tune_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.users definition
+
+CREATE TABLE `users` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_pro_player` tinyint(1) DEFAULT '0',
+  `pro_player_since` timestamp NULL DEFAULT NULL,
+  `total_tunes` int DEFAULT '0',
+  `total_likes` int DEFAULT '0',
+  `bio` text COLLATE utf8mb4_unicode_ci,
+  `avatar_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_tier` enum('STANDARD','VERIFIED','PRO') COLLATE utf8mb4_unicode_ci DEFAULT 'STANDARD',
+  `last_login` datetime DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `email_verified_at` datetime DEFAULT NULL COMMENT '邮箱验证通过时间',
+  `xuid` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Xbox 用户XUID，人工核验后回填（可空）',
+  `xbox_verification_status` enum('pending','approved','denied') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending' COMMENT 'Xbox ID站内验证状态',
+  `xbox_evidence` json DEFAULT NULL COMMENT '注册或重新验证时提交的证据URL数组、备注等',
+  `xbox_verified_at` datetime DEFAULT NULL COMMENT 'Xbox ID站内通过时间',
+  `xbox_denied_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '拒绝原因，供前端展示',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `xbox_id` (`xbox_id`),
+  UNIQUE KEY `xuid` (`xuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.comment_replies definition
+
+CREATE TABLE `comment_replies` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reply_to_user_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '回复的目标用户ID',
+  `reply_to_xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '回复的目标用户Xbox ID',
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `like_count` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_tune_replies_reply_to` (`reply_to_user_id`),
+  CONSTRAINT `fk_reply_reply_to_user` FOREIGN KEY (`reply_to_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.notifications definition
+
+CREATE TABLE `notifications` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT (uuid()),
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '接收通知的用户ID',
+  `type` enum('tune_like','tune_favorite','tune_comment','comment_reply') COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知类型',
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知标题',
+  `content` text COLLATE utf8mb4_unicode_ci COMMENT '通知内容',
+  `related_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '相关对象ID（调校ID、评论ID等）',
+  `sender_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发送通知的用户ID',
+  `sender_xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '发送者Xbox ID',
+  `is_read` tinyint(1) DEFAULT '0' COMMENT '是否已读',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_type` (`type`),
+  KEY `idx_is_read` (`is_read`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `sender_id` (`sender_id`),
+  KEY `idx_notifications_user_read_time` (`user_id`,`is_read`,`created_at` DESC),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户通知表';
+
+
+-- forzatune_pro.tune_claims definition
+
+CREATE TABLE `tune_claims` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tune_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `claimer_user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `claimer_xbox_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `evidence` json NOT NULL COMMENT '证据URL数组、备注文本等',
+  `status` enum('pending','approved','rejected','cancelled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `decision_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `decided_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `decided_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_claims_tune` (`tune_id`),
+  KEY `idx_claims_status` (`status`),
+  KEY `idx_claims_claimer` (`claimer_user_id`),
+  CONSTRAINT `fk_claim_tune` FOREIGN KEY (`tune_id`) REFERENCES `tunes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- forzatune_pro.tune_comments definition
+
+CREATE TABLE `tune_comments` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tune_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reply_to_user_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '回复的目标用户ID',
+  `reply_to_xbox_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '回复的目标用户Xbox ID',
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rating` int DEFAULT NULL,
+  `like_count` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_tune_comments_reply_to` (`reply_to_user_id`),
+  CONSTRAINT `fk_reply_to_user` FOREIGN KEY (`reply_to_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `tune_comments_chk_1` CHECK (((`rating` >= 1) and (`rating` <= 5)))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

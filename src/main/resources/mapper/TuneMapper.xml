@@ -32,6 +32,8 @@
         <result property="parameters" column="parameters" typeHandler="com.forzatune.backend.handler.JsonObjectTypeHandler"/>
     </resultMap>
 
+
+
     <resultMap id="TuneDtoResultMap" type="com.forzatune.backend.dto.TuneDto">
         <id property="id" column="id"/>
         <result property="shareCode" column="share_code"/>
@@ -160,6 +162,11 @@
         FROM tunes t
         WHERE t.author_id = #{authorId}
         ORDER BY t.created_at DESC
+    </select>
+
+    <!-- 统计作者的调校数量 -->
+    <select id="countByAuthorId" resultType="long">
+        SELECT COUNT(*) FROM tunes WHERE author_id = #{authorId}
     </select>
 
   <!-- 按归属查询：owner_user_id=我 或 owner_xbox_id=我的xboxId -->
@@ -383,7 +390,15 @@
         LIMIT #{limit}
     </select>
 
-    <!-- 收藏数不再在tunes表中维护，改由 user_favorites 统计 -->
+    <!-- 增加收藏数 -->
+    <update id="incrementFavoriteCount">
+        UPDATE tunes SET favorite_count = favorite_count + 1 WHERE id = #{id}
+    </update>
+
+    <!-- 减少收藏数 -->
+    <update id="decrementFavoriteCount">
+        UPDATE tunes SET favorite_count = GREATEST(favorite_count - 1, 0) WHERE id = #{id}
+    </update>
 
     <!-- 批量查询车辆调校数量 -->
     <select id="selectTuneCountByCarIds" resultType="com.forzatune.backend.dto.CarTuneCount">
@@ -465,5 +480,30 @@
         WHERE uf.user_id = #{userId}
         ORDER BY uf.created_at DESC
         LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 查询用户评论过的调校（分页） -->
+    <select id="selectCommentedByUserPaged" resultMap="TuneResultMap">
+        SELECT 
+            <include refid="Base_Column_List"/>,
+            c.name AS carName
+        FROM tunes t
+        LEFT JOIN cars c ON c.id = t.car_id
+        WHERE t.id IN
+        <foreach item="tuneId" collection="tuneIds" open="(" separator="," close=")">
+            #{tuneId}
+        </foreach>
+        ORDER BY t.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 统计用户评论过的调校数量 -->
+    <select id="countCommentedByUser" resultType="long">
+        SELECT COUNT(*)
+        FROM tunes t
+        WHERE t.id IN
+        <foreach item="tuneId" collection="tuneIds" open="(" separator="," close=")">
+            #{tuneId}
+        </foreach>
     </select>
 </mapper> 

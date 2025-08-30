@@ -41,9 +41,10 @@ public class TuneDto {
      * 这个方法是"只读"的，专门用于将后端数据转换为API响应格式。
      *
      * @param tune 调校实体对象
+     * @param carName 车型名称（从cars表查询获得）
      * @return 转换后的 TuneDto 对象
      */
-    public static TuneDto fromEntity(Tune tune) {
+    public static TuneDto fromEntity(Tune tune, String carName) {
         if (tune == null) {
             return null;
         }
@@ -54,6 +55,7 @@ public class TuneDto {
         dto.setAuthorXboxId(tune.getAuthorXboxId());
         dto.setShareCode(tune.getShareCode());
         dto.setCarId(tune.getCarId());
+        dto.setCarName(carName);
         // 归属信息
         dto.setOwnerUserId(tune.getOwnerUserId());
         dto.setOwnerXboxId(tune.getOwnerXboxId());
@@ -112,5 +114,12 @@ public class TuneDto {
         }
 
         return dto;
+    }
+
+    /**
+     * 重载方法：不带车型名称的转换方法，用于向后兼容
+     */
+    public static TuneDto fromEntity(Tune tune) {
+        return fromEntity(tune, null);
     }
 }

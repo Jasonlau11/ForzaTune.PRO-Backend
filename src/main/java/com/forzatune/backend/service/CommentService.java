@@ -1,11 +1,13 @@
 package com.forzatune.backend.service;
 
+import com.forzatune.backend.entity.Tune;
 import com.forzatune.backend.entity.TuneComment;
 import com.forzatune.backend.entity.TuneCommentReply;
 import com.forzatune.backend.entity.User;
 import com.forzatune.backend.entity.UserActivity;
 import com.forzatune.backend.mapper.CommentMapper;
 import com.forzatune.backend.mapper.ActivityMapper;
+import com.forzatune.backend.mapper.TuneMapper;
 import com.forzatune.backend.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ public class CommentService {
     private final CommentMapper commentMapper;
     private final ActivityMapper activityMapper;
     private final UserMapper userMapper;
+    private final TuneMapper tuneMapper;
+    private final NotificationService notificationService;
     
     /**
      * 根据调校ID获取评论
@@ -33,12 +37,31 @@ public class CommentService {
         if (list != null) {
             for (TuneComment c : list) {
                 try {
+                    // 填充用户信息
                     User u = userMapper.findById(c.getUserId());
                     if (u != null) {
                         c.setUserXboxId(u.getXboxId());
                         if (u.getIsProPlayer() != null) {
                             c.setIsProPlayer(u.getIsProPlayer());
                         }
+                    }
+                    
+                    // 加载回复列表
+                    List<TuneCommentReply> replies = commentMapper.selectRepliesByCommentId(c.getId());
+                    if (replies != null && !replies.isEmpty()) {
+                        // 为每个回复填充用户信息
+                        for (TuneCommentReply reply : replies) {
+                            try {
+                                User replyUser = userMapper.findById(reply.getUserId());
+                                if (replyUser != null) {
+                                    reply.setUserXboxId(replyUser.getXboxId());
+                                    if (replyUser.getIsProPlayer() != null) {
+                                        reply.setIsProPlayer(replyUser.getIsProPlayer());
+                                    }
+                                }
+                            } catch (Exception ignore) {}
+                        }
+                        c.setReplies(replies);
                     }
                 } catch (Exception ignore) {}
             }
@@ -103,6 +126,48 @@ public class CommentService {
                 act.setDescription("评论调校");
                 activityMapper.insert(act);
             } catch (Exception ignore) {}
+            
+            // 发送通知给调校作者
+            if (me != null) {
+                try {
+                    log.debug("🔔 开始处理评论通知逻辑 - 评论者: {}, 调校ID: {}", me.getXboxId(), saved.getTuneId());
+                    
+                    Tune tune = tuneMapper.selectById(saved.getTuneId());
+                    if (tune != null) {
+                        log.debug("🔔 找到调校信息 - ShareCode: {}, AuthorId: {}, OwnerUserId: {}", 
+                                tune.getShareCode(), tune.getAuthorId(), tune.getOwnerUserId());
+                        
+                        // 确定调校的拥有者
+                        String tuneOwnerId = tune.getOwnerUserId() != null ? tune.getOwnerUserId() : tune.getAuthorId();
+                        log.debug("🔔 确定调校拥有者ID: {}, 评论者ID: {}", tuneOwnerId, saved.getUserId());
+                        
+                        if (tuneOwnerId != null && !tuneOwnerId.equals(saved.getUserId())) {
+                            log.debug("🔔 准备发送通知给调校拥有者: {}", tuneOwnerId);
+                            
+                            notificationService.sendTuneCommentNotification(
+                                tuneOwnerId,
+                                saved.getTuneId(),
+                                tune.getShareCode(),
+                                saved.getUserId(),
+                                me.getXboxId(),
+                                saved.getContent()
+                            );
+                            
+                            log.debug("✅ 评论通知发送完成");
+                        } else {
+                            log.debug("⚠️ 跳过通知发送 - 原因: tuneOwnerId={}, 评论者ID={}", tuneOwnerId, saved.getUserId());
+                        }
+                    } else {
+                        log.warn("⚠️ 未找到调校信息: {}", saved.getTuneId());
+                    }
+                } catch (Exception e) {
+                    // 通知发送失败不影响主流程
+                    log.warn("❌ 发送评论通知失败: {}", e.getMessage(), e);
+                }
+            } else {
+                log.warn("⚠️ 评论者用户信息为空，跳过通知发送");
+            }
+            
             return saved;
         }
         throw new RuntimeException("Failed to add comment");
@@ -176,12 +241,33 @@ public class CommentService {
         int result = commentMapper.insertReply(reply);
         if (result > 0) {
             TuneCommentReply saved = commentMapper.selectReplyById(reply.getId());
+            User replier = null;
             try {
-                User me = userMapper.findById(saved.getUserId());
-                if (me != null && me.getIsProPlayer() != null) {
-                    saved.setIsProPlayer(me.getIsProPlayer());
+                replier = userMapper.findById(saved.getUserId());
+                if (replier != null && replier.getIsProPlayer() != null) {
+                    saved.setIsProPlayer(replier.getIsProPlayer());
                 }
             } catch (Exception ignore) {}
+            
+            // 发送通知给评论作者
+            if (replier != null) {
+                try {
+                    TuneComment originalComment = commentMapper.selectById(commentId);
+                    if (originalComment != null && !originalComment.getUserId().equals(saved.getUserId())) {
+                        notificationService.sendCommentReplyNotification(
+                            originalComment.getUserId(),
+                            commentId,
+                            saved.getUserId(),
+                            replier.getXboxId(),
+                            saved.getContent()
+                        );
+                    }
+                } catch (Exception e) {
+                    // 通知发送失败不影响主流程
+                    log.warn("发送回复通知失败: {}", e.getMessage());
+                }
+            }
+            
             return saved;
         }
         throw new RuntimeException("Failed to add reply");

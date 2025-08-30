@@ -83,4 +83,174 @@ public class CarServiceImpl implements CarService {
     public List<String> getAllManufacturers(String gameCategory) {
         return carMapper.selectAllManufacturers(gameCategory);
     }
+    
+    // ========== 管理员专用方法实现 ==========
+    
+    @Override
+    public List<CarDto> getAllCarsForAdmin(String gameCategory) {
+        CarsSearchVo searchVo = new CarsSearchVo();
+        searchVo.setGameCategory(gameCategory);
+        searchVo.setPage(1);
+        searchVo.setLimit(10000); // 获取所有车辆
+        
+        List<Car> cars = carMapper.searchCars(searchVo);
+        return cars.stream()
+                .map(CarDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public CarDto addCar(CarDto carDto) {
+        Car car = new Car();
+        car.setId(java.util.UUID.randomUUID().toString());
+        car.setName(carDto.getName());
+        car.setManufacturer(carDto.getManufacturer());
+        car.setYear(carDto.getYear());
+        car.setCategory(convertToCarCategory(carDto.getCategory()));
+        car.setDrivetrain(convertToDrivetrain(carDto.getDrivetrain()));
+        car.setPi(carDto.getPi());
+        car.setGameCategory(carDto.getGameCategory());
+        car.setImageUrl(carDto.getImageUrl());
+        car.setCreatedAt(java.time.LocalDateTime.now());
+        car.setUpdatedAt(java.time.LocalDateTime.now());
+        
+        carMapper.insert(car);
+        return CarDto.fromEntity(car);
+    }
+    
+    @Override
+    public CarDto updateCar(CarDto carDto) {
+        Car existingCar = carMapper.selectById(carDto.getId());
+        if (existingCar == null) {
+            throw new RuntimeException("车辆不存在: " + carDto.getId());
+        }
+        
+        existingCar.setName(carDto.getName());
+        existingCar.setManufacturer(carDto.getManufacturer());
+        existingCar.setYear(carDto.getYear());
+        existingCar.setCategory(convertToCarCategory(carDto.getCategory()));
+        existingCar.setDrivetrain(convertToDrivetrain(carDto.getDrivetrain()));
+        existingCar.setPi(carDto.getPi());
+        existingCar.setGameCategory(carDto.getGameCategory());
+        if (carDto.getImageUrl() != null) {
+            existingCar.setImageUrl(carDto.getImageUrl());
+        }
+        existingCar.setUpdatedAt(java.time.LocalDateTime.now());
+        
+        carMapper.update(existingCar);
+        return CarDto.fromEntity(existingCar);
+    }
+    
+    @Override
+    public void deleteCar(String carId) {
+        Car car = carMapper.selectById(carId);
+        if (car == null) {
+            throw new RuntimeException("车辆不存在: " + carId);
+        }
+        
+        // 检查是否有关联的调校
+        List<Tune> tunes = tuneMapper.selectByCarId(carId);
+        if (!tunes.isEmpty()) {
+            throw new RuntimeException("无法删除车辆，存在关联的调校数据");
+        }
+        
+        carMapper.deleteById(carId);
+    }
+    
+    @Override
+    public void updateCarImage(String carId, String imageUrl) {
+        Car car = carMapper.selectById(carId);
+        if (car == null) {
+            throw new RuntimeException("车辆不存在: " + carId);
+        }
+        
+        // 只更新图片URL，避免更新其他字段导致的类型转换问题
+        carMapper.updateImageUrl(carId, imageUrl);
+    }
+    
+    @Override
+    public int batchImportCars(List<CarDto> cars) {
+        int successCount = 0;
+        
+        for (CarDto carDto : cars) {
+            try {
+                // 检查是否已存在相同的车辆（根据名称、制造商、年份判断）
+                CarsSearchVo searchVo = new CarsSearchVo();
+                searchVo.setManufacturer(carDto.getManufacturer());
+                searchVo.setSearch(carDto.getName());
+                searchVo.setGameCategory(carDto.getGameCategory());
+                
+                List<Car> existingCars = carMapper.searchCars(searchVo);
+                boolean exists = existingCars.stream()
+                        .anyMatch(car -> car.getName().equals(carDto.getName()) 
+                                && car.getYear().equals(carDto.getYear()));
+                
+                if (!exists) {
+                    addCar(carDto);
+                    successCount++;
+                }
+                
+            } catch (Exception e) {
+                // 记录错误但继续处理其他车辆
+                System.err.println("导入车辆失败: " + carDto.getName() + " - " + e.getMessage());
+            }
+        }
+        
+        return successCount;
+    }
+    
+    // ========== 私有辅助方法 ==========
+    
+    /**
+     * 将字符串转换为CarCategory枚举
+     */
+    private Car.CarCategory convertToCarCategory(String category) {
+        if (category == null || category.isEmpty()) {
+            return null;
+        }
+        
+        // 映射前端传入的字符串到枚举值
+        switch (category.toLowerCase()) {
+            case "sportscar":
+            case "sports_cars":
+                return Car.CarCategory.SPORTS_CARS;
+            case "musclecar":
+            case "muscle_cars":
+                return Car.CarCategory.MUSCLE_CARS;
+            case "supercar":
+            case "supercars":
+                return Car.CarCategory.SUPERCARS;
+            case "classiccar":
+            case "classic_cars":
+                return Car.CarCategory.CLASSIC_CARS;
+            case "hypercar":
+            case "hypercars":
+                return Car.CarCategory.HYPERCARS;
+            case "tracktoy":
+            case "track_toys":
+                return Car.CarCategory.TRACK_TOYS;
+            default:
+                throw new IllegalArgumentException("未知的车辆分类: " + category);
+        }
+    }
+    
+    /**
+     * 将字符串转换为Drivetrain枚举
+     */
+    private Car.Drivetrain convertToDrivetrain(String drivetrain) {
+        if (drivetrain == null || drivetrain.isEmpty()) {
+            return null;
+        }
+        
+        switch (drivetrain.toLowerCase()) {
+            case "rwd":
+                return Car.Drivetrain.RWD;
+            case "fwd":
+                return Car.Drivetrain.FWD;
+            case "awd":
+                return Car.Drivetrain.AWD;
+            default:
+                throw new IllegalArgumentException("未知的驱动方式: " + drivetrain);
+        }
+    }
 }

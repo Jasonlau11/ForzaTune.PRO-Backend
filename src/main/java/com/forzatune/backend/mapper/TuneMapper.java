@@ -42,6 +42,8 @@ public interface TuneMapper {
     
     List<Tune> selectByAuthorId(@Param("authorId") String authorId);
     
+    long countByAuthorId(@Param("authorId") String authorId);
+    
     /**
      * 查询属于某用户的调校（owner_user_id=用户 或 owner_xbox_id=用户xboxId）
      */
@@ -151,4 +153,7 @@ public interface TuneMapper {
     List<Tune> selectFavoritedByUser(@Param("userId") String userId);
     List<Tune> selectFavoritedByUserPaged(@Param("userId") String userId, @Param("limit") int limit, @Param("offset") int offset);
     long countFavoritedByUser(@Param("userId") String userId);
+    
+    List<Tune> selectCommentedByUserPaged(@Param("tuneIds") List<String> tuneIds, @Param("limit") int limit, @Param("offset") int offset);
+    long countCommentedByUser(@Param("tuneIds") List<String> tuneIds);
 }
